@@ -41,6 +41,12 @@ const sidebarMenus = [
     },
 
     {
+    label: "Dewan Guru",
+    href: "/admin/academics/teachers",
+    icon: "🧑‍🏫",
+    },
+
+    {
         label: "Kesiswaan",
         href: "/admin/student-programs",
         icon: "👥",

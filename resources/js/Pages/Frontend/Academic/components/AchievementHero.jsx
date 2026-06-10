@@ -1,7 +1,52 @@
 import Icon from "./Icon";
 
-export default function AchievementHero() {
-    const highlights = [
+function buildHighlights(achievements) {
+    const items = Array.isArray(achievements) ? achievements : [];
+
+    const nationalAchievements = items.filter((item) => {
+        const level = String(item.level || "").toLowerCase();
+        return level.includes("nasional");
+    }).length;
+
+    const academicAchievements = items.filter((item) => {
+        const text = `${item.title || ""} ${item.level || ""} ${item.rank || ""}`.toLowerCase();
+
+        return (
+            text.includes("akademik") ||
+            text.includes("olimpiade") ||
+            text.includes("sains") ||
+            text.includes("literasi") ||
+            text.includes("teknologi")
+        );
+    }).length;
+
+    const nonAcademicAchievements = Math.max(
+        items.length - academicAchievements,
+        0
+    );
+
+    if (items.length > 0) {
+        return [
+            {
+                title: `${academicAchievements || items.length}\nPrestasi Akademik`,
+                icon: "book",
+            },
+            {
+                title: `${nonAcademicAchievements || items.length}\nPrestasi Non-Akademik`,
+                icon: "trophy",
+            },
+            {
+                title: "Kompetisi\nTingkat Daerah",
+                icon: "award",
+            },
+            {
+                title: `${nationalAchievements || "Capaian"}\nNasional`,
+                icon: "graduate",
+            },
+        ];
+    }
+
+    return [
         {
             title: "Prestasi\nAkademik",
             icon: "book",
@@ -19,13 +64,37 @@ export default function AchievementHero() {
             icon: "graduate",
         },
     ];
+}
+
+export default function AchievementHero({ page = null, academicData = null }) {
+    const achievements = academicData?.achievements || [];
+    const highlights = buildHighlights(achievements);
+
+    const heroImage =
+        page?.achievement_hero_image ||
+        page?.achievementHeroImage ||
+        page?.hero_image ||
+        page?.heroImage ||
+        "/frontend/images/achievement-hero.jpg";
+
+    const heroTitle =
+        page?.achievement_title ||
+        page?.achievementTitle ||
+        "Prestasi Siswa Berprestasi";
+
+    const heroDescription =
+        page?.achievement_description ||
+        page?.achievementDescription ||
+        "Dokumentasi capaian akademik dan non-akademik siswa sebagai bukti komitmen sekolah terhadap kualitas pendidikan.";
+
+    const titleParts = String(heroTitle).split(" ");
 
     return (
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative min-h-[500px] w-full overflow-hidden lg:min-h-[540px] xl:min-h-[560px]">
                 <img
-                    src="/frontend/images/achievement-hero.jpg"
-                    alt="Prestasi Siswa"
+                    src={heroImage}
+                    alt={heroTitle}
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     onError={(event) => {
                         event.currentTarget.src =
@@ -58,24 +127,28 @@ export default function AchievementHero() {
                         <span className="text-white">Prestasi Siswa</span>
                     </div>
 
-                    <div className="mt-8 max-w-[650px]">
+                    <div className="mt-8 max-w-[620px]">
                         <span className="inline-flex rounded-full bg-[#0d58cf] px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-white shadow-lg shadow-blue-950/20">
-                            Prestasi Siswa
+                            Prestasi
                         </span>
 
-                        <h1 className="mt-5 text-[42px] font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-[56px] lg:text-[66px] xl:text-[76px]">
-                            Capaian Prestasi
-                            <br />
-                            Siswa
+                        <h1 className="mt-5 text-[42px] font-semibold leading-[0.96] tracking-[-0.055em] text-white sm:text-[56px] lg:text-[66px] xl:text-[76px]">
+                            {titleParts.length > 1 ? (
+                                <>
+                                    {titleParts.slice(0, -1).join(" ")}
+                                    <br />
+                                    {titleParts.slice(-1)}
+                                </>
+                            ) : (
+                                heroTitle
+                            )}
                         </h1>
 
-                        <p className="mt-5 max-w-[560px] text-[15px] font-medium leading-8 text-blue-50 sm:text-[17px]">
-                            Dokumentasi capaian akademik dan non-akademik siswa
-                            sebagai bukti komitmen sekolah dalam membangun
-                            generasi unggul, percaya diri, dan berkarakter.
+                        <p className="mt-5 max-w-[560px] text-[15px] font-semibold leading-8 text-blue-50 sm:text-[17px]">
+                            {heroDescription}
                         </p>
 
-                        <div className="mt-9 grid max-w-[780px] gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        <div className="mt-9 grid max-w-[760px] gap-3 sm:grid-cols-2 xl:grid-cols-4">
                             {highlights.map((item) => (
                                 <div
                                     key={item.title}

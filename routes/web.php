@@ -15,6 +15,7 @@ use App\Http\Controllers\Frontend\PPDBController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Admin\ProfileStructureController;
 use App\Http\Controllers\Admin\AcademicController as AdminAcademicController;
+use App\Http\Controllers\Admin\AcademicTeacherController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -123,4 +124,22 @@ Route::prefix('admin')
 
         Route::post('/academics', [AdminAcademicController::class, 'update'])
             ->name('academics.update');
+
+        Route::get('/academics/teachers', [AcademicTeacherController::class, 'index'])
+            ->name('academics.teachers.index');
+
+        Route::get('/academics/teachers/create', [AcademicTeacherController::class, 'create'])
+            ->name('academics.teachers.create');
+
+        Route::post('/academics/teachers', [AcademicTeacherController::class, 'store'])
+            ->name('academics.teachers.store');
+
+        Route::get('/academics/teachers/{teacher}/edit', [AcademicTeacherController::class, 'edit'])
+            ->name('academics.teachers.edit');
+
+        Route::put('/academics/teachers/{teacher}', [AcademicTeacherController::class, 'update'])
+            ->name('academics.teachers.update');
+
+        Route::delete('/academics/teachers/{teacher}', [AcademicTeacherController::class, 'destroy'])
+            ->name('academics.teachers.destroy');
     });

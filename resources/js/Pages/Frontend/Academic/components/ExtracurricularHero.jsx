@@ -1,7 +1,34 @@
 import Icon from "./Icon";
 
-export default function ExtracurricularHero() {
-    const highlights = [
+function buildHighlights(extracurriculars) {
+    const items = Array.isArray(extracurriculars) ? extracurriculars : [];
+
+    const categories = Array.from(
+        new Set(items.map((item) => item.category).filter(Boolean))
+    );
+
+    if (items.length > 0) {
+        return [
+            {
+                title: `${items.length}\nEkstrakurikuler`,
+                icon: "award",
+            },
+            {
+                title: `${categories.length || 1}\nKategori Kegiatan`,
+                icon: "users",
+            },
+            {
+                title: "Kembangkan\nKreativitas",
+                icon: "activity",
+            },
+            {
+                title: "Raih Prestasi\nMaksimal",
+                icon: "trophy",
+            },
+        ];
+    }
+
+    return [
         {
             title: "Kembangkan\nMinat & Bakat",
             icon: "award",
@@ -19,13 +46,40 @@ export default function ExtracurricularHero() {
             icon: "trophy",
         },
     ];
+}
+
+export default function ExtracurricularHero({
+    page = null,
+    academicData = null,
+}) {
+    const extracurriculars = academicData?.extracurriculars || [];
+    const highlights = buildHighlights(extracurriculars);
+
+    const heroImage =
+        page?.extracurricular_hero_image ||
+        page?.extracurricularHeroImage ||
+        page?.hero_image ||
+        page?.heroImage ||
+        "/frontend/images/extracurricular-hero.jpg";
+
+    const heroTitle =
+        page?.extracurricular_title ||
+        page?.extracurricularTitle ||
+        "Ekstrakurikuler Unggulan";
+
+    const heroDescription =
+        page?.extracurricular_description ||
+        page?.extracurricularDescription ||
+        "Program pengembangan minat, bakat, karakter, kepemimpinan, kreativitas, dan potensi peserta didik.";
+
+    const titleParts = String(heroTitle).split(" ");
 
     return (
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative min-h-[500px] w-full overflow-hidden lg:min-h-[540px] xl:min-h-[560px]">
                 <img
-                    src="/frontend/images/extracurricular-hero.jpg"
-                    alt="Ekstrakurikuler Unggulan"
+                    src={heroImage}
+                    alt={heroTitle}
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     onError={(event) => {
                         event.currentTarget.src =
@@ -64,14 +118,19 @@ export default function ExtracurricularHero() {
                         </span>
 
                         <h1 className="mt-5 text-[42px] font-semibold leading-[0.96] tracking-[-0.055em] text-white sm:text-[56px] lg:text-[66px] xl:text-[76px]">
-                            Ekstrakurikuler
-                            <br />
-                            Unggulan
+                            {titleParts.length > 1 ? (
+                                <>
+                                    {titleParts.slice(0, -1).join(" ")}
+                                    <br />
+                                    {titleParts.slice(-1)}
+                                </>
+                            ) : (
+                                heroTitle
+                            )}
                         </h1>
 
                         <p className="mt-5 max-w-[560px] text-[15px] font-semibold leading-8 text-blue-50 sm:text-[17px]">
-                            Program pengembangan minat, bakat, karakter,
-                            kepemimpinan, kreativitas, dan potensi peserta didik.
+                            {heroDescription}
                         </p>
 
                         <div className="mt-9 grid max-w-[760px] gap-3 sm:grid-cols-2 xl:grid-cols-4">

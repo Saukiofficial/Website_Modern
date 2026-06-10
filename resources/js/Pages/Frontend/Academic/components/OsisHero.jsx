@@ -1,7 +1,31 @@
 import Icon from "./Icon";
 
-export default function OsisHero() {
-    const highlights = [
+function buildHighlights(osisMembers) {
+    const items = Array.isArray(osisMembers) ? osisMembers : [];
+    const leaders = items.filter((item) => Boolean(item.is_leader));
+
+    if (items.length > 0) {
+        return [
+            {
+                title: `${items.length}\nPengurus Aktif`,
+                icon: "users",
+            },
+            {
+                title: `${leaders.length || 2}\nPengurus Inti`,
+                icon: "organization",
+            },
+            {
+                title: "Kembangkan\nProgram Siswa",
+                icon: "activity",
+            },
+            {
+                title: "Wujudkan\nSekolah Aktif",
+                icon: "trophy",
+            },
+        ];
+    }
+
+    return [
         {
             title: "Latih Jiwa\nKepemimpinan",
             icon: "users",
@@ -19,13 +43,37 @@ export default function OsisHero() {
             icon: "trophy",
         },
     ];
+}
+
+export default function OsisHero({ page = null, academicData = null }) {
+    const osisMembers = academicData?.osisMembers || [];
+    const highlights = buildHighlights(osisMembers);
+
+    const heroImage =
+        page?.osis_hero_image ||
+        page?.osisHeroImage ||
+        page?.hero_image ||
+        page?.heroImage ||
+        "/frontend/images/osis-hero.jpg";
+
+    const heroTitle =
+        page?.osis_title ||
+        page?.osisTitle ||
+        "Pengurus OSIS Sekolah";
+
+    const heroDescription =
+        page?.osis_description ||
+        page?.osisDescription ||
+        "Wadah kepemimpinan siswa untuk belajar organisasi, tanggung jawab, kerja sama, dan pengabdian kepada sekolah.";
+
+    const titleParts = String(heroTitle).split(" ");
 
     return (
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative min-h-[500px] w-full overflow-hidden lg:min-h-[540px] xl:min-h-[560px]">
                 <img
-                    src="/frontend/images/osis-hero.jpg"
-                    alt="Pengurus OSIS"
+                    src={heroImage}
+                    alt={heroTitle}
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     onError={(event) => {
                         event.currentTarget.src =
@@ -58,24 +106,28 @@ export default function OsisHero() {
                         <span className="text-white">Pengurus OSIS</span>
                     </div>
 
-                    <div className="mt-8 max-w-[650px]">
+                    <div className="mt-8 max-w-[620px]">
                         <span className="inline-flex rounded-full bg-[#0d58cf] px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-white shadow-lg shadow-blue-950/20">
                             Organisasi Siswa
                         </span>
 
-                        <h1 className="mt-5 text-[42px] font-semibold leading-[0.98] tracking-[-0.055em] text-white sm:text-[56px] lg:text-[66px] xl:text-[76px]">
-                            Pengurus OSIS
-                            <br />
-                            Sekolah
+                        <h1 className="mt-5 text-[42px] font-semibold leading-[0.96] tracking-[-0.055em] text-white sm:text-[56px] lg:text-[66px] xl:text-[76px]">
+                            {titleParts.length > 1 ? (
+                                <>
+                                    {titleParts.slice(0, -1).join(" ")}
+                                    <br />
+                                    {titleParts.slice(-1)}
+                                </>
+                            ) : (
+                                heroTitle
+                            )}
                         </h1>
 
-                        <p className="mt-5 max-w-[560px] text-[15px] font-medium leading-8 text-blue-50 sm:text-[17px]">
-                            Wadah kepemimpinan siswa untuk belajar organisasi,
-                            tanggung jawab, kerja sama, kreativitas, dan
-                            pengabdian kepada sekolah.
+                        <p className="mt-5 max-w-[560px] text-[15px] font-semibold leading-8 text-blue-50 sm:text-[17px]">
+                            {heroDescription}
                         </p>
 
-                        <div className="mt-9 grid max-w-[780px] gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        <div className="mt-9 grid max-w-[760px] gap-3 sm:grid-cols-2 xl:grid-cols-4">
                             {highlights.map((item) => (
                                 <div
                                     key={item.title}

@@ -1,8 +1,23 @@
 import { useState } from "react";
 import Icon from "./Icon";
 
-export default function CalendarHero() {
+export default function CalendarHero({ page = null }) {
     const [semester, setSemester] = useState("Semester 1");
+
+    const heroImage =
+        page?.hero_image ||
+        page?.heroImage ||
+        "/frontend/images/school-bg.jpg";
+
+    const heroTitle =
+        page?.hero_title ||
+        page?.heroTitle ||
+        "Academic Calendar";
+
+    const heroSubtitle =
+        page?.hero_subtitle ||
+        page?.heroSubtitle ||
+        "Plan your academic journey with important school events, assessments, holidays, and learning milestones.";
 
     const stats = [
         {
@@ -35,8 +50,8 @@ export default function CalendarHero() {
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative h-auto min-h-[600px] w-full overflow-hidden bg-[#052b66] lg:min-h-[610px] xl:min-h-[630px]">
                 <img
-                    src="/frontend/images/school-bg.jpg"
-                    alt="Academic Calendar"
+                    src={heroImage}
+                    alt={heroTitle}
                     className="absolute inset-0 h-full w-full object-cover"
                     onError={(event) => {
                         event.currentTarget.src =
@@ -69,7 +84,7 @@ export default function CalendarHero() {
                         </p>
 
                         <h1 className="mt-4 whitespace-normal text-[40px] font-semibold leading-[1.02] tracking-[-0.045em] text-white sm:text-[54px] md:text-[62px] lg:whitespace-nowrap lg:text-[64px] xl:text-[70px] 2xl:text-[76px]">
-                            Academic Calendar
+                            {heroTitle}
                         </h1>
 
                         <h2 className="mt-1 text-[34px] font-bold leading-none tracking-[-0.035em] text-[#f7b733] sm:text-[46px] lg:text-[56px] xl:text-[62px]">
@@ -77,9 +92,7 @@ export default function CalendarHero() {
                         </h2>
 
                         <p className="mt-6 max-w-[480px] text-[15px] font-medium leading-7 text-blue-50 sm:text-[17px] sm:leading-8">
-                            Plan your academic journey with important school
-                            events, assessments, holidays, and learning
-                            milestones.
+                            {heroSubtitle}
                         </p>
 
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">

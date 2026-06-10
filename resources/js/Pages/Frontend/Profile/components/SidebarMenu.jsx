@@ -1,6 +1,11 @@
-import { tabs } from "../data";
+import { tabs as fallbackTabs } from "../data";
 
-export default function SidebarMenu({ activeTab, setActiveTab }) {
+export default function SidebarMenu({
+    tabs = fallbackTabs,
+    activeTab,
+    setActiveTab,
+    school,
+}) {
     return (
         <aside className="lg:sticky lg:top-[96px]">
             <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/70">
@@ -74,7 +79,7 @@ export default function SidebarMenu({ activeTab, setActiveTab }) {
                     </p>
 
                     <p className="mt-5 text-[13px] font-medium text-blue-100">
-                        — SMA Negeri 1 Cerdas
+                        — {school?.shortName || "SMA Negeri 1 Cerdas"}
                     </p>
 
                     <div className="mt-8 rounded-[16px] bg-white/10 p-5">
@@ -84,7 +89,7 @@ export default function SidebarMenu({ activeTab, setActiveTab }) {
 
                         <p className="mt-2 text-[12.5px] font-medium leading-6 text-blue-100">
                             Semua data profil sekolah dapat diperbarui melalui
-                            admin panel pada tahap berikutnya.
+                            admin panel.
                         </p>
                     </div>
                 </div>

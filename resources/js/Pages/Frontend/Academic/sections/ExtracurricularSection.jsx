@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import Icon from "../components/Icon";
 
-const extracurricularData = [
+const fallbackExtracurricularData = [
     {
         title: "Pramuka",
         category: "Kepemimpinan",
@@ -51,8 +51,7 @@ const extracurricularData = [
         title: "Basket",
         category: "Olahraga",
         students: "70+",
-        description:
-            "Melatih fisik, strategi permainan, dan jiwa kompetitif.",
+        description: "Melatih fisik, strategi permainan, dan jiwa kompetitif.",
         image: "https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=1200&q=85",
         accent: "bg-lime-500",
     },
@@ -60,8 +59,7 @@ const extracurricularData = [
         title: "Robotik & Coding",
         category: "Teknologi",
         students: "40+",
-        description:
-            "Mengasah kemampuan teknologi, logika, dan inovasi digital.",
+        description: "Mengasah kemampuan teknologi, logika, dan inovasi digital.",
         image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=85",
         accent: "bg-sky-500",
     },
@@ -69,14 +67,13 @@ const extracurricularData = [
         title: "Paduan Suara",
         category: "Seni & Budaya",
         students: "50+",
-        description:
-            "Mengembangkan vokal, harmoni, dan penampilan musik.",
+        description: "Mengembangkan vokal, harmoni, dan penampilan musik.",
         image: "https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=1200&q=85",
         accent: "bg-yellow-500",
     },
 ];
 
-const statItems = [
+const fallbackStatItems = [
     {
         value: "45",
         label: "Total Ekstrakurikuler",
@@ -103,15 +100,78 @@ const statItems = [
     },
 ];
 
-const categoryList = [
-    "Semua Kategori",
-    "Akademik",
-    "Olahraga",
-    "Seni & Budaya",
-    "Kepemimpinan",
-    "Keagamaan",
-    "Teknologi",
+const accentList = [
+    "bg-green-500",
+    "bg-purple-500",
+    "bg-orange-500",
+    "bg-cyan-500",
+    "bg-pink-500",
+    "bg-lime-500",
+    "bg-sky-500",
+    "bg-yellow-500",
 ];
+
+function normalizeExtracurriculars(extracurriculars) {
+    if (!Array.isArray(extracurriculars) || extracurriculars.length === 0) {
+        return fallbackExtracurricularData;
+    }
+
+    return extracurriculars.map((item, index) => ({
+        id: item.id || index,
+        title: item.name || item.title || "Nama Ekstrakurikuler",
+        category: item.category || "Ekstrakurikuler",
+        students: item.students || "Aktif",
+        description:
+            item.description ||
+            "Kegiatan pengembangan minat, bakat, dan karakter siswa.",
+        image:
+            item.image ||
+            "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=85",
+        accent: item.accent || accentList[index % accentList.length],
+        coach_name: item.coach_name || null,
+        schedule: item.schedule || null,
+        location: item.location || null,
+    }));
+}
+
+function buildStatItems(items) {
+    const categories = Array.from(
+        new Set(items.map((item) => item.category).filter(Boolean))
+    );
+
+    return [
+        {
+            value: String(items.length || fallbackStatItems[0].value),
+            label: "Total Ekstrakurikuler",
+            icon: "users",
+            iconWrap: "bg-blue-50 text-[#1f5bd3]",
+        },
+        {
+            value: "Aktif",
+            label: "Siswa Aktif",
+            icon: "activity",
+            iconWrap: "bg-emerald-50 text-emerald-500",
+        },
+        {
+            value: "Terbuka",
+            label: "Pendaftaran",
+            icon: "trophy",
+            iconWrap: "bg-fuchsia-50 text-fuchsia-500",
+        },
+        {
+            value: String(categories.length || fallbackStatItems[3].value),
+            label: "Kategori Kegiatan",
+            icon: "calendar",
+            iconWrap: "bg-orange-50 text-orange-500",
+        },
+    ];
+}
+
+function buildCategoryList(items) {
+    const categories = items.map((item) => item.category).filter(Boolean);
+
+    return ["Semua Kategori", ...Array.from(new Set(categories))];
+}
 
 function ExtracurricularCard({ item }) {
     return (
@@ -121,6 +181,10 @@ function ExtracurricularCard({ item }) {
                     src={item.image}
                     alt={item.title}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                    onError={(event) => {
+                        event.currentTarget.src =
+                            "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=85";
+                    }}
                 />
 
                 <div
@@ -150,17 +214,41 @@ function ExtracurricularCard({ item }) {
                         <span>Siswa Aktif</span>
                     </div>
                 </div>
+
+                {(item.coach_name || item.schedule || item.location) && (
+                    <div className="mt-4 space-y-2 rounded-[14px] bg-slate-50 p-3 text-[11.5px] font-semibold text-slate-500">
+                        {item.coach_name ? (
+                            <p>🧑‍🏫 Pembina: {item.coach_name}</p>
+                        ) : null}
+
+                        {item.schedule ? <p>📅 {item.schedule}</p> : null}
+
+                        {item.location ? <p>📍 {item.location}</p> : null}
+                    </div>
+                )}
             </div>
         </div>
     );
 }
 
-export default function ExtracurricularSection() {
+export default function ExtracurricularSection({ extracurriculars = [] }) {
     const [activeCategory, setActiveCategory] = useState("Semua Kategori");
     const [search, setSearch] = useState("");
 
+    const extracurricularItems = useMemo(() => {
+        return normalizeExtracurriculars(extracurriculars);
+    }, [extracurriculars]);
+
+    const statItems = useMemo(() => {
+        return buildStatItems(extracurricularItems);
+    }, [extracurricularItems]);
+
+    const categoryList = useMemo(() => {
+        return buildCategoryList(extracurricularItems);
+    }, [extracurricularItems]);
+
     const filteredItems = useMemo(() => {
-        return extracurricularData.filter((item) => {
+        return extracurricularItems.filter((item) => {
             const matchCategory =
                 activeCategory === "Semua Kategori" ||
                 item.category === activeCategory;
@@ -175,7 +263,7 @@ export default function ExtracurricularSection() {
 
             return matchCategory && matchSearch;
         });
-    }, [activeCategory, search]);
+    }, [activeCategory, search, extracurricularItems]);
 
     return (
         <div className="space-y-6">
@@ -234,7 +322,7 @@ export default function ExtracurricularSection() {
                         <input
                             type="text"
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(event) => setSearch(event.target.value)}
                             placeholder="Cari ekstrakurikuler..."
                             className="h-full w-full border-0 bg-transparent text-[13px] font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:ring-0"
                         />
@@ -246,9 +334,18 @@ export default function ExtracurricularSection() {
                 </div>
 
                 <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                    {filteredItems.map((item) => (
-                        <ExtracurricularCard key={item.title} item={item} />
-                    ))}
+                    {filteredItems.length > 0 ? (
+                        filteredItems.map((item) => (
+                            <ExtracurricularCard
+                                key={item.id || item.title}
+                                item={item}
+                            />
+                        ))
+                    ) : (
+                        <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 xl:col-span-4">
+                            Data ekstrakurikuler tidak ditemukan.
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-6 flex justify-center rounded-[18px] bg-white py-1">

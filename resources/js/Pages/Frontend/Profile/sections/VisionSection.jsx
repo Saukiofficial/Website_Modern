@@ -1,6 +1,4 @@
-import { school } from "../data";
-
-const missionItems = [
+const fallbackMissionItems = [
     {
         title: "Pendidikan Berkualitas",
         description:
@@ -33,65 +31,168 @@ const missionItems = [
     },
 ];
 
-const coreValues = [
+const fallbackCoreValues = [
     {
         title: "Excellence",
-        description: "Berkomitmen pada mutu dan prestasi terbaik dalam setiap aspek.",
+        description:
+            "Berkomitmen pada mutu dan prestasi terbaik dalam setiap aspek.",
         icon: "☆",
     },
     {
         title: "Integrity",
-        description: "Menjunjung tinggi kejujuran, integritas, dan tanggung jawab.",
+        description:
+            "Menjunjung tinggi kejujuran, integritas, dan tanggung jawab.",
         icon: "🛡️",
     },
     {
         title: "Respect",
-        description: "Menghargai perbedaan dan menumbuhkan budaya saling menghormati.",
+        description:
+            "Menghargai perbedaan dan menumbuhkan budaya saling menghormati.",
         icon: "🤝",
     },
     {
         title: "Innovation",
-        description: "Terbuka terhadap ide baru dan terus berinovasi untuk masa depan.",
+        description:
+            "Terbuka terhadap ide baru dan terus berinovasi untuk masa depan.",
         icon: "💡",
     },
     {
         title: "Global Citizenship",
-        description: "Berwawasan global dan berkontribusi positif bagi masyarakat dunia.",
+        description:
+            "Berwawasan global dan berkontribusi positif bagi masyarakat dunia.",
         icon: "🌐",
     },
 ];
 
-const actionSteps = [
+const fallbackActionSteps = [
     {
         title: "Visi",
         description: "Arah dan tujuan jangka panjang sekolah.",
         icon: "👁️",
         active: true,
+        gold: false,
     },
     {
         title: "Misi",
         description: "Langkah strategis untuk mencapai visi.",
         icon: "🎯",
+        active: false,
+        gold: false,
     },
     {
         title: "Program",
         description: "Kurikulum, kegiatan, dan layanan pendukung.",
         icon: "📖",
+        active: false,
+        gold: false,
     },
     {
         title: "Pembentukan Karakter",
         description: "Siswa tumbuh menjadi pribadi unggul dan berdaya saing.",
         icon: "👥",
+        active: false,
+        gold: false,
     },
     {
         title: "Prestasi",
         description: "Mewujudkan capaian akademik dan non-akademik.",
         icon: "🏆",
+        active: false,
         gold: true,
     },
 ];
 
-export default function VisionSection() {
+function MissionCard({ item, index }) {
+    return (
+        <article className="relative rounded-[22px] border border-slate-200 bg-white p-5 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-6">
+            <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 text-[42px]">
+                {item.icon}
+
+                <div className="absolute -bottom-3 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full bg-[#052b66] text-[11px] font-semibold text-white">
+                    {String(index + 1).padStart(2, "0")}
+                </div>
+            </div>
+
+            <h3 className="mt-9 text-[17px] font-semibold leading-tight text-[#061b46]">
+                {item.title}
+            </h3>
+
+            <p className="mt-4 text-[12.5px] font-medium leading-6 text-slate-600">
+                {item.description}
+            </p>
+        </article>
+    );
+}
+
+function CoreValueCard({ item }) {
+    return (
+        <article className="rounded-[18px] border border-slate-200 bg-white p-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <div className="text-[42px] leading-none text-[#d5a542]">
+                {item.icon}
+            </div>
+
+            <h3 className="mt-5 text-[17px] font-semibold text-[#061b46]">
+                {item.title}
+            </h3>
+
+            <p className="mt-3 text-[12.5px] font-medium leading-6 text-slate-600">
+                {item.description}
+            </p>
+        </article>
+    );
+}
+
+function ActionStepCard({ item }) {
+    return (
+        <div
+            className={`flex min-h-[170px] flex-col items-center justify-center rounded-full border p-6 text-center shadow-lg ${
+                item.active
+                    ? "border-[#052b66] bg-[#052b66] text-white"
+                    : item.gold
+                    ? "border-[#d5a542] bg-[#d5a542] text-white"
+                    : "border-slate-200 bg-white text-[#061b46]"
+            }`}
+        >
+            <div className="text-[34px]">{item.icon}</div>
+
+            <h3 className="mt-3 text-[15px] font-semibold uppercase">
+                {item.title}
+            </h3>
+
+            <p
+                className={`mt-2 text-[11.5px] font-medium leading-5 ${
+                    item.active || item.gold
+                        ? "text-white/90"
+                        : "text-slate-600"
+                }`}
+            >
+                {item.description}
+            </p>
+        </div>
+    );
+}
+
+export default function VisionSection({ profileData }) {
+    const school = profileData?.school || {};
+
+    const missionItems =
+        Array.isArray(profileData?.visionMissionItems) &&
+        profileData.visionMissionItems.length > 0
+            ? profileData.visionMissionItems
+            : fallbackMissionItems;
+
+    const coreValues =
+        Array.isArray(profileData?.coreValues) &&
+        profileData.coreValues.length > 0
+            ? profileData.coreValues
+            : fallbackCoreValues;
+
+    const actionSteps =
+        Array.isArray(profileData?.visionActionSteps) &&
+        profileData.visionActionSteps.length > 0
+            ? profileData.visionActionSteps
+            : fallbackActionSteps;
+
     return (
         <div className="space-y-10">
             <section className="relative overflow-hidden rounded-[28px] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8 lg:p-10">
@@ -105,8 +206,8 @@ export default function VisionSection() {
                     </p>
 
                     <h2 className="mt-4 font-serif text-[34px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
-                        Menjadi sekolah unggul yang menghasilkan pemimpin masa
-                        depan berkarakter, berprestasi, dan berwawasan global.
+                        {school.vision ||
+                            "Menjadi sekolah unggul yang menghasilkan pemimpin masa depan berkarakter, berprestasi, dan berwawasan global."}
                     </h2>
 
                     <div className="mt-6 h-[2px] w-20 rounded-full bg-[#d5a542]" />
@@ -130,32 +231,13 @@ export default function VisionSection() {
 
                 <div className="mt-5 h-[2px] w-20 rounded-full bg-[#d5a542]" />
 
-                <div className="mt-10 grid gap-0 lg:grid-cols-5">
+                <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                     {missionItems.map((item, index) => (
-                        <div
-                            key={item.title}
-                            className={`relative px-5 py-4 text-center ${
-                                index !== missionItems.length - 1
-                                    ? "border-b border-slate-200 lg:border-b-0 lg:border-r"
-                                    : ""
-                            }`}
-                        >
-                            <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 text-[42px]">
-                                {item.icon}
-
-                                <div className="absolute -bottom-3 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full bg-[#052b66] text-[11px] font-semibold text-white">
-                                    {String(index + 1).padStart(2, "0")}
-                                </div>
-                            </div>
-
-                            <h3 className="mt-9 text-[17px] font-semibold leading-tight text-[#061b46]">
-                                {item.title}
-                            </h3>
-
-                            <p className="mt-4 text-[12.5px] font-medium leading-6 text-slate-600">
-                                {item.description}
-                            </p>
-                        </div>
+                        <MissionCard
+                            key={`${item.title}-${index}`}
+                            item={item}
+                            index={index}
+                        />
                     ))}
                 </div>
             </section>
@@ -169,24 +251,12 @@ export default function VisionSection() {
                     Nilai-Nilai Utama Kami
                 </h2>
 
-                <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                    {coreValues.map((item) => (
-                        <div
-                            key={item.title}
-                            className="rounded-[18px] border border-slate-200 bg-white p-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-                        >
-                            <div className="text-[42px] leading-none text-[#d5a542]">
-                                {item.icon}
-                            </div>
-
-                            <h3 className="mt-5 text-[17px] font-semibold text-[#061b46]">
-                                {item.title}
-                            </h3>
-
-                            <p className="mt-3 text-[12.5px] font-medium leading-6 text-slate-600">
-                                {item.description}
-                            </p>
-                        </div>
+                <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+                    {coreValues.map((item, index) => (
+                        <CoreValueCard
+                            key={`${item.title}-${index}`}
+                            item={item}
+                        />
                     ))}
                 </div>
             </section>
@@ -202,40 +272,13 @@ export default function VisionSection() {
                     </h2>
                 </div>
 
-                <div className="mt-10 grid gap-5 lg:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr_auto_1fr] lg:items-center">
+                <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-5 xl:items-center">
                     {actionSteps.map((item, index) => (
-                        <div
-                            key={item.title}
-                            className="contents"
-                        >
-                            <div
-                                className={`flex min-h-[170px] flex-col items-center justify-center rounded-full border p-6 text-center shadow-lg ${
-                                    item.active
-                                        ? "border-[#052b66] bg-[#052b66] text-white"
-                                        : item.gold
-                                        ? "border-[#d5a542] bg-[#d5a542] text-white"
-                                        : "border-slate-200 bg-white text-[#061b46]"
-                                }`}
-                            >
-                                <div className="text-[34px]">{item.icon}</div>
-
-                                <h3 className="mt-3 text-[15px] font-semibold uppercase">
-                                    {item.title}
-                                </h3>
-
-                                <p
-                                    className={`mt-2 text-[11.5px] font-medium leading-5 ${
-                                        item.active || item.gold
-                                            ? "text-white/90"
-                                            : "text-slate-600"
-                                    }`}
-                                >
-                                    {item.description}
-                                </p>
-                            </div>
+                        <div key={`${item.title}-${index}`} className="relative">
+                            <ActionStepCard item={item} />
 
                             {index !== actionSteps.length - 1 ? (
-                                <div className="hidden text-center text-[34px] text-[#052b66] lg:block">
+                                <div className="absolute right-[-18px] top-1/2 z-10 hidden -translate-y-1/2 text-[28px] text-[#052b66] xl:block">
                                     →
                                 </div>
                             ) : null}
@@ -248,7 +291,10 @@ export default function VisionSection() {
                 <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
                     <div className="min-h-[280px]">
                         <img
-                            src="/frontend/images/vision-banner.jpg"
+                            src={
+                                school.visionBannerImage ||
+                                "/frontend/images/vision-banner.jpg"
+                            }
                             alt="Learning Today Leading Tomorrow"
                             className="h-full w-full object-cover"
                             onError={(event) => {
@@ -280,7 +326,7 @@ export default function VisionSection() {
                             </p>
 
                             <a
-                                href="#"
+                                href="/ppdb"
                                 className="mt-7 inline-flex min-h-[50px] items-center justify-center gap-3 rounded-[12px] bg-[#d5a542] px-7 text-[13px] font-semibold text-[#061b46] transition hover:bg-[#f7c46a]"
                             >
                                 Bergabung Bersama Kami

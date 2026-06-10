@@ -18,8 +18,76 @@ import ExtracurricularSection from "./sections/ExtracurricularSection";
 import OsisSection from "./sections/OsisSection";
 import AchievementsSection from "./sections/AchievementsSection";
 
-export default function Academic() {
+const defaultAcademicData = {
+    page: {
+        hero_title: "Akademik Sekolah",
+        hero_subtitle:
+            "Informasi akademik, kalender pendidikan, guru, ekstrakurikuler, OSIS, dan prestasi siswa.",
+        hero_image: "/frontend/images/academic-hero.jpg",
+
+        calendar_title: "Kalender Akademik",
+        calendar_description:
+            "Informasi jadwal kegiatan akademik sekolah selama tahun pelajaran berjalan.",
+
+        teacher_title: "Dewan Guru",
+        teacher_description:
+            "Tenaga pendidik profesional yang mendukung proses belajar siswa.",
+
+        extracurricular_title: "Ekstrakurikuler",
+        extracurricular_description:
+            "Kegiatan pengembangan minat, bakat, karakter, dan kreativitas siswa.",
+
+        osis_title: "Pengurus OSIS",
+        osis_description:
+            "Organisasi siswa sebagai wadah kepemimpinan, kreativitas, dan tanggung jawab.",
+
+        achievement_title: "Prestasi Siswa",
+        achievement_description:
+            "Daftar prestasi akademik dan non-akademik yang diraih oleh siswa.",
+    },
+    calendars: [],
+    teachers: [],
+    extracurriculars: [],
+    osisMembers: [],
+    achievements: [],
+};
+
+function mergeAcademicData(academicData) {
+    if (!academicData) {
+        return defaultAcademicData;
+    }
+
+    return {
+        ...defaultAcademicData,
+        ...academicData,
+        page: {
+            ...defaultAcademicData.page,
+            ...(academicData.page || {}),
+        },
+        calendars: Array.isArray(academicData.calendars)
+            ? academicData.calendars
+            : [],
+        teachers: Array.isArray(academicData.teachers)
+            ? academicData.teachers
+            : [],
+        extracurriculars: Array.isArray(academicData.extracurriculars)
+            ? academicData.extracurriculars
+            : [],
+        osisMembers: Array.isArray(academicData.osisMembers)
+            ? academicData.osisMembers
+            : [],
+        achievements: Array.isArray(academicData.achievements)
+            ? academicData.achievements
+            : [],
+    };
+}
+
+export default function Academic({ academicData = null }) {
     const [activeTab, setActiveTab] = useState("calendar");
+
+    const data = useMemo(() => {
+        return mergeAcademicData(academicData);
+    }, [academicData]);
 
     const activeMenu = useMemo(() => {
         return tabs.find((tab) => tab.key === activeTab) ?? tabs[0];
@@ -28,21 +96,87 @@ export default function Academic() {
     const activeHero = heroContent[activeTab] ?? heroContent.calendar;
 
     const renderContent = () => {
-        if (activeTab === "calendar") return <CalendarSection />;
-        if (activeTab === "teachers") return <TeachersSection />;
-        if (activeTab === "extracurricular") return <ExtracurricularSection />;
-        if (activeTab === "osis") return <OsisSection />;
-        if (activeTab === "achievements") return <AchievementsSection />;
+        if (activeTab === "calendar") {
+            return (
+                <CalendarSection
+                    academicData={data}
+                    calendars={data.calendars}
+                    page={data.page}
+                />
+            );
+        }
 
-        return <CalendarSection />;
+        if (activeTab === "teachers") {
+            return (
+                <TeachersSection
+                    academicData={data}
+                    teachers={data.teachers}
+                    page={data.page}
+                />
+            );
+        }
+
+        if (activeTab === "extracurricular") {
+            return (
+                <ExtracurricularSection
+                    academicData={data}
+                    extracurriculars={data.extracurriculars}
+                    page={data.page}
+                />
+            );
+        }
+
+        if (activeTab === "osis") {
+            return (
+                <OsisSection
+                    academicData={data}
+                    osisMembers={data.osisMembers}
+                    page={data.page}
+                />
+            );
+        }
+
+        if (activeTab === "achievements") {
+            return (
+                <AchievementsSection
+                    academicData={data}
+                    achievements={data.achievements}
+                    page={data.page}
+                />
+            );
+        }
+
+        return (
+            <CalendarSection
+                academicData={data}
+                calendars={data.calendars}
+                page={data.page}
+            />
+        );
     };
 
     const renderHero = () => {
-        if (activeTab === "calendar") return <CalendarHero />;
-        if (activeTab === "teachers") return <TeachersHero />;
-        if (activeTab === "extracurricular") return <ExtracurricularHero />;
-        if (activeTab === "osis") return <OsisHero />;
-        if (activeTab === "achievements") return <AchievementHero />;
+        if (activeTab === "calendar") {
+            return <CalendarHero academicData={data} page={data.page} />;
+        }
+
+        if (activeTab === "teachers") {
+            return <TeachersHero academicData={data} page={data.page} />;
+        }
+
+        if (activeTab === "extracurricular") {
+            return (
+                <ExtracurricularHero academicData={data} page={data.page} />
+            );
+        }
+
+        if (activeTab === "osis") {
+            return <OsisHero academicData={data} page={data.page} />;
+        }
+
+        if (activeTab === "achievements") {
+            return <AchievementHero academicData={data} page={data.page} />;
+        }
 
         return <DefaultHero activeHero={activeHero} activeMenu={activeMenu} />;
     };

@@ -1,28 +1,47 @@
-import { profileStats, school, values } from "../data";
+import { profileStats as fallbackProfileStats } from "../data";
 
-export default function ProfileSection() {
+export default function ProfileSection({ profileData }) {
+    const school = profileData?.school || {};
+    const principal = school.principal || {};
+
+    const values =
+        Array.isArray(profileData?.values) && profileData.values.length > 0
+            ? profileData.values
+            : [];
+
+    const profileStats =
+        Array.isArray(profileData?.profileStats) &&
+        profileData.profileStats.length > 0
+            ? profileData.profileStats
+            : fallbackProfileStats;
+
     return (
         <div id="profil-sekolah" className="space-y-6">
             <div className="grid gap-6 xl:grid-cols-[0.82fr_1.18fr]">
                 <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
                     <div className="relative h-[420px] overflow-hidden bg-blue-50 sm:h-[560px] xl:h-full">
                         <img
-                            src={school.principal.image}
-                            alt={school.principal.name}
+                            src={
+                                principal.image ||
+                                "/frontend/images/principal.jpg"
+                            }
+                            alt={principal.name || "Kepala Sekolah"}
                             className="h-full w-full object-cover object-center"
                             onError={(event) => {
                                 event.currentTarget.src =
-                                    school.principal.fallback;
+                                    principal.fallback ||
+                                    "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1000&q=85";
                             }}
                         />
 
                         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#052b66]/98 via-[#052b66]/65 to-transparent p-6 text-white">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-100">
-                                {school.principal.position}
+                                {principal.position || "Kepala Sekolah"}
                             </p>
 
                             <h3 className="mt-2 font-serif text-[24px] font-semibold leading-tight">
-                                {school.principal.name}
+                                {principal.name ||
+                                    "Drs. Ahmad Fauzi, M.Pd."}
                             </h3>
                         </div>
                     </div>
@@ -46,7 +65,10 @@ export default function ProfileSection() {
 
                     <div className="mt-6 rounded-[20px] bg-white">
                         <p className="font-serif text-[18px] font-medium italic leading-9 text-[#173767]">
-                            “{school.principal.message}”
+                            “
+                            {principal.message ||
+                                "Kami percaya bahwa pendidikan bukan hanya tentang pengetahuan, tetapi juga tentang pembentukan karakter, kedisiplinan, tanggung jawab, dan kepedulian sosial."}
+                            ”
                         </p>
                     </div>
 
@@ -77,7 +99,7 @@ export default function ProfileSection() {
                 <div className="grid gap-0 lg:grid-cols-4">
                     {profileStats.map((item, index) => (
                         <div
-                            key={item.label}
+                            key={`${item.label}-${index}`}
                             className={`flex items-center justify-center gap-5 px-6 py-7 text-white ${
                                 index !== profileStats.length - 1
                                     ? "border-b border-white/15 lg:border-b-0 lg:border-r"
@@ -113,15 +135,15 @@ export default function ProfileSection() {
                     </p>
 
                     <h2 className="mt-4 font-serif text-[34px] font-semibold leading-tight tracking-[-0.03em] text-[#061b46] sm:text-[42px]">
-                        Berprestasi, Berkarakter, Berbudaya
+                        {school.tagline ||
+                            "Berprestasi, Berkarakter, Berbudaya"}
                     </h2>
 
                     <div className="mt-5 h-[2px] w-20 rounded-full bg-[#f7c46a]" />
 
                     <p className="mt-6 max-w-3xl text-[15px] font-medium leading-8 text-slate-600">
-                        Kami berkomitmen menciptakan lingkungan pendidikan yang
-                        inspiratif, inovatif, dan inklusif untuk mencetak
-                        generasi unggul yang siap menghadapi masa depan.
+                        {school.description ||
+                            "Kami berkomitmen menciptakan lingkungan pendidikan yang inspiratif, inovatif, dan inklusif untuk mencetak generasi unggul yang siap menghadapi masa depan."}
                     </p>
                 </div>
             </section>

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import Icon from "../components/Icon";
 
-const teacherStats = [
+const fallbackTeacherStats = [
     {
         value: "45",
         label: "Total Guru",
@@ -28,7 +28,7 @@ const teacherStats = [
     },
 ];
 
-const teachers = [
+const fallbackTeachers = [
     {
         name: "Indah Permatasari, S.Pd.",
         subject: "Guru Matematika",
@@ -96,7 +96,7 @@ const filters = [
     "Tata Usaha",
 ];
 
-const featuredTeachers = [
+const fallbackFeaturedTeachers = [
     {
         title: "Guru Inspiratif Tahun Ini",
         name: "Dewi Lestari, M.Pd.",
@@ -117,6 +117,75 @@ const featuredTeachers = [
     },
 ];
 
+function getTeacherCategory(item) {
+    const text = `${item.position || ""} ${item.subject || ""}`.toLowerCase();
+
+    if (text.includes("kepala sekolah")) return "Kepala Sekolah";
+    if (text.includes("waka") || text.includes("wakil")) return "Wakil Kepala";
+    if (text.includes("bk") || text.includes("bimbingan")) return "BK";
+    if (text.includes("tata usaha") || text.includes("tu")) return "Tata Usaha";
+
+    return item.category || "Guru Mata Pelajaran";
+}
+
+function normalizeTeachers(teachers) {
+    if (!Array.isArray(teachers) || teachers.length === 0) {
+        return fallbackTeachers;
+    }
+
+    return teachers.map((item, index) => ({
+        id: item.id || index,
+        name: item.name || "Nama Guru",
+        subject: item.position || item.subject || "Guru Mata Pelajaran",
+        education: item.education || "Pendidikan belum diisi",
+        category: getTeacherCategory(item),
+        image:
+            item.image ||
+            "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=900&q=85",
+        email: item.email || "#",
+        is_featured: Boolean(item.is_featured),
+        description: item.description || "",
+    }));
+}
+
+function buildTeacherStats(items) {
+    const total = items.length;
+    const graduateCount = items.filter((item) => {
+        const education = String(item.education || "").toLowerCase();
+        return education.includes("s2") || education.includes("s3");
+    }).length;
+
+    return [
+        {
+            value: String(total || fallbackTeacherStats[0].value),
+            label: "Total Guru",
+            icon: "users",
+            iconWrap: "bg-blue-50 text-[#1f5bd3]",
+        },
+        {
+            value: String(total || fallbackTeacherStats[1].value),
+            label: "Guru Aktif",
+            icon: "award",
+            iconWrap: "bg-blue-50 text-[#1f5bd3]",
+        },
+        {
+            value: String(graduateCount || fallbackTeacherStats[2].value),
+            label: "Guru S2/S3",
+            icon: "graduate",
+            iconWrap: "bg-blue-50 text-[#1f5bd3]",
+        },
+        {
+            value: String(
+                items.filter((item) => item.is_featured).length ||
+                    fallbackTeacherStats[3].value
+            ),
+            label: "Guru Berprestasi",
+            icon: "trophy",
+            iconWrap: "bg-blue-50 text-[#1f5bd3]",
+        },
+    ];
+}
+
 function TeacherCard({ teacher }) {
     return (
         <div className="overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-md shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -125,6 +194,10 @@ function TeacherCard({ teacher }) {
                     src={teacher.image}
                     alt={teacher.name}
                     className="h-full w-full object-cover object-center transition duration-500 hover:scale-105"
+                    onError={(event) => {
+                        event.currentTarget.src =
+                            "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=900&q=85";
+                    }}
                 />
             </div>
 
@@ -143,7 +216,7 @@ function TeacherCard({ teacher }) {
 
                 <div className="mt-4 flex items-center gap-4 text-[#0d58cf]">
                     <a
-                        href="#"
+                        href={teacher.email && teacher.email !== "#" ? `mailto:${teacher.email}` : "#"}
                         className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 transition hover:bg-blue-100"
                         aria-label="Email"
                     >
@@ -175,6 +248,10 @@ function FeaturedTeacherCard({ item }) {
                     src={item.image}
                     alt={item.name}
                     className="h-[82px] w-[82px] rounded-[16px] object-cover"
+                    onError={(event) => {
+                        event.currentTarget.src =
+                            "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=85";
+                    }}
                 />
             </div>
 
@@ -195,12 +272,47 @@ function FeaturedTeacherCard({ item }) {
     );
 }
 
-export default function TeachersSection() {
+export default function TeachersSection({ teachers = [] }) {
     const [activeFilter, setActiveFilter] = useState("Semua Guru");
     const [search, setSearch] = useState("");
 
+    const teacherItems = useMemo(() => {
+        return normalizeTeachers(teachers);
+    }, [teachers]);
+
+    const teacherStats = useMemo(() => {
+        return buildTeacherStats(teacherItems);
+    }, [teacherItems]);
+
+    const principalTeacher = useMemo(() => {
+        return (
+            teacherItems.find((item) => item.category === "Kepala Sekolah") ||
+            teacherItems[0] ||
+            fallbackTeachers[0]
+        );
+    }, [teacherItems]);
+
+    const featuredTeachers = useMemo(() => {
+        const featured = teacherItems
+            .filter((item) => item.is_featured)
+            .slice(0, 3)
+            .map((item, index) => ({
+                title:
+                    index === 0
+                        ? "Guru Inspiratif Tahun Ini"
+                        : index === 1
+                        ? "Pembina Akademik Terbaik"
+                        : "Guru Inovatif Digital Learning",
+                name: item.name,
+                subject: item.subject,
+                image: item.image,
+            }));
+
+        return featured.length > 0 ? featured : fallbackFeaturedTeachers;
+    }, [teacherItems]);
+
     const filteredTeachers = useMemo(() => {
-        return teachers.filter((teacher) => {
+        return teacherItems.filter((teacher) => {
             const matchFilter =
                 activeFilter === "Semua Guru" ||
                 teacher.category === activeFilter;
@@ -213,7 +325,7 @@ export default function TeachersSection() {
 
             return matchFilter && matchSearch;
         });
-    }, [activeFilter, search]);
+    }, [activeFilter, search, teacherItems]);
 
     return (
         <div className="space-y-6">
@@ -248,8 +360,8 @@ export default function TeachersSection() {
                 <div className="grid gap-0 lg:grid-cols-[250px_1fr]">
                     <div className="h-[280px] overflow-hidden bg-blue-50 lg:h-full">
                         <img
-                            src="/frontend/images/principal.jpg"
-                            alt="Kepala Sekolah"
+                            src={principalTeacher.image}
+                            alt={principalTeacher.name}
                             className="h-full w-full object-cover object-center"
                             onError={(event) => {
                                 event.currentTarget.src =
@@ -264,7 +376,7 @@ export default function TeachersSection() {
                         </p>
 
                         <h2 className="mt-3 text-[26px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[32px]">
-                            Drs. Budi Santoso, M.Pd.
+                            {principalTeacher.name}
                         </h2>
 
                         <div className="mt-5 h-[3px] w-16 rounded-full bg-[#f7b733]" />
@@ -274,22 +386,25 @@ export default function TeachersSection() {
                         </h3>
 
                         <p className="mt-2 max-w-4xl text-[13.5px] font-medium leading-7 text-slate-600 sm:text-[14px]">
-                            Kami percaya bahwa pendidikan yang berkualitas lahir
-                            dari dedikasi guru yang luar biasa. Dengan semangat
-                            kolaborasi dan inovasi, kami berkomitmen membentuk
-                            generasi yang cerdas, berkarakter, dan siap
-                            menghadapi tantangan global.
+                            {principalTeacher.description ||
+                                "Kami percaya bahwa pendidikan yang berkualitas lahir dari dedikasi guru yang luar biasa. Dengan semangat kolaborasi dan inovasi, kami berkomitmen membentuk generasi yang cerdas, berkarakter, dan siap menghadapi tantangan global."}
                         </p>
 
                         <div className="mt-6 flex flex-wrap items-center gap-4 text-[12px] font-medium text-slate-500">
                             <span className="inline-flex items-center gap-2">
-                                <Icon type="mail" className="h-4 w-4 text-[#0d58cf]" />
-                                budi.santoso@sman1cerdas.sch.id
+                                <Icon
+                                    type="mail"
+                                    className="h-4 w-4 text-[#0d58cf]"
+                                />
+                                {principalTeacher.email || "akademik@sman1cerdas.sch.id"}
                             </span>
 
                             <span className="inline-flex items-center gap-2">
-                                <Icon type="book" className="h-4 w-4 text-[#0d58cf]" />
-                                S2 Manajemen Pendidikan
+                                <Icon
+                                    type="book"
+                                    className="h-4 w-4 text-[#0d58cf]"
+                                />
+                                {principalTeacher.education}
                             </span>
                         </div>
                     </div>
@@ -336,9 +451,18 @@ export default function TeachersSection() {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                {filteredTeachers.map((teacher) => (
-                    <TeacherCard key={teacher.name} teacher={teacher} />
-                ))}
+                {filteredTeachers.length > 0 ? (
+                    filteredTeachers.map((teacher) => (
+                        <TeacherCard
+                            key={teacher.id || teacher.name}
+                            teacher={teacher}
+                        />
+                    ))
+                ) : (
+                    <div className="rounded-[18px] border border-dashed border-slate-200 bg-white p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 xl:col-span-4">
+                        Data guru tidak ditemukan.
+                    </div>
+                )}
             </div>
 
             <div className="flex justify-center">
@@ -375,7 +499,7 @@ export default function TeachersSection() {
 
                 <div className="grid gap-4 overflow-x-auto pb-2 sm:grid-cols-3 sm:overflow-visible sm:pb-0">
                     {featuredTeachers.map((item) => (
-                        <FeaturedTeacherCard key={item.title} item={item} />
+                        <FeaturedTeacherCard key={item.name} item={item} />
                     ))}
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { profileStats, school } from "../data";
+import { profileStats as fallbackProfileStats } from "../data";
 
 const identityIcons = {
     "Nama Sekolah": "🏠",
@@ -13,46 +13,38 @@ const identityIcons = {
     "Tahun Berdiri": "📅",
 };
 
-const identityData = [
-    ["Nama Sekolah", "SMA Negeri 1 Mojokerto"],
-    ["NPSN", "20500001"],
-    ["Akreditasi", "A"],
-    ["Status Sekolah", "Negeri"],
-    ["Jenjang", "Sekolah Menengah Atas"],
-    ["Kurikulum", "Kurikulum Merdeka"],
-    ["Alamat", "Jl. Pendidikan No. 21, Mojokerto, Jawa Timur 61314"],
-    ["Email", "info@sman1mojokerto.sch.id"],
-    ["Telepon", "(0321) 321456"],
-    ["Tahun Berdiri", "1998"],
+const fallbackIdentityData = [
+    { label: "Nama Sekolah", value: "SMA Negeri 1 Mojokerto" },
+    { label: "NPSN", value: "20500001" },
+    { label: "Akreditasi", value: "A" },
+    { label: "Status Sekolah", value: "Negeri" },
+    { label: "Jenjang", value: "Sekolah Menengah Atas" },
+    { label: "Kurikulum", value: "Kurikulum Merdeka" },
+    { label: "Alamat", value: "Jl. Pendidikan No. 21, Mojokerto, Jawa Timur 61314" },
+    { label: "Email", value: "info@sman1mojokerto.sch.id" },
+    { label: "Telepon", value: "(0321) 321456" },
+    { label: "Tahun Berdiri", value: "1998" },
 ];
 
-const statItems = [
-    {
-        value: "1998",
-        label: "Tahun Berdiri",
-        icon: "📅",
-    },
-    {
-        value: "1.245+",
-        label: "Siswa Aktif",
-        icon: "👥",
-    },
-    {
-        value: "60+",
-        label: "Tenaga Pendidik",
-        icon: "🧑‍🏫",
-    },
-    {
-        value: "20+",
-        label: "Ruang Kelas",
-        icon: "🏢",
-    },
-    {
-        value: "128+",
-        label: "Prestasi Diraih",
-        icon: "🏆",
-    },
-];
+function normalizeIdentity(identity) {
+    if (!Array.isArray(identity) || identity.length === 0) {
+        return fallbackIdentityData;
+    }
+
+    return identity.map((item) => {
+        if (Array.isArray(item)) {
+            return {
+                label: item[0],
+                value: item[1],
+            };
+        }
+
+        return {
+            label: item.label,
+            value: item.value,
+        };
+    });
+}
 
 function IdentityRow({ label, value }) {
     return (
@@ -98,7 +90,17 @@ function StatCard({ item }) {
     );
 }
 
-export default function IdentitySection() {
+export default function IdentitySection({ profileData }) {
+    const school = profileData?.school || {};
+
+    const identityData = normalizeIdentity(school.identity);
+
+    const statItems =
+        Array.isArray(profileData?.profileStats) &&
+        profileData.profileStats.length > 0
+            ? profileData.profileStats
+            : fallbackProfileStats;
+
     return (
         <div className="space-y-7">
             <div className="grid gap-6 xl:grid-cols-[1fr_0.74fr]">
@@ -117,11 +119,11 @@ export default function IdentitySection() {
                     </p>
 
                     <div className="mt-7 overflow-hidden rounded-[18px] border border-slate-200">
-                        {identityData.map(([label, value]) => (
+                        {identityData.map((item, index) => (
                             <IdentityRow
-                                key={label}
-                                label={label}
-                                value={value}
+                                key={`${item.label}-${index}`}
+                                label={item.label}
+                                value={item.value}
                             />
                         ))}
                     </div>
@@ -140,7 +142,7 @@ export default function IdentitySection() {
 
                         <div className="mt-6 space-y-4">
                             <a
-                                href="#"
+                                href="/#kontak"
                                 className="flex min-h-[56px] items-center justify-center gap-3 rounded-[12px] bg-white px-6 text-[14px] font-semibold text-[#052b66] shadow-lg transition hover:bg-blue-50"
                             >
                                 <span>☎️</span>
@@ -160,7 +162,10 @@ export default function IdentitySection() {
                     <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
                         <div className="relative h-[330px] overflow-hidden">
                             <img
-                                src="/frontend/images/identity-school.jpg"
+                                src={
+                                    school.identityImage ||
+                                    "/frontend/images/identity-school.jpg"
+                                }
                                 alt="Galeri Sekolah"
                                 className="h-full w-full object-cover object-center"
                                 onError={(event) => {
@@ -197,8 +202,8 @@ export default function IdentitySection() {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-5">
-                {statItems.map((item) => (
-                    <StatCard key={item.label} item={item} />
+                {statItems.slice(0, 5).map((item, index) => (
+                    <StatCard key={`${item.label}-${index}`} item={item} />
                 ))}
             </div>
         </div>

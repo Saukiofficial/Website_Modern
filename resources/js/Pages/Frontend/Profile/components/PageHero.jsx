@@ -1,11 +1,11 @@
-import { heroStats, profileStats, school } from "../data";
+function MainProfileHero({ school, heroStats }) {
+    const stats = Array.isArray(heroStats) ? heroStats : [];
 
-function MainProfileHero() {
     return (
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative min-h-[580px] w-full overflow-hidden lg:min-h-[620px]">
                 <img
-                    src="/frontend/images/profile-hero.jpg"
+                    src={school.heroImage || "/frontend/images/profile-hero.jpg"}
                     alt="Profil Sekolah"
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     onError={(event) => {
@@ -27,10 +27,10 @@ function MainProfileHero() {
                             Mengenal Lebih Dekat
                             <br />
                             <span className="text-[#f7c46a]">
-                                {school.shortName}
+                                {school.shortName || "SMA Negeri 1"}
                             </span>
                             <br />
-                            {school.city}
+                            {school.city || "Mojokerto"}
                         </h1>
 
                         <p className="mt-7 max-w-[620px] text-[16px] font-medium leading-8 text-blue-50 sm:text-[18px]">
@@ -48,7 +48,7 @@ function MainProfileHero() {
 
                     <div className="hidden lg:flex lg:justify-end">
                         <div className="grid max-w-[660px] grid-cols-3 gap-4">
-                            {heroStats.map((item) => (
+                            {stats.map((item) => (
                                 <div
                                     key={item.label || item.value}
                                     className="flex min-h-[210px] flex-col items-center justify-center rounded-[22px] border border-white/20 bg-white/10 px-7 text-center text-white shadow-2xl shadow-blue-950/20 backdrop-blur-md"
@@ -76,12 +76,17 @@ function MainProfileHero() {
     );
 }
 
-function VisionHero({ activeMenu }) {
+function VisionHero({ activeMenu, school, profileStats }) {
+    const stats = Array.isArray(profileStats) ? profileStats : [];
+
     return (
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative min-h-[360px] w-full overflow-hidden sm:min-h-[420px] lg:min-h-[450px]">
                 <img
-                    src="/frontend/images/vision-hero.jpg"
+                    src={
+                        school.visionHeroImage ||
+                        "/frontend/images/vision-hero.jpg"
+                    }
                     alt="Visi dan Misi"
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     onError={(event) => {
@@ -109,12 +114,12 @@ function VisionHero({ activeMenu }) {
                     </h1>
 
                     <p className="mt-5 max-w-[760px] text-[16px] font-medium leading-8 text-blue-50 sm:text-[18px]">
-                        Membangun generasi yang unggul secara akademik,
-                        berkarakter global, dan berbudaya Indonesia.
+                        {school.vision ||
+                            "Membangun generasi yang unggul secara akademik, berkarakter global, dan berbudaya Indonesia."}
                     </p>
 
                     <div className="mt-8 grid max-w-[760px] overflow-hidden rounded-[16px] border border-white/20 bg-[#052b66]/35 shadow-2xl shadow-blue-950/20 backdrop-blur-md sm:grid-cols-2 lg:grid-cols-4">
-                        {profileStats.slice(0, 4).map((item, index) => (
+                        {stats.slice(0, 4).map((item, index) => (
                             <div
                                 key={item.label}
                                 className={`flex items-center gap-4 px-5 py-5 text-white ${
@@ -145,7 +150,7 @@ function VisionHero({ activeMenu }) {
     );
 }
 
-function StructureHero({ activeMenu }) {
+function StructureHero({ activeMenu, school }) {
     const points = [
         {
             icon: "👥",
@@ -173,7 +178,10 @@ function StructureHero({ activeMenu }) {
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative min-h-[300px] w-full overflow-hidden sm:min-h-[330px] lg:min-h-[360px]">
                 <img
-                    src="/frontend/images/structure-hero.jpg"
+                    src={
+                        school.structureHeroImage ||
+                        "/frontend/images/structure-hero.jpg"
+                    }
                     alt="Struktur Organisasi"
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     onError={(event) => {
@@ -238,10 +246,10 @@ function StructureHero({ activeMenu }) {
     );
 }
 
-function SimpleProfileHero({ activeMenu }) {
+function SimpleProfileHero({ activeMenu, school }) {
     const heroTitle =
         activeMenu.key === "history"
-            ? `Sejarah ${school.name}`
+            ? `Sejarah ${school.name || "SMA Negeri 1 Mojokerto"}`
             : activeMenu.label;
 
     const heroDescription =
@@ -253,7 +261,7 @@ function SimpleProfileHero({ activeMenu }) {
         <section className="relative w-full overflow-hidden bg-[#052b66]">
             <div className="relative min-h-[260px] w-full overflow-hidden sm:min-h-[300px] lg:min-h-[320px]">
                 <img
-                    src="/frontend/images/profile-hero.jpg"
+                    src={school.heroImage || "/frontend/images/profile-hero.jpg"}
                     alt={heroTitle}
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     onError={(event) => {
@@ -289,18 +297,28 @@ function SimpleProfileHero({ activeMenu }) {
     );
 }
 
-export default function PageHero({ activeTab, activeMenu }) {
+export default function PageHero({ activeTab, activeMenu, profileData }) {
+    const school = profileData?.school || {};
+    const heroStats = profileData?.heroStats || [];
+    const profileStats = profileData?.profileStats || [];
+
     if (activeTab === "profile") {
-        return <MainProfileHero />;
+        return <MainProfileHero school={school} heroStats={heroStats} />;
     }
 
     if (activeTab === "vision") {
-        return <VisionHero activeMenu={activeMenu} />;
+        return (
+            <VisionHero
+                activeMenu={activeMenu}
+                school={school}
+                profileStats={profileStats}
+            />
+        );
     }
 
     if (activeTab === "structure") {
-        return <StructureHero activeMenu={activeMenu} />;
+        return <StructureHero activeMenu={activeMenu} school={school} />;
     }
 
-    return <SimpleProfileHero activeMenu={activeMenu} />;
+    return <SimpleProfileHero activeMenu={activeMenu} school={school} />;
 }

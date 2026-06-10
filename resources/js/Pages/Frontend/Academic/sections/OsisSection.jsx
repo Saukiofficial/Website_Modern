@@ -1,6 +1,7 @@
+import { useMemo } from "react";
 import Icon from "../components/Icon";
 
-const osisStats = [
+const fallbackOsisStats = [
     {
         value: "36",
         label: "Pengurus Aktif",
@@ -27,7 +28,7 @@ const osisStats = [
     },
 ];
 
-const osisLeaders = [
+const fallbackOsisLeaders = [
     {
         name: "Andi Maulana",
         role: "Ketua OSIS",
@@ -44,7 +45,7 @@ const osisLeaders = [
     },
 ];
 
-const osisMembers = [
+const fallbackOsisMembers = [
     {
         name: "Rizky Firmansyah",
         role: "Sekretaris 1",
@@ -121,6 +122,80 @@ const programs = [
     },
 ];
 
+const leaderColors = [
+    "from-[#0d58cf] to-[#052b66]",
+    "from-[#0b73e8] to-[#064493]",
+    "from-[#163678] to-[#0d58cf]",
+    "from-[#064493] to-[#052b66]",
+];
+
+function normalizeOsisMembers(osisMembers) {
+    if (!Array.isArray(osisMembers) || osisMembers.length === 0) {
+        return {
+            leaders: fallbackOsisLeaders,
+            members: fallbackOsisMembers,
+        };
+    }
+
+    const normalized = osisMembers.map((item, index) => ({
+        id: item.id || index,
+        name: item.name || "Nama Pengurus",
+        role: item.position || item.role || "Pengurus OSIS",
+        className: item.class_name || item.className || "Kelas belum diisi",
+        image:
+            item.image ||
+            "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=900&q=85",
+        period: item.period || "",
+        description: item.description || "",
+        is_leader: Boolean(item.is_leader),
+        color: leaderColors[index % leaderColors.length],
+    }));
+
+    const leaders = normalized.filter((item) => item.is_leader);
+    const members = normalized.filter((item) => !item.is_leader);
+
+    return {
+        leaders: leaders.length > 0 ? leaders : normalized.slice(0, 2),
+        members:
+            members.length > 0
+                ? members
+                : normalized.length > 2
+                ? normalized.slice(2)
+                : fallbackOsisMembers,
+    };
+}
+
+function buildOsisStats(leaders, members) {
+    const total = leaders.length + members.length;
+
+    return [
+        {
+            value: String(total || fallbackOsisStats[0].value),
+            label: "Pengurus Aktif",
+            icon: "users",
+            iconWrap: "bg-blue-50 text-[#1f5bd3]",
+        },
+        {
+            value: String(divisions.length || fallbackOsisStats[1].value),
+            label: "Bidang Kerja",
+            icon: "organization",
+            iconWrap: "bg-emerald-50 text-emerald-500",
+        },
+        {
+            value: String(programs.length || fallbackOsisStats[2].value),
+            label: "Program Tahunan",
+            icon: "activity",
+            iconWrap: "bg-fuchsia-50 text-fuchsia-500",
+        },
+        {
+            value: "Aktif",
+            label: "Kegiatan Besar",
+            icon: "calendar",
+            iconWrap: "bg-orange-50 text-orange-500",
+        },
+    ];
+}
+
 function LeaderCard({ leader }) {
     return (
         <div className="overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
@@ -134,6 +209,10 @@ function LeaderCard({ leader }) {
                         src={leader.image}
                         alt={leader.name}
                         className="h-[220px] w-full rounded-[22px] object-cover shadow-lg shadow-blue-950/20"
+                        onError={(event) => {
+                            event.currentTarget.src =
+                                "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=900&q=85";
+                        }}
                     />
                 </div>
             </div>
@@ -142,12 +221,20 @@ function LeaderCard({ leader }) {
                 <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#0d58cf]">
                     {leader.role}
                 </p>
+
                 <h3 className="mt-2 text-[24px] font-semibold leading-tight text-[#061b46]">
                     {leader.name}
                 </h3>
+
                 <p className="mt-1 text-[13px] font-medium text-slate-500">
                     {leader.className}
                 </p>
+
+                {leader.period ? (
+                    <p className="mt-2 text-[12px] font-medium text-[#d18b17]">
+                        Periode {leader.period}
+                    </p>
+                ) : null}
 
                 <div className="mt-5 grid grid-cols-2 gap-3">
                     <a
@@ -156,6 +243,7 @@ function LeaderCard({ leader }) {
                     >
                         Profil
                     </a>
+
                     <a
                         href="#"
                         className="flex h-11 items-center justify-center rounded-xl bg-[#0d58cf] text-[13px] font-medium text-white transition hover:bg-[#064493]"
@@ -176,6 +264,10 @@ function MemberCard({ member }) {
                     src={member.image}
                     alt={member.name}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                    onError={(event) => {
+                        event.currentTarget.src =
+                            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=85";
+                    }}
                 />
 
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#052b66]/90 to-transparent p-4">
@@ -185,19 +277,58 @@ function MemberCard({ member }) {
                 </div>
             </div>
 
-            <div className="p-4 text-center">
+            <div className="p-4">
                 <h3 className="text-[17px] font-semibold leading-tight text-[#061b46]">
                     {member.name}
                 </h3>
-                <p className="mt-1 text-[12px] font-medium text-slate-500">
+
+                <p className="mt-1 text-[12.5px] font-medium text-slate-500">
                     {member.className}
                 </p>
+
+                {member.period ? (
+                    <p className="mt-2 text-[11.5px] font-medium text-[#d18b17]">
+                        Periode {member.period}
+                    </p>
+                ) : null}
+
+                {member.description ? (
+                    <p className="mt-3 line-clamp-3 text-[12.5px] font-medium leading-6 text-slate-600">
+                        {member.description}
+                    </p>
+                ) : null}
+
+                <div className="mt-4 flex items-center gap-3 text-[#0d58cf]">
+                    <a
+                        href="#"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 transition hover:bg-blue-100"
+                        aria-label="Profil"
+                    >
+                        <Icon type="users" className="h-4 w-4" />
+                    </a>
+
+                    <a
+                        href="#"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 transition hover:bg-blue-100"
+                        aria-label="Organisasi"
+                    >
+                        <Icon type="organization" className="h-4 w-4" />
+                    </a>
+                </div>
             </div>
         </div>
     );
 }
 
-export default function OsisSection() {
+export default function OsisSection({ osisMembers = [] }) {
+    const { leaders, members } = useMemo(() => {
+        return normalizeOsisMembers(osisMembers);
+    }, [osisMembers]);
+
+    const osisStats = useMemo(() => {
+        return buildOsisStats(leaders, members);
+    }, [leaders, members]);
+
     return (
         <div className="space-y-6">
             <div className="grid gap-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-xl shadow-slate-200/60 lg:grid-cols-4">
@@ -220,6 +351,7 @@ export default function OsisSection() {
                             <h3 className="text-[32px] font-semibold leading-none text-[#163678]">
                                 {item.value}
                             </h3>
+
                             <p className="mt-2 text-[12.5px] font-medium text-slate-600">
                                 {item.label}
                             </p>
@@ -235,6 +367,7 @@ export default function OsisSection() {
                             <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0d58cf]">
                                 Struktur Inti
                             </p>
+
                             <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
                                 Pengurus Inti OSIS
                             </h2>
@@ -249,8 +382,8 @@ export default function OsisSection() {
                     </div>
 
                     <div className="mt-6 grid gap-5 md:grid-cols-2">
-                        {osisLeaders.map((leader) => (
-                            <LeaderCard key={leader.name} leader={leader} />
+                        {leaders.map((leader) => (
+                            <LeaderCard key={leader.id || leader.name} leader={leader} />
                         ))}
                     </div>
                 </div>
@@ -259,6 +392,7 @@ export default function OsisSection() {
                     <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0d58cf]">
                         Program Kerja
                     </p>
+
                     <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[34px]">
                         Agenda OSIS
                     </h2>
@@ -277,9 +411,11 @@ export default function OsisSection() {
                                     <p className="text-[12px] font-medium text-[#0d58cf]">
                                         {program.type}
                                     </p>
+
                                     <h3 className="mt-1 text-[16px] font-semibold text-[#061b46]">
                                         {program.title}
                                     </h3>
+
                                     <p className="mt-1 text-[12.5px] font-medium text-slate-500">
                                         {program.date}
                                     </p>
@@ -296,6 +432,7 @@ export default function OsisSection() {
                         <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0d58cf]">
                             Anggota Pengurus
                         </p>
+
                         <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
                             Sekretaris & Bendahara
                         </h2>
@@ -321,9 +458,15 @@ export default function OsisSection() {
                 </div>
 
                 <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                    {osisMembers.map((member) => (
-                        <MemberCard key={member.name} member={member} />
-                    ))}
+                    {members.length > 0 ? (
+                        members.map((member) => (
+                            <MemberCard key={member.id || member.name} member={member} />
+                        ))
+                    ) : (
+                        <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 xl:col-span-4">
+                            Data anggota OSIS belum tersedia.
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -333,7 +476,7 @@ export default function OsisSection() {
                         key={division.title}
                         className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-md shadow-slate-200/70 transition hover:-translate-y-1 hover:shadow-xl"
                     >
-                        <div className="flex h-13 w-13 h-[52px] w-[52px] items-center justify-center rounded-2xl bg-blue-50 text-[#0d58cf]">
+                        <div className="flex h-[52px] w-[52px] items-center justify-center rounded-2xl bg-blue-50 text-[#0d58cf]">
                             <Icon type={division.icon} className="h-6 w-6" />
                         </div>
 

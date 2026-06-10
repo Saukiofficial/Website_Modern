@@ -1,6 +1,6 @@
-import { profileStats, school } from "../data";
+import { profileStats as fallbackProfileStats } from "../data";
 
-const timeline = [
+const fallbackTimeline = [
     {
         year: "1998",
         title: "Pendirian Sekolah",
@@ -58,7 +58,21 @@ function HistoryStatCard({ item }) {
     );
 }
 
-export default function HistorySection() {
+export default function HistorySection({ profileData }) {
+    const school = profileData?.school || {};
+
+    const profileStats =
+        Array.isArray(profileData?.profileStats) &&
+        profileData.profileStats.length > 0
+            ? profileData.profileStats
+            : fallbackProfileStats;
+
+    const timeline =
+        Array.isArray(profileData?.historyTimeline) &&
+        profileData.historyTimeline.length > 0
+            ? profileData.historyTimeline
+            : fallbackTimeline;
+
     return (
         <div className="space-y-8">
             <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
@@ -81,23 +95,31 @@ export default function HistorySection() {
                         </p>
 
                         <p className="mt-6 text-[15px] font-medium leading-8 text-slate-700">
-                            {school.history} Dengan dukungan tenaga pendidik
-                            profesional dan lingkungan belajar yang kondusif,
-                            sekolah terus berkomitmen menjadi pusat pembelajaran
-                            yang unggul, modern, dan berkarakter.
+                            {school.history ||
+                                "SMA Negeri 1 Cerdas berdiri sebagai lembaga pendidikan yang hadir untuk menjawab kebutuhan masyarakat terhadap sekolah berkualitas."}{" "}
+                            Dengan dukungan tenaga pendidik profesional dan
+                            lingkungan belajar yang kondusif, sekolah terus
+                            berkomitmen menjadi pusat pembelajaran yang unggul,
+                            modern, dan berkarakter.
                         </p>
                     </div>
 
                     <div className="grid overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70 sm:grid-cols-4">
-                        {profileStats.slice(0, 4).map((item) => (
-                            <HistoryStatCard key={item.label} item={item} />
+                        {profileStats.slice(0, 4).map((item, index) => (
+                            <HistoryStatCard
+                                key={`${item.label}-${index}`}
+                                item={item}
+                            />
                         ))}
                     </div>
                 </div>
 
                 <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
                     <img
-                        src="/frontend/images/history-school.jpg"
+                        src={
+                            school.historyImage ||
+                            "/frontend/images/history-school.jpg"
+                        }
                         alt="Sejarah Sekolah"
                         className="h-[360px] w-full object-cover object-center sm:h-[480px] xl:h-full"
                         onError={(event) => {
@@ -123,9 +145,17 @@ export default function HistorySection() {
                     <div className="min-w-[980px] px-4">
                         <div className="absolute left-10 right-10 top-[17px] h-[2px] bg-slate-200" />
 
-                        <div className="relative grid grid-cols-6 gap-6">
-                            {timeline.map((item) => (
-                                <div key={item.year} className="relative">
+                        <div
+                            className="relative grid gap-6"
+                            style={{
+                                gridTemplateColumns: `repeat(${timeline.length}, minmax(0, 1fr))`,
+                            }}
+                        >
+                            {timeline.map((item, index) => (
+                                <div
+                                    key={`${item.year}-${index}`}
+                                    className="relative"
+                                >
                                     <div
                                         className={`relative z-10 h-5 w-5 rounded-full ring-4 ring-[#f4f8fc] ${
                                             item.active
@@ -134,14 +164,12 @@ export default function HistorySection() {
                                         }`}
                                     />
 
-                                    <p
-                                        className={`mt-5 font-serif text-[22px] font-semibold ${
-                                            item.active
-                                                ? "text-[#061b46]"
-                                                : "text-[#061b46]"
-                                        }`}
-                                    >
+                                    <p className="mt-5 font-serif text-[22px] font-semibold text-[#061b46]">
                                         {item.year}
+                                    </p>
+
+                                    <p className="mt-1 text-[13px] font-semibold text-[#061b46]">
+                                        {item.title}
                                     </p>
 
                                     <p className="mt-2 text-[13px] font-medium leading-6 text-slate-600">

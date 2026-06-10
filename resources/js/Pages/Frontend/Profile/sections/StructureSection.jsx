@@ -1,4 +1,4 @@
-const leaders = [
+const fallbackLeaders = [
     {
         role: "Kepala Sekolah",
         name: "Drs. Ahmad Fauzi, M.Pd.",
@@ -7,6 +7,7 @@ const leaders = [
         image: "/frontend/images/principal.jpg",
         fallback:
             "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=85",
+        is_principal: true,
     },
     {
         role: "Waka Kurikulum",
@@ -14,6 +15,7 @@ const leaders = [
         description:
             "Bertanggung jawab atas pengembangan kurikulum, proses pembelajaran, dan penilaian akademik.",
         image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=85",
+        is_principal: false,
     },
     {
         role: "Waka Kesiswaan",
@@ -21,6 +23,7 @@ const leaders = [
         description:
             "Bertanggung jawab atas pembinaan kesiswaan, disiplin, prestasi, dan kegiatan siswa.",
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=700&q=85",
+        is_principal: false,
     },
     {
         role: "Waka Sarpras",
@@ -28,6 +31,7 @@ const leaders = [
         description:
             "Bertanggung jawab atas sarana prasarana, fasilitas, dan pengelolaan lingkungan sekolah.",
         image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=85",
+        is_principal: false,
     },
     {
         role: "Kepala Tata Usaha",
@@ -35,10 +39,11 @@ const leaders = [
         description:
             "Bertanggung jawab atas administrasi, keuangan, kepegawaian, dan layanan administratif sekolah.",
         image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=700&q=85",
+        is_principal: false,
     },
 ];
 
-const units = [
+const fallbackUnits = [
     {
         title: "Guru & Tenaga Pendidik",
         description:
@@ -136,9 +141,25 @@ function UnitCard({ item }) {
     );
 }
 
-export default function StructureSection() {
-    const principal = leaders[0];
-    const viceLeaders = leaders.slice(1);
+export default function StructureSection({ profileData }) {
+    const leaders =
+        Array.isArray(profileData?.organization) &&
+        profileData.organization.length > 0
+            ? profileData.organization
+            : fallbackLeaders;
+
+    const units =
+        Array.isArray(profileData?.organizationUnits) &&
+        profileData.organizationUnits.length > 0
+            ? profileData.organizationUnits
+            : fallbackUnits;
+
+    const principal =
+        leaders.find((leader) => leader.is_principal) || leaders[0];
+
+    const viceLeaders = leaders.filter(
+        (leader) => leader.id !== principal?.id && leader.role !== principal?.role
+    );
 
     return (
         <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/70 sm:p-8 lg:p-10">
@@ -164,14 +185,24 @@ export default function StructureSection() {
                 </div>
 
                 <div className="relative mt-10">
-                    <LeaderCard item={principal} principal />
+                    {principal ? (
+                        <LeaderCard item={principal} principal />
+                    ) : null}
 
                     <div className="mx-auto hidden h-12 w-[2px] bg-[#0d58cf]/60 lg:block" />
 
                     <div className="relative hidden lg:block">
                         <div className="mx-auto h-[2px] w-[72%] bg-[#0d58cf]/60" />
 
-                        <div className="mx-auto grid w-[72%] grid-cols-4">
+                        <div
+                            className="mx-auto grid w-[72%]"
+                            style={{
+                                gridTemplateColumns: `repeat(${Math.max(
+                                    viceLeaders.length,
+                                    1
+                                )}, minmax(0, 1fr))`,
+                            }}
+                        >
                             {viceLeaders.map((leader) => (
                                 <div
                                     key={leader.role}
@@ -192,7 +223,15 @@ export default function StructureSection() {
                     <div className="relative hidden lg:block">
                         <div className="mx-auto h-[2px] w-[86%] bg-[#0d58cf]/60" />
 
-                        <div className="mx-auto grid w-[86%] grid-cols-5">
+                        <div
+                            className="mx-auto grid w-[86%]"
+                            style={{
+                                gridTemplateColumns: `repeat(${Math.max(
+                                    units.length,
+                                    1
+                                )}, minmax(0, 1fr))`,
+                            }}
+                        >
                             {units.map((unit) => (
                                 <div
                                     key={unit.title}

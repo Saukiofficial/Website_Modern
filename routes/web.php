@@ -1,54 +1,126 @@
 <?php
 
+use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\HomeSectionController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\SchoolSettingController;
+use App\Http\Controllers\Frontend\AcademicController;
+use App\Http\Controllers\Frontend\GalleryController;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\InformasiController;
+use App\Http\Controllers\Frontend\KesiswaanController;
+use App\Http\Controllers\Frontend\PPDBController;
+use App\Http\Controllers\Frontend\ProfileController;
+use App\Http\Controllers\Admin\ProfileStructureController;
+use App\Http\Controllers\Admin\AcademicController as AdminAcademicController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Frontend/Home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/profil', function () {
-    return Inertia::render('Frontend/Profile');
-})->name('profile');
+Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
 
-Route::get('/akademik', function () {
-    return Inertia::render('Frontend/Academic');
-})->name('academic');
+Route::get('/akademik', [AcademicController::class, 'index'])->name('academic');
 
-Route::get('/kesiswaan', function () {
-    return Inertia::render('Frontend/Kesiswaan');
-})->name('kesiswaan');
+Route::get('/kesiswaan', [KesiswaanController::class, 'index'])->name('kesiswaan');
 
-Route::get('/kesiswaan/osis', function () {
-    return Inertia::render('Frontend/KesiswaanDetail', [
-        'type' => 'osis',
-    ]);
-})->name('kesiswaan.osis');
+Route::get('/kesiswaan/{slug}', [KesiswaanController::class, 'show'])
+    ->whereIn('slug', ['osis', 'ekstrakurikuler', 'bimbingan-konseling'])
+    ->name('kesiswaan.show');
 
-Route::get('/kesiswaan/ekstrakurikuler', function () {
-    return Inertia::render('Frontend/KesiswaanDetail', [
-        'type' => 'ekstrakurikuler',
-    ]);
-})->name('kesiswaan.ekstrakurikuler');
+Route::get('/informasi', [InformasiController::class, 'index'])->name('informasi');
 
-Route::get('/kesiswaan/bimbingan-konseling', function () {
-    return Inertia::render('Frontend/KesiswaanDetail', [
-        'type' => 'bimbingan-konseling',
-    ]);
-})->name('kesiswaan.bimbingan-konseling');
+Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
 
-Route::get('/informasi', function () {
-    return Inertia::render('Frontend/Informasi');
-})->name('informasi');
+Route::get('/ppdb', [PPDBController::class, 'index'])->name('ppdb');
 
-Route::get('/galeri', function () {
-    return Inertia::render('Frontend/Gallery');
-})->name('gallery');
+Route::get('/ppdb/daftar', [PPDBController::class, 'register'])->name('ppdb.register');
 
-Route::get('/ppdb', function () {
-    return Inertia::render('Frontend/PPDB');
-})->name('ppdb');
+Route::post('/ppdb/daftar', [PPDBController::class, 'store'])->name('ppdb.store');
 
-Route::get('/ppdb/daftar', function () {
-    return Inertia::render('Frontend/PPDBRegister');
-})->name('ppdb.register');
+/*
+|--------------------------------------------------------------------------
+| Admin Auth Custom React
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return redirect()->route('admin.login');
+    })->name('login');
+
+    Route::get('/admin/login', [AdminLoginController::class, 'create'])
+        ->name('admin.login');
+
+    Route::post('/admin/login', [AdminLoginController::class, 'store'])
+        ->name('admin.login.store');
+});
+
+Route::post('/admin/logout', [AdminLoginController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('admin.logout');
+
+/*
+|--------------------------------------------------------------------------
+| Admin Custom React
+|--------------------------------------------------------------------------
+*/
+
+Route::redirect('/admin', '/admin/dashboard');
+
+Route::prefix('admin')
+    ->name('admin.')
+    ->middleware(['auth'])
+    ->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::get('/settings', [SchoolSettingController::class, 'edit'])
+            ->name('settings.edit');
+
+        Route::post('/settings', [SchoolSettingController::class, 'update'])
+            ->name('settings.update');
+
+        Route::get('/menus', [MenuController::class, 'index'])
+            ->name('menus.index');
+
+        Route::get('/menus/create', [MenuController::class, 'create'])
+            ->name('menus.create');
+
+        Route::post('/menus', [MenuController::class, 'store'])
+            ->name('menus.store');
+
+        Route::get('/menus/{menu}/edit', [MenuController::class, 'edit'])
+            ->name('menus.edit');
+
+        Route::put('/menus/{menu}', [MenuController::class, 'update'])
+            ->name('menus.update');
+
+        Route::delete('/menus/{menu}', [MenuController::class, 'destroy'])
+            ->name('menus.destroy');
+
+        Route::get('/home', [HomeSectionController::class, 'edit'])
+            ->name('home.edit');
+
+        Route::post('/home', [HomeSectionController::class, 'update'])
+            ->name('home.update');
+
+        Route::get('/profiles', [AdminProfileController::class, 'edit'])
+            ->name('profiles.edit');
+
+        Route::post('/profiles', [AdminProfileController::class, 'update'])
+            ->name('profiles.update');
+
+        Route::get('/profiles/structure', [ProfileStructureController::class, 'edit'])
+            ->name('profiles.structure.edit');
+
+        Route::post('/profiles/structure', [ProfileStructureController::class, 'update'])
+            ->name('profiles.structure.update');
+
+        Route::get('/academics', [AdminAcademicController::class, 'edit'])
+            ->name('academics.edit');
+
+        Route::post('/academics', [AdminAcademicController::class, 'update'])
+            ->name('academics.update');
+    });

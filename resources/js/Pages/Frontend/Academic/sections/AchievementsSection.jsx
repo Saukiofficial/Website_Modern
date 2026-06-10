@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import Icon from "../components/Icon";
 
-const achievementStats = [
+const fallbackAchievementStats = [
     {
         value: "128+",
         label: "Total Prestasi",
@@ -28,7 +28,7 @@ const achievementStats = [
     },
 ];
 
-const achievementCategories = [
+const fallbackAchievementCategories = [
     "Semua Prestasi",
     "Akademik",
     "Olahraga",
@@ -37,7 +37,7 @@ const achievementCategories = [
     "Teknologi",
 ];
 
-const achievements = [
+const fallbackAchievements = [
     {
         title: "Juara 1 Olimpiade Sains Kabupaten",
         category: "Akademik",
@@ -106,7 +106,7 @@ const achievements = [
     },
 ];
 
-const featuredAchievements = [
+const fallbackFeaturedAchievements = [
     {
         title: "Best Student Achievement",
         subtitle: "Penghargaan siswa berprestasi bidang akademik dan karakter.",
@@ -127,6 +127,125 @@ const featuredAchievements = [
     },
 ];
 
+const accentList = [
+    "bg-blue-500",
+    "bg-emerald-500",
+    "bg-orange-500",
+    "bg-cyan-500",
+    "bg-pink-500",
+    "bg-indigo-500",
+    "bg-purple-500",
+    "bg-yellow-500",
+];
+
+function normalizeAchievements(achievements) {
+    if (!Array.isArray(achievements) || achievements.length === 0) {
+        return fallbackAchievements;
+    }
+
+    return achievements.map((item, index) => ({
+        id: item.id || index,
+        title: item.title || "Judul Prestasi",
+        category: item.category || item.rank || "Akademik",
+        level: item.level || "Sekolah",
+        year: item.year || "2026",
+        student: item.student_name || item.student || "Siswa Berprestasi",
+        competition:
+            item.competition_name || item.competition || "Kompetisi Siswa",
+        description:
+            item.description ||
+            "Prestasi siswa dalam bidang akademik dan non-akademik.",
+        image:
+            item.image ||
+            "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1200&q=85",
+        accent: item.accent || accentList[index % accentList.length],
+        rank: item.rank || "",
+        is_featured: Boolean(item.is_featured),
+    }));
+}
+
+function buildAchievementStats(items) {
+    const total = items.length;
+
+    const academicCount = items.filter((item) => {
+        const category = String(item.category || "").toLowerCase();
+        return (
+            category.includes("akademik") ||
+            category.includes("olimpiade") ||
+            category.includes("literasi") ||
+            category.includes("teknologi")
+        );
+    }).length;
+
+    const nationalCount = items.filter((item) => {
+        const level = String(item.level || "").toLowerCase();
+        return level.includes("nasional");
+    }).length;
+
+    const nonAcademicCount = Math.max(total - academicCount, 0);
+
+    return [
+        {
+            value: String(total || fallbackAchievementStats[0].value),
+            label: "Total Prestasi",
+            icon: "trophy",
+            iconWrap: "bg-blue-50 text-[#1f5bd3]",
+        },
+        {
+            value: String(academicCount || fallbackAchievementStats[1].value),
+            label: "Akademik",
+            icon: "book",
+            iconWrap: "bg-emerald-50 text-emerald-500",
+        },
+        {
+            value: String(
+                nonAcademicCount || fallbackAchievementStats[2].value
+            ),
+            label: "Non-Akademik",
+            icon: "award",
+            iconWrap: "bg-fuchsia-50 text-fuchsia-500",
+        },
+        {
+            value: String(nationalCount || fallbackAchievementStats[3].value),
+            label: "Tingkat Nasional",
+            icon: "graduate",
+            iconWrap: "bg-orange-50 text-orange-500",
+        },
+    ];
+}
+
+function buildAchievementCategories(items) {
+    const categories = items.map((item) => item.category).filter(Boolean);
+
+    const merged = [
+        ...fallbackAchievementCategories,
+        ...Array.from(new Set(categories)),
+    ];
+
+    return Array.from(new Set(merged));
+}
+
+function buildFeaturedAchievements(items) {
+    const featuredItems = items
+        .filter((item) => item.is_featured)
+        .slice(0, 3)
+        .map((item, index) => ({
+            title:
+                index === 0
+                    ? "Best Student Achievement"
+                    : index === 1
+                    ? "Innovation Award"
+                    : "Sport Excellence",
+            subtitle: item.title,
+            value: item.rank || item.year || "Gold",
+            icon: index === 0 ? "trophy" : index === 1 ? "award" : "activity",
+        }));
+
+    return featuredItems.length > 0
+        ? featuredItems
+        : fallbackFeaturedAchievements;
+}
+
 function AchievementCard({ item }) {
     return (
         <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-md shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -135,6 +254,10 @@ function AchievementCard({ item }) {
                     src={item.image}
                     alt={item.title}
                     className="h-full w-full object-cover transition duration-500 hover:scale-105"
+                    onError={(event) => {
+                        event.currentTarget.src =
+                            "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1200&q=85";
+                    }}
                 />
 
                 <div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium text-[#0d58cf] shadow-sm">
@@ -153,9 +276,16 @@ function AchievementCard({ item }) {
                     <span className="rounded-full bg-blue-50 px-3 py-1 text-[11px] font-medium text-[#0d58cf]">
                         {item.category}
                     </span>
+
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-500">
                         {item.level}
                     </span>
+
+                    {item.rank ? (
+                        <span className="rounded-full bg-[#f7b733]/20 px-3 py-1 text-[11px] font-medium text-[#b7791f]">
+                            {item.rank}
+                        </span>
+                    ) : null}
                 </div>
 
                 <h3 className="mt-4 min-h-[48px] text-[18px] font-semibold leading-tight text-[#061b46]">
@@ -175,9 +305,16 @@ function AchievementCard({ item }) {
                         <p className="text-[11px] font-medium text-slate-500">
                             Peraih Prestasi
                         </p>
+
                         <p className="text-[13px] font-semibold text-[#061b46]">
                             {item.student}
                         </p>
+
+                        {item.competition ? (
+                            <p className="mt-1 text-[11px] font-medium text-slate-500">
+                                {item.competition}
+                            </p>
+                        ) : null}
                     </div>
                 </div>
             </div>
@@ -189,7 +326,7 @@ function FeaturedCard({ item }) {
     return (
         <div className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-md shadow-slate-200/70 transition hover:-translate-y-1 hover:shadow-xl">
             <div className="flex items-start justify-between gap-4">
-                <div className="flex h-13 w-13 h-[52px] w-[52px] items-center justify-center rounded-2xl bg-blue-50 text-[#0d58cf]">
+                <div className="flex h-[52px] w-[52px] items-center justify-center rounded-2xl bg-blue-50 text-[#0d58cf]">
                     <Icon type={item.icon} className="h-6 w-6" />
                 </div>
 
@@ -209,12 +346,28 @@ function FeaturedCard({ item }) {
     );
 }
 
-export default function AchievementsSection() {
+export default function AchievementsSection({ achievements = [] }) {
     const [activeCategory, setActiveCategory] = useState("Semua Prestasi");
     const [search, setSearch] = useState("");
 
+    const achievementItems = useMemo(() => {
+        return normalizeAchievements(achievements);
+    }, [achievements]);
+
+    const achievementStats = useMemo(() => {
+        return buildAchievementStats(achievementItems);
+    }, [achievementItems]);
+
+    const achievementCategories = useMemo(() => {
+        return buildAchievementCategories(achievementItems);
+    }, [achievementItems]);
+
+    const featuredAchievements = useMemo(() => {
+        return buildFeaturedAchievements(achievementItems);
+    }, [achievementItems]);
+
     const filteredAchievements = useMemo(() => {
-        return achievements.filter((item) => {
+        return achievementItems.filter((item) => {
             const matchCategory =
                 activeCategory === "Semua Prestasi" ||
                 item.category === activeCategory;
@@ -224,11 +377,12 @@ export default function AchievementsSection() {
                 item.title.toLowerCase().includes(search.toLowerCase()) ||
                 item.student.toLowerCase().includes(search.toLowerCase()) ||
                 item.description.toLowerCase().includes(search.toLowerCase()) ||
-                item.category.toLowerCase().includes(search.toLowerCase());
+                item.category.toLowerCase().includes(search.toLowerCase()) ||
+                item.level.toLowerCase().includes(search.toLowerCase());
 
             return matchCategory && matchSearch;
         });
-    }, [activeCategory, search]);
+    }, [activeCategory, search, achievementItems]);
 
     return (
         <div className="space-y-6">
@@ -252,6 +406,7 @@ export default function AchievementsSection() {
                             <h3 className="text-[32px] font-semibold leading-none text-[#163678]">
                                 {item.value}
                             </h3>
+
                             <p className="mt-2 text-[12.5px] font-medium text-slate-600">
                                 {item.label}
                             </p>
@@ -276,7 +431,9 @@ export default function AchievementsSection() {
                                 <button
                                     key={category}
                                     type="button"
-                                    onClick={() => setActiveCategory(category)}
+                                    onClick={() =>
+                                        setActiveCategory(category)
+                                    }
                                     className={`h-11 shrink-0 rounded-[12px] px-5 text-[12px] font-medium transition ${
                                         isActive
                                             ? "bg-[#0d58cf] text-white shadow-lg shadow-blue-200"
@@ -293,10 +450,11 @@ export default function AchievementsSection() {
                         <input
                             type="text"
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(event) => setSearch(event.target.value)}
                             placeholder="Cari prestasi siswa..."
                             className="h-full w-full border-0 bg-transparent text-[13px] font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:ring-0"
                         />
+
                         <Icon
                             type="search"
                             className="h-5 w-5 shrink-0 text-[#1f5bd3]"
@@ -305,15 +463,24 @@ export default function AchievementsSection() {
                 </div>
 
                 <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                    {filteredAchievements.map((item) => (
-                        <AchievementCard key={item.title} item={item} />
-                    ))}
+                    {filteredAchievements.length > 0 ? (
+                        filteredAchievements.map((item) => (
+                            <AchievementCard
+                                key={item.id || item.title}
+                                item={item}
+                            />
+                        ))
+                    ) : (
+                        <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 xl:col-span-3">
+                            Data prestasi tidak ditemukan.
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-6 flex justify-center rounded-[18px] bg-white py-1">
                     <a
                         href="#"
-                        className="inline-flex min-h-[46px] items-center justify-center gap-3 rounded-[14px] bg-slate-50 px-8 text-[13px] font-medium text-[#0d58cf] transition hover:bg-blue-50"
+                        className="inline-flex min-h-[46px] items-center justify-center gap-3 rounded-[14px] bg-slate-50 px-8 text-[13px] font-semibold text-[#0d58cf] transition hover:bg-blue-50"
                     >
                         Lihat Semua Prestasi
                         <span>›</span>
@@ -321,107 +488,34 @@ export default function AchievementsSection() {
                 </div>
             </div>
 
-            <div className="grid gap-6 xl:grid-cols-[1fr_0.92fr]">
-                <div className="rounded-[26px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/60 sm:p-8">
-                    <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0d58cf]">
-                        Timeline Prestasi
-                    </p>
-
-                    <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
-                        Perjalanan Prestasi Tahun Ini
-                    </h2>
-
-                    <div className="mt-7 space-y-5">
-                        {achievements.slice(0, 4).map((item, index) => (
-                            <div
-                                key={item.title}
-                                className="relative grid gap-4 rounded-[20px] border border-slate-200 bg-slate-50 p-4 sm:grid-cols-[64px_1fr_auto] sm:items-center"
-                            >
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0d58cf] text-[15px] font-medium text-white">
-                                    {String(index + 1).padStart(2, "0")}
-                                </div>
-
-                                <div>
-                                    <p className="text-[12px] font-medium text-[#0d58cf]">
-                                        {item.category} • {item.level}
-                                    </p>
-                                    <h3 className="mt-1 text-[16px] font-semibold text-[#061b46]">
-                                        {item.title}
-                                    </h3>
-                                    <p className="mt-1 text-[12.5px] font-medium text-slate-500">
-                                        {item.student}
-                                    </p>
-                                </div>
-
-                                <div className="rounded-full bg-white px-4 py-2 text-[13px] font-semibold text-[#163678] shadow-sm">
-                                    {item.year}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="overflow-hidden rounded-[26px] bg-[#052b66] shadow-2xl shadow-blue-200">
-                    <div className="relative min-h-full overflow-hidden">
-                        <img
-                            src="/frontend/images/achievement-side.jpg"
-                            alt="Dokumentasi Prestasi"
-                            className="absolute inset-0 h-full w-full object-cover"
-                            onError={(event) => {
-                                event.currentTarget.src =
-                                    "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=85";
-                            }}
-                        />
-
-                        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,43,102,0.25)_0%,rgba(5,43,102,0.92)_100%)]" />
-
-                        <div className="relative z-10 flex min-h-[420px] flex-col justify-end p-6 text-white sm:p-8">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-[22px] bg-white text-[#f7b733]">
-                                <Icon type="trophy" className="h-8 w-8" />
-                            </div>
-
-                            <h2 className="mt-5 text-[28px] font-semibold leading-tight tracking-[-0.04em] sm:text-[36px]">
-                                Setiap Prestasi Adalah Cerita Perjuangan
-                            </h2>
-
-                            <p className="mt-3 text-[14px] font-medium leading-7 text-blue-100">
-                                Sekolah terus mendukung siswa untuk berkembang,
-                                berani berkompetisi, dan memberikan karya terbaik
-                                dalam berbagai bidang.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div className="overflow-hidden rounded-[28px] bg-[#052b66] shadow-2xl shadow-blue-200">
-                <div className="relative min-h-[250px] overflow-hidden">
+                <div className="relative min-h-[240px] overflow-hidden">
                     <img
                         src="/frontend/images/achievement-banner.jpg"
                         alt="Prestasi Siswa"
                         className="absolute inset-0 h-full w-full object-cover"
                         onError={(event) => {
                             event.currentTarget.src =
-                                "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=85";
+                                "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1600&q=85";
                         }}
                     />
 
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,35,83,0.98)_0%,rgba(5,48,115,0.96)_44%,rgba(7,74,170,0.62)_70%,rgba(7,74,170,0.10)_100%)]" />
 
-                    <div className="relative z-10 grid min-h-[250px] items-center gap-6 px-6 py-7 sm:px-8 lg:grid-cols-[92px_1fr_auto] lg:px-10">
+                    <div className="relative z-10 grid min-h-[240px] items-center gap-6 px-6 py-7 sm:px-8 lg:grid-cols-[92px_1fr_auto] lg:px-10">
                         <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-white text-[#f7b733] shadow-lg">
-                            <Icon type="award" className="h-10 w-10" />
+                            <Icon type="trophy" className="h-10 w-10" />
                         </div>
 
                         <div>
                             <h2 className="text-[26px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[34px]">
-                                Terus Berprestasi dan Menginspirasi!
+                                Prestasi Adalah Hasil dari Proses Terbaik
                             </h2>
 
                             <p className="mt-2 max-w-[680px] text-[14px] font-medium leading-7 text-blue-100 sm:text-[15px]">
-                                Prestasi siswa menjadi bukti bahwa kerja keras,
-                                bimbingan guru, dan lingkungan sekolah yang
-                                mendukung mampu melahirkan generasi unggul.
+                                Sekolah terus mendukung siswa untuk berkembang,
+                                berkompetisi, dan meraih capaian terbaik dalam
+                                bidang akademik maupun non-akademik.
                             </p>
 
                             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
@@ -429,14 +523,14 @@ export default function AchievementsSection() {
                                     href="#"
                                     className="inline-flex min-h-[50px] items-center justify-center rounded-[12px] bg-[#f7b733] px-7 text-[13px] font-medium text-[#061b46] transition hover:bg-yellow-300"
                                 >
-                                    Ajukan Prestasi Siswa →
+                                    Kirim Prestasi Siswa →
                                 </a>
 
                                 <a
                                     href="#"
                                     className="inline-flex min-h-[50px] items-center justify-center rounded-[12px] border border-white/30 bg-white/10 px-7 text-[13px] font-medium text-white backdrop-blur-sm transition hover:bg-white/15"
                                 >
-                                    Hubungi Kesiswaan
+                                    Hubungi Akademik
                                 </a>
                             </div>
                         </div>

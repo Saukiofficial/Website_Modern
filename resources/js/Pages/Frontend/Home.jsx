@@ -78,7 +78,11 @@ const announcements = [
 function Icon({ type }) {
     if (type === "users") {
         return (
-            <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+                className="h-6 w-6 sm:h-7 sm:w-7"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
                 <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z" />
             </svg>
         );
@@ -86,7 +90,11 @@ function Icon({ type }) {
 
     if (type === "teacher") {
         return (
-            <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+                className="h-6 w-6 sm:h-7 sm:w-7"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
                 <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4Zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4Zm7-8h3v2h-3V6Zm0 4h3v2h-3v-2Zm0 4h3v2h-3v-2Z" />
             </svg>
         );
@@ -94,14 +102,22 @@ function Icon({ type }) {
 
     if (type === "trophy") {
         return (
-            <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="currentColor">
+            <svg
+                className="h-6 w-6 sm:h-7 sm:w-7"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
                 <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H8v2h8v-2h-3v-3.1a5.01 5.01 0 0 0 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2ZM5 8V7h2v3.82A3.01 3.01 0 0 1 5 8Zm14 0c0 1.3-.84 2.42-2 2.82V7h2v1Z" />
             </svg>
         );
     }
 
     return (
-        <svg className="h-6 w-6 sm:h-7 sm:w-7" viewBox="0 0 24 24" fill="currentColor">
+        <svg
+            className="h-6 w-6 sm:h-7 sm:w-7"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+        >
             <path d="M4 5h16v2H4V5Zm0 6h16v2H4v-2Zm0 6h16v2H4v-2Z" />
         </svg>
     );
@@ -110,8 +126,8 @@ function Icon({ type }) {
 export default function Home() {
     return (
         <FrontendLayout>
-            <section className="relative bg-white">
-                <div className="relative h-[470px] overflow-hidden bg-[#064493] sm:h-[510px] md:h-[420px] lg:h-[430px]">
+            <section className="relative w-full bg-white">
+                <div className="relative h-[470px] w-full overflow-hidden bg-[#064493] sm:h-[510px] md:h-[420px] lg:h-[430px] xl:h-[455px]">
                     <img
                         src={imagePath.schoolBg}
                         alt="Background sekolah"
@@ -124,10 +140,8 @@ export default function Home() {
 
                     <div className="absolute inset-0 bg-black/10 md:bg-black/5" />
 
-                    {/* Mobile overlay */}
                     <div className="absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(5,37,86,0.96)_0%,rgba(6,68,147,0.86)_45%,rgba(6,68,147,0.18)_100%)] md:hidden" />
 
-                    {/* Tablet/Desktop overlay diagonal */}
                     <div
                         className="absolute inset-y-0 left-0 z-10 hidden w-[70%] bg-[linear-gradient(90deg,rgba(5,37,86,0.96)_0%,rgba(6,68,147,0.88)_45%,rgba(6,68,147,0.34)_75%,rgba(6,68,147,0)_100%)] md:block lg:w-[66%]"
                         style={{
@@ -152,14 +166,14 @@ export default function Home() {
                     <img
                         src={imagePath.students}
                         alt="Siswa"
-                        className="absolute bottom-0 right-[-8px] z-20 h-[250px] w-auto object-contain drop-shadow-2xl sm:right-3 sm:h-[310px] md:right-4 md:h-[330px] lg:right-[78px] lg:h-[350px] xl:right-[95px] xl:h-[360px]"
+                        className="absolute bottom-0 right-[-8px] z-20 h-[250px] w-auto object-contain drop-shadow-2xl sm:right-3 sm:h-[310px] md:right-6 md:h-[330px] lg:right-[90px] lg:h-[350px] xl:right-[130px] xl:h-[370px] 2xl:right-[190px]"
                         onError={(event) => {
                             event.currentTarget.style.display = "none";
                         }}
                     />
 
-                    <div className="relative z-30 flex h-full max-w-[680px] flex-col px-5 pt-[36px] sm:px-8 sm:pt-12 md:px-10 md:pt-[48px] lg:px-14 lg:pt-[54px]">
-                        <h1 className="max-w-[225px] text-[25px] font-extrabold leading-[1.13] tracking-[-0.025em] text-white sm:max-w-[320px] sm:text-[37px] md:max-w-[470px] md:text-[33px] md:leading-[1.13] lg:max-w-[650px] lg:text-[41px] xl:text-[43px]">
+                    <div className="relative z-30 flex h-full w-full max-w-[760px] flex-col px-5 pt-[36px] sm:px-8 sm:pt-12 md:px-10 md:pt-[48px] lg:px-14 lg:pt-[54px] xl:px-16 2xl:px-20">
+                        <h1 className="max-w-[225px] text-[25px] font-extrabold leading-[1.13] tracking-[-0.025em] text-white sm:max-w-[320px] sm:text-[37px] md:max-w-[470px] md:text-[33px] md:leading-[1.13] lg:max-w-[650px] lg:text-[41px] xl:text-[46px]">
                             Mewujudkan Generasi Cerdas, Berkarakter, dan Berdaya
                             Saing Global
                         </h1>
@@ -179,15 +193,19 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="relative z-40 mx-auto -mt-7 max-w-[1265px] px-4 sm:-mt-10 sm:px-6 md:-mt-[24px] lg:-mt-[12px]">
-                    <div className="grid grid-cols-2 overflow-hidden rounded-[22px] bg-white shadow-xl shadow-slate-300/60 ring-1 ring-slate-200 lg:grid-cols-4">
+                <div className="relative z-40 -mt-7 w-full px-4 sm:-mt-10 sm:px-6 md:-mt-[24px] lg:-mt-[12px] xl:px-10 2xl:px-14">
+                    <div className="grid w-full grid-cols-2 overflow-hidden rounded-[22px] bg-white shadow-xl shadow-slate-300/60 ring-1 ring-slate-200 lg:grid-cols-4">
                         {stats.map((item, index) => (
                             <div
                                 key={item.title}
                                 className={`flex min-h-[104px] items-center gap-3 px-4 py-4 sm:min-h-[128px] sm:gap-4 sm:px-5 sm:py-5 md:min-h-[118px] lg:min-h-[94px] lg:px-7 lg:py-4 ${
-                                    index % 2 === 0 ? "border-r border-slate-200" : ""
+                                    index % 2 === 0
+                                        ? "border-r border-slate-200"
+                                        : ""
                                 } ${
-                                    index < 2 ? "border-b border-slate-200" : ""
+                                    index < 2
+                                        ? "border-b border-slate-200"
+                                        : ""
                                 } lg:border-b-0 lg:border-r-0 ${
                                     index !== stats.length - 1
                                         ? "lg:border-r lg:border-slate-200"
@@ -217,7 +235,7 @@ export default function Home() {
 
             <section
                 id="informasi"
-                className="mx-auto grid max-w-[1265px] grid-cols-2 gap-4 px-4 pb-8 pt-5 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.04fr_1.04fr_1.04fr_0.92fr]"
+                className="grid w-full grid-cols-2 gap-4 px-4 pb-8 pt-5 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.04fr_1.04fr_1.04fr_0.92fr] xl:px-10 2xl:px-14"
             >
                 <div className="col-span-2 min-h-[292px] rounded-[22px] border border-slate-200 bg-white p-5 shadow-md shadow-slate-200/70 lg:col-span-1">
                     <div className="mb-4 flex items-center justify-between">

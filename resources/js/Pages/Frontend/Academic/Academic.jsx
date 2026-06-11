@@ -46,6 +46,7 @@ const defaultAcademicData = {
             "Daftar prestasi akademik dan non-akademik yang diraih oleh siswa.",
     },
     calendars: [],
+    resources: [],
     teachers: [],
     extracurriculars: [],
     osisMembers: [],
@@ -66,6 +67,9 @@ function mergeAcademicData(academicData) {
         },
         calendars: Array.isArray(academicData.calendars)
             ? academicData.calendars
+            : [],
+        resources: Array.isArray(academicData.resources)
+            ? academicData.resources
             : [],
         teachers: Array.isArray(academicData.teachers)
             ? academicData.teachers
@@ -101,6 +105,7 @@ export default function Academic({ academicData = null }) {
                 <CalendarSection
                     academicData={data}
                     calendars={data.calendars}
+                    resources={data.resources}
                     page={data.page}
                 />
             );
@@ -150,6 +155,7 @@ export default function Academic({ academicData = null }) {
             <CalendarSection
                 academicData={data}
                 calendars={data.calendars}
+                resources={data.resources}
                 page={data.page}
             />
         );

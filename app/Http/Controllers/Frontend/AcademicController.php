@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicCalendar;
 use App\Models\AcademicPage;
+use App\Models\AcademicResource;
 use App\Models\Extracurricular;
 use App\Models\OsisMember;
 use App\Models\StudentAchievement;
@@ -52,6 +53,21 @@ class AcademicController extends Controller
                     'category' => $calendar->category,
                     'icon' => $calendar->icon,
                     'sort_order' => $calendar->sort_order,
+                ];
+            });
+
+        $resources = AcademicResource::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(function (AcademicResource $resource) {
+                return [
+                    'id' => $resource->id,
+                    'title' => $resource->title,
+                    'type' => $resource->type,
+                    'file_url' => $resource->file_url,
+                    'sort_order' => $resource->sort_order,
                 ];
             });
 
@@ -164,6 +180,7 @@ class AcademicController extends Controller
                 ],
 
                 'calendars' => $calendars,
+                'resources' => $resources,
                 'teachers' => $teachers,
                 'extracurriculars' => $extracurriculars,
                 'osisMembers' => $osisMembers,

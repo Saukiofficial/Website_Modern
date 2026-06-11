@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
+import { useForm } from "@inertiajs/react";
 import FrontendLayout from "../../Layouts/FrontendLayout";
 
-const pageData = {
+const fallbackPageData = {
     osis: {
         label: "OSIS & Kepemimpinan",
         eyebrow: "Form Pendaftaran OSIS",
@@ -23,7 +24,6 @@ const pageData = {
         ],
         interestLabel: "Bidang yang Diminati",
         interestOptions: [
-            "Pilih bidang OSIS",
             "Ketua / Wakil Ketua",
             "Sekretaris",
             "Bendahara",
@@ -58,7 +58,6 @@ const pageData = {
         ],
         interestLabel: "Ekstrakurikuler yang Dipilih",
         interestOptions: [
-            "Pilih ekstrakurikuler",
             "Pramuka",
             "Paskibra",
             "PMR",
@@ -97,7 +96,6 @@ const pageData = {
         ],
         interestLabel: "Jenis Layanan",
         interestOptions: [
-            "Pilih jenis layanan",
             "Konseling Pribadi",
             "Konseling Akademik",
             "Konseling Sosial",
@@ -123,6 +121,49 @@ const classOptions = [
     "XII-C",
 ];
 
+function mergeProgramData(type, program) {
+    const fallback = fallbackPageData[type] ?? fallbackPageData.osis;
+
+    if (!program) {
+        return fallback;
+    }
+
+    return {
+        label: program.title || fallback.label,
+        eyebrow: program.eyebrow || fallback.eyebrow,
+        title: program.form_title || fallback.title,
+        heroTitle: program.hero_title || fallback.heroTitle,
+        description: program.description || fallback.description,
+        heroImage: program.hero_image_url || fallback.heroImage,
+        fallbackImage: fallback.fallbackImage,
+        icon: program.icon || fallback.icon,
+        formDescription: program.form_description || fallback.formDescription,
+        points:
+            Array.isArray(program.points) && program.points.length > 0
+                ? program.points
+                : fallback.points,
+        interestLabel: program.interest_label || fallback.interestLabel,
+        interestOptions:
+            Array.isArray(program.interest_options) &&
+            program.interest_options.length > 0
+                ? program.interest_options
+                : fallback.interestOptions,
+        reasonLabel: program.reason_label || fallback.reasonLabel,
+        reasonPlaceholder:
+            program.reason_placeholder || fallback.reasonPlaceholder,
+    };
+}
+
+function FieldError({ error }) {
+    if (!error) return null;
+
+    return (
+        <p className="mt-2 text-[12px] font-semibold text-red-600">
+            {error}
+        </p>
+    );
+}
+
 function TextInput({
     label,
     name,
@@ -130,6 +171,7 @@ function TextInput({
     onChange,
     placeholder,
     type = "text",
+    error,
 }) {
     return (
         <div>
@@ -143,13 +185,19 @@ function TextInput({
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="h-[54px] w-full rounded-[12px] border border-slate-200 bg-white px-4 text-[14px] font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#0d58cf] focus:ring-4 focus:ring-blue-100"
+                className={`h-[54px] w-full rounded-[12px] border bg-white px-4 text-[14px] font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:ring-4 ${
+                    error
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-100"
+                        : "border-slate-200 focus:border-[#0d58cf] focus:ring-blue-100"
+                }`}
             />
+
+            <FieldError error={error} />
         </div>
     );
 }
 
-function SelectInput({ label, name, value, onChange, children }) {
+function SelectInput({ label, name, value, onChange, children, error }) {
     return (
         <div>
             <label className="mb-2 block text-[13px] font-semibold text-[#061b46]">
@@ -160,15 +208,21 @@ function SelectInput({ label, name, value, onChange, children }) {
                 name={name}
                 value={value}
                 onChange={onChange}
-                className="h-[54px] w-full rounded-[12px] border border-slate-200 bg-white px-4 text-[14px] font-medium text-slate-700 outline-none transition focus:border-[#0d58cf] focus:ring-4 focus:ring-blue-100"
+                className={`h-[54px] w-full rounded-[12px] border bg-white px-4 text-[14px] font-medium text-slate-700 outline-none transition focus:ring-4 ${
+                    error
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-100"
+                        : "border-slate-200 focus:border-[#0d58cf] focus:ring-blue-100"
+                }`}
             >
                 {children}
             </select>
+
+            <FieldError error={error} />
         </div>
     );
 }
 
-function TextArea({ label, name, value, onChange, placeholder }) {
+function TextArea({ label, name, value, onChange, placeholder, error }) {
     return (
         <div>
             <label className="mb-2 block text-[13px] font-semibold text-[#061b46]">
@@ -181,8 +235,14 @@ function TextArea({ label, name, value, onChange, placeholder }) {
                 onChange={onChange}
                 placeholder={placeholder}
                 rows="5"
-                className="w-full resize-none rounded-[12px] border border-slate-200 bg-white px-4 py-4 text-[14px] font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#0d58cf] focus:ring-4 focus:ring-blue-100"
+                className={`w-full resize-none rounded-[12px] border bg-white px-4 py-4 text-[14px] font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:ring-4 ${
+                    error
+                        ? "border-red-300 focus:border-red-500 focus:ring-red-100"
+                        : "border-slate-200 focus:border-[#0d58cf] focus:ring-blue-100"
+                }`}
             />
+
+            <FieldError error={error} />
         </div>
     );
 }
@@ -239,12 +299,54 @@ function ProgramSidebar({ data }) {
     );
 }
 
-export default function KesiswaanDetail({ type = "osis" }) {
-    const data = useMemo(() => {
-        return pageData[type] ?? pageData.osis;
-    }, [type]);
+function SuccessPopup({ show, onClose, title }) {
+    if (!show) return null;
 
-    const [form, setForm] = useState({
+    return (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-[#061b46]/55 px-4 backdrop-blur-sm">
+            <div className="w-full max-w-[440px] overflow-hidden rounded-[26px] bg-white p-7 text-center shadow-2xl shadow-blue-950/30">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 text-[42px]">
+                    ✅
+                </div>
+
+                <h3 className="mt-5 font-serif text-[30px] font-semibold leading-tight text-[#061b46]">
+                    Formulir Berhasil Dikirim
+                </h3>
+
+                <p className="mt-3 text-[14px] font-medium leading-7 text-slate-600">
+                    Data pendaftaran <strong>{title}</strong> sudah berhasil
+                    dikirim ke admin dan akan diproses oleh pihak sekolah.
+                </p>
+
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="mt-7 inline-flex min-h-[48px] w-full items-center justify-center rounded-[14px] bg-[#052b66] px-6 text-[13px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#063f8d]"
+                >
+                    Mengerti
+                </button>
+            </div>
+        </div>
+    );
+}
+
+export default function KesiswaanDetail({ type = "osis", program = null }) {
+    const dataProgram = useMemo(() => {
+        return mergeProgramData(type, program);
+    }, [type, program]);
+
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+
+    const {
+        data,
+        setData,
+        post,
+        processing,
+        errors,
+        reset,
+        clearErrors,
+    } = useForm({
+        type,
         nama: "",
         nisn: "",
         kelas: "",
@@ -253,35 +355,59 @@ export default function KesiswaanDetail({ type = "osis" }) {
         interest: "",
         pengalaman: "",
         alasan: "",
+        agreement: false,
     });
 
     const handleChange = (event) => {
-        const { name, value } = event.target;
+        const { name, value, type: inputType, checked } = event.target;
 
-        setForm((current) => ({
-            ...current,
-            [name]: value,
-        }));
+        setData(name, inputType === "checkbox" ? checked : value);
+
+        if (errors[name]) {
+            clearErrors(name);
+        }
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        alert(
-            "Form berhasil disiapkan. Selanjutnya data ini bisa disambungkan ke backend/admin."
-        );
+        post(`/kesiswaan/${type}/daftar`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                reset(
+                    "nama",
+                    "nisn",
+                    "kelas",
+                    "noHp",
+                    "email",
+                    "interest",
+                    "pengalaman",
+                    "alasan",
+                    "agreement"
+                );
+
+                setShowSuccessPopup(true);
+            },
+        });
     };
 
     return (
         <FrontendLayout>
+            <SuccessPopup
+                show={showSuccessPopup}
+                onClose={() => setShowSuccessPopup(false)}
+                title={dataProgram.label}
+            />
+
             <section className="relative w-full overflow-hidden bg-[#052b66]">
                 <div className="relative min-h-[390px] w-full overflow-hidden lg:min-h-[430px]">
                     <img
-                        src={data.heroImage}
-                        alt={data.label}
+                        src={dataProgram.heroImage}
+                        alt={dataProgram.label}
                         className="absolute inset-0 h-full w-full object-cover object-center"
                         onError={(event) => {
-                            event.currentTarget.src = data.fallbackImage;
+                            event.currentTarget.src =
+                                dataProgram.fallbackImage;
                         }}
                     />
 
@@ -292,24 +418,30 @@ export default function KesiswaanDetail({ type = "osis" }) {
                             <a href="/" className="hover:text-white">
                                 Beranda
                             </a>
+
                             <span>›</span>
+
                             <a href="/kesiswaan" className="hover:text-white">
                                 Kesiswaan
                             </a>
+
                             <span>›</span>
-                            <span className="text-white">{data.label}</span>
+
+                            <span className="text-white">
+                                {dataProgram.label}
+                            </span>
                         </div>
 
                         <p className="mt-9 text-[13px] font-semibold uppercase tracking-[0.22em] text-[#d5a542]">
-                            {data.eyebrow}
+                            {dataProgram.eyebrow}
                         </p>
 
                         <h1 className="mt-5 max-w-5xl font-serif text-[42px] font-semibold leading-tight tracking-[-0.045em] text-white sm:text-[58px] lg:text-[68px]">
-                            {data.heroTitle}
+                            {dataProgram.heroTitle}
                         </h1>
 
                         <p className="mt-6 max-w-[820px] text-[16px] font-medium leading-8 text-blue-50">
-                            {data.description}
+                            {dataProgram.description}
                         </p>
                     </div>
                 </div>
@@ -317,7 +449,7 @@ export default function KesiswaanDetail({ type = "osis" }) {
 
             <section className="w-full bg-[#f4f8fc] px-4 py-10 sm:px-6 lg:px-10 lg:py-12 xl:px-14 2xl:px-16">
                 <div className="grid gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
-                    <ProgramSidebar data={data} />
+                    <ProgramSidebar data={dataProgram} />
 
                     <form
                         onSubmit={handleSubmit}
@@ -326,7 +458,7 @@ export default function KesiswaanDetail({ type = "osis" }) {
                         <div className="border-b border-slate-200 pb-8">
                             <div className="flex items-start gap-5">
                                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[34px] text-[#052b66]">
-                                    {data.icon}
+                                    {dataProgram.icon}
                                 </div>
 
                                 <div>
@@ -335,11 +467,11 @@ export default function KesiswaanDetail({ type = "osis" }) {
                                     </p>
 
                                     <h2 className="mt-3 font-serif text-[34px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[42px]">
-                                        {data.title}
+                                        {dataProgram.title}
                                     </h2>
 
                                     <p className="mt-3 max-w-3xl text-[14px] font-medium leading-7 text-slate-600">
-                                        {data.formDescription}
+                                        {dataProgram.formDescription}
                                     </p>
                                 </div>
                             </div>
@@ -349,24 +481,27 @@ export default function KesiswaanDetail({ type = "osis" }) {
                             <TextInput
                                 label="Nama Lengkap"
                                 name="nama"
-                                value={form.nama}
+                                value={data.nama}
                                 onChange={handleChange}
                                 placeholder="Masukkan nama lengkap"
+                                error={errors.nama}
                             />
 
                             <TextInput
                                 label="NISN"
                                 name="nisn"
-                                value={form.nisn}
+                                value={data.nisn}
                                 onChange={handleChange}
                                 placeholder="Masukkan NISN"
+                                error={errors.nisn}
                             />
 
                             <SelectInput
                                 label="Kelas"
                                 name="kelas"
-                                value={form.kelas}
+                                value={data.kelas}
                                 onChange={handleChange}
+                                error={errors.kelas}
                             >
                                 {classOptions.map((item) => (
                                     <option
@@ -383,31 +518,35 @@ export default function KesiswaanDetail({ type = "osis" }) {
                             <TextInput
                                 label="Nomor HP / WhatsApp"
                                 name="noHp"
-                                value={form.noHp}
+                                value={data.noHp}
                                 onChange={handleChange}
                                 placeholder="Contoh: 081234567890"
+                                error={errors.noHp}
                             />
 
                             <TextInput
                                 label="Email Aktif"
                                 type="email"
                                 name="email"
-                                value={form.email}
+                                value={data.email}
                                 onChange={handleChange}
                                 placeholder="Contoh: siswa@email.com"
+                                error={errors.email}
                             />
 
                             <SelectInput
-                                label={data.interestLabel}
+                                label={dataProgram.interestLabel}
                                 name="interest"
-                                value={form.interest}
+                                value={data.interest}
                                 onChange={handleChange}
+                                error={errors.interest}
                             >
-                                {data.interestOptions.map((option, index) => (
-                                    <option
-                                        key={option}
-                                        value={index === 0 ? "" : option}
-                                    >
+                                <option value="">
+                                    Pilih {dataProgram.interestLabel}
+                                </option>
+
+                                {dataProgram.interestOptions.map((option) => (
+                                    <option key={option} value={option}>
                                         {option}
                                     </option>
                                 ))}
@@ -418,25 +557,35 @@ export default function KesiswaanDetail({ type = "osis" }) {
                             <TextArea
                                 label="Pengalaman / Riwayat Kegiatan"
                                 name="pengalaman"
-                                value={form.pengalaman}
+                                value={data.pengalaman}
                                 onChange={handleChange}
                                 placeholder="Tuliskan pengalaman organisasi, lomba, kegiatan sekolah, atau pengalaman lain yang relevan"
+                                error={errors.pengalaman}
                             />
 
                             <TextArea
-                                label={data.reasonLabel}
+                                label={dataProgram.reasonLabel}
                                 name="alasan"
-                                value={form.alasan}
+                                value={data.alasan}
                                 onChange={handleChange}
-                                placeholder={data.reasonPlaceholder}
+                                placeholder={dataProgram.reasonPlaceholder}
+                                error={errors.alasan}
                             />
                         </div>
 
-                        <div className="mt-8 rounded-[14px] border border-slate-200 bg-[#f8fbff] p-5">
+                        <div
+                            className={`mt-8 rounded-[14px] border bg-[#f8fbff] p-5 ${
+                                errors.agreement
+                                    ? "border-red-300"
+                                    : "border-slate-200"
+                            }`}
+                        >
                             <label className="flex items-start gap-4">
                                 <input
                                     type="checkbox"
-                                    required
+                                    name="agreement"
+                                    checked={Boolean(data.agreement)}
+                                    onChange={handleChange}
                                     className="mt-1 h-5 w-5 rounded border-slate-300 text-[#0d58cf] focus:ring-[#0d58cf]"
                                 />
 
@@ -446,6 +595,8 @@ export default function KesiswaanDetail({ type = "osis" }) {
                                     kesiswaan yang berlaku di sekolah.
                                 </span>
                             </label>
+
+                            <FieldError error={errors.agreement} />
                         </div>
 
                         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-end">
@@ -458,9 +609,10 @@ export default function KesiswaanDetail({ type = "osis" }) {
 
                             <button
                                 type="submit"
-                                className="inline-flex min-h-[54px] items-center justify-center gap-4 rounded-[12px] bg-[#d5a542] px-8 text-[13px] font-semibold uppercase tracking-[0.06em] text-white shadow-lg shadow-blue-200 transition hover:bg-[#f7c46a]"
+                                disabled={processing}
+                                className="inline-flex min-h-[54px] items-center justify-center gap-4 rounded-[12px] bg-[#d5a542] px-8 text-[13px] font-semibold uppercase tracking-[0.06em] text-white shadow-lg shadow-blue-200 transition hover:bg-[#f7c46a] disabled:cursor-not-allowed disabled:opacity-70"
                             >
-                                Kirim Formulir
+                                {processing ? "Mengirim..." : "Kirim Formulir"}
                                 <span>→</span>
                             </button>
                         </div>

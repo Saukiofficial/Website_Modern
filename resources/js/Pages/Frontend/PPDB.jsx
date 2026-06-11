@@ -1,6 +1,25 @@
 import FrontendLayout from "../../Layouts/FrontendLayout";
 
-const timelineItems = [
+const fallbackSetting = {
+    academic_year: "2026/2027",
+    eyebrow: "Penerimaan Peserta Didik Baru",
+    hero_title: "PPDB SMA Negeri 1 Mojokerto",
+    hero_description:
+        "Bergabung bersama sekolah berprestasi, berkarakter, dan berbudaya. Daftarkan diri untuk menjadi bagian dari generasi unggul.",
+    hero_image_url: "/frontend/images/ppdb-hero.jpg",
+    section_title: "Tahapan Pendaftaran",
+    section_description:
+        "Ikuti alur pendaftaran peserta didik baru secara online dengan mudah, cepat, dan aman.",
+    requirement_title: "Berkas yang Disiapkan",
+    requirement_description:
+        "Siapkan dokumen persyaratan sebelum melakukan pendaftaran online.",
+    cta_label: "Daftar Sekarang",
+    cta_url: "/ppdb/daftar",
+    is_open: true,
+    closed_message: "Pendaftaran PPDB saat ini belum dibuka.",
+};
+
+const fallbackTimelines = [
     {
         title: "Pendaftaran",
         date: "01 Juni - 30 Juni 2026",
@@ -18,13 +37,12 @@ const timelineItems = [
     },
 ];
 
-const steps = [
+const fallbackSteps = [
     {
         number: "01",
         stepLabel: "Tahap 1",
         title: "Isi Formulir",
-        description:
-            "Calon siswa mengisi data pendaftaran secara lengkap.",
+        description: "Calon siswa mengisi data pendaftaran secara lengkap.",
         icon: "📝",
         accent: "border-b-[#d5a542]",
         iconBg: "bg-[#f7eef3]",
@@ -33,8 +51,7 @@ const steps = [
         number: "02",
         stepLabel: "Tahap 2",
         title: "Unggah Berkas",
-        description:
-            "Siapkan dokumen persyaratan sesuai ketentuan sekolah.",
+        description: "Siapkan dokumen persyaratan sesuai ketentuan sekolah.",
         icon: "📁",
         accent: "border-b-[#d5a542]",
         iconBg: "bg-[#faf5e8]",
@@ -53,23 +70,37 @@ const steps = [
         number: "04",
         stepLabel: "Tahap 4",
         title: "Pengumuman",
-        description:
-            "Hasil seleksi akan diumumkan melalui website sekolah.",
+        description: "Hasil seleksi akan diumumkan melalui website sekolah.",
         icon: "📣",
         accent: "border-b-[#ef7aa8]",
         iconBg: "bg-[#fdf0f5]",
     },
 ];
 
-const requirements = [
-    "Fotokopi Kartu Keluarga",
-    "Fotokopi Akta Kelahiran",
-    "Fotokopi Ijazah atau Surat Keterangan Lulus",
-    "Pas Foto 3x4",
-    "Rapor semester terakhir",
+const fallbackRequirements = [
+    {
+        title: "Fotokopi Kartu Keluarga",
+        description: "Dokumen Kartu Keluarga dalam format PDF/JPG/PNG.",
+    },
+    {
+        title: "Fotokopi Akta Kelahiran",
+        description: "Dokumen Akta Kelahiran dalam format PDF/JPG/PNG.",
+    },
+    {
+        title: "Fotokopi Ijazah atau Surat Keterangan Lulus",
+        description: "Ijazah/SKL dari sekolah sebelumnya.",
+    },
+    {
+        title: "Pas Foto 3x4",
+        description: "Pas foto terbaru format JPG/PNG.",
+    },
+    {
+        title: "Rapor semester terakhir",
+        description: "Scan rapor semester terakhir.",
+    },
 ];
 
-function TimelineCard() {
+function TimelineCard({ setting, timelineItems }) {
     return (
         <div className="rounded-[28px] bg-white p-6 shadow-2xl shadow-slate-300/60 sm:p-8">
             <p className="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#d5a542]">
@@ -77,13 +108,13 @@ function TimelineCard() {
             </p>
 
             <h2 className="mt-4 font-serif text-[44px] font-semibold leading-none tracking-[-0.04em] text-[#061b46] sm:text-[58px]">
-                2026/2027
+                {setting.academic_year || "2026/2027"}
             </h2>
 
             <div className="mt-7 space-y-0">
                 {timelineItems.map((item, index) => (
                     <div
-                        key={item.title}
+                        key={item.id || item.title}
                         className={`relative flex gap-5 py-6 ${
                             index !== timelineItems.length - 1
                                 ? "border-b border-slate-200"
@@ -92,7 +123,7 @@ function TimelineCard() {
                     >
                         <div className="relative">
                             <div className="flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-full bg-[#2f80ed] text-[28px] text-white shadow-lg shadow-blue-200">
-                                {item.icon}
+                                {item.icon || "🗓️"}
                             </div>
 
                             {index !== timelineItems.length - 1 ? (
@@ -106,8 +137,9 @@ function TimelineCard() {
                                     <h3 className="text-[18px] font-semibold text-[#061b46]">
                                         {item.title}
                                     </h3>
+
                                     <p className="mt-2 text-[14px] font-semibold text-[#061b46]">
-                                        {item.date}
+                                        {item.date || "-"}
                                     </p>
                                 </div>
 
@@ -130,21 +162,25 @@ function TimelineCard() {
 function StepCard({ item }) {
     return (
         <div
-            className={`relative overflow-hidden rounded-[18px] border border-slate-200 bg-white p-5 shadow-sm ${item.accent} border-b-[3px]`}
+            className={`relative overflow-hidden rounded-[18px] border border-slate-200 bg-white p-5 shadow-sm ${
+                item.accent || "border-b-[#d5a542]"
+            } border-b-[3px]`}
         >
             <div className="absolute right-5 top-3 font-serif text-[62px] font-semibold leading-none tracking-[-0.04em] text-slate-100">
-                {item.number}
+                {item.number || "01"}
             </div>
 
             <div className="relative z-10">
                 <div
-                    className={`flex h-[76px] w-[76px] items-center justify-center rounded-[18px] ${item.iconBg} text-[38px]`}
+                    className={`flex h-[76px] w-[76px] items-center justify-center rounded-[18px] ${
+                        item.iconBg || "bg-[#faf5e8]"
+                    } text-[38px]`}
                 >
-                    {item.icon}
+                    {item.icon || "📝"}
                 </div>
 
                 <p className="mt-5 text-[14px] font-semibold text-[#2f80ed]">
-                    {item.stepLabel}
+                    {item.stepLabel || "Tahap"}
                 </p>
 
                 <h3 className="mt-1 font-serif text-[24px] font-semibold leading-tight tracking-[-0.03em] text-[#061b46]">
@@ -161,24 +197,63 @@ function StepCard({ item }) {
 
 function RequirementItem({ item }) {
     return (
-        <div className="flex items-center gap-4 rounded-[12px] bg-white/8 px-4 py-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f7c46a] text-[16px] text-[#061b46]">
+        <div className="flex items-start gap-4 rounded-[12px] bg-white/8 px-4 py-4">
+            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f7c46a] text-[16px] text-[#061b46]">
                 ✓
             </div>
 
-            <p className="text-[15px] font-semibold text-white">{item}</p>
+            <div>
+                <p className="text-[15px] font-semibold text-white">
+                    {item.title}
+                </p>
+
+                {item.description ? (
+                    <p className="mt-1 text-[12.5px] font-medium leading-6 text-blue-100">
+                        {item.description}
+                    </p>
+                ) : null}
+            </div>
         </div>
     );
 }
 
-export default function PPDB() {
+export default function PPDB({
+    setting = null,
+    timelines = [],
+    steps = [],
+    requirements = [],
+}) {
+    const ppdbSetting = {
+        ...fallbackSetting,
+        ...(setting || {}),
+    };
+
+    const timelineItems =
+        Array.isArray(timelines) && timelines.length > 0
+            ? timelines
+            : fallbackTimelines;
+
+    const stepItems =
+        Array.isArray(steps) && steps.length > 0 ? steps : fallbackSteps;
+
+    const requirementItems =
+        Array.isArray(requirements) && requirements.length > 0
+            ? requirements
+            : fallbackRequirements;
+
+    const ctaUrl = ppdbSetting.cta_url || "/ppdb/daftar";
+    const ctaLabel = ppdbSetting.cta_label || "Daftar Sekarang";
+
     return (
         <FrontendLayout>
             <section className="relative w-full overflow-hidden bg-[#052b66]">
                 <div className="relative min-h-[620px] w-full overflow-hidden lg:min-h-[650px]">
                     <img
-                        src="/frontend/images/ppdb-hero.jpg"
-                        alt="PPDB SMA Negeri 1 Mojokerto"
+                        src={
+                            ppdbSetting.hero_image_url ||
+                            "/frontend/images/ppdb-hero.jpg"
+                        }
+                        alt={ppdbSetting.hero_title}
                         className="absolute inset-0 h-full w-full object-cover object-center"
                         onError={(event) => {
                             event.currentTarget.src =
@@ -200,29 +275,56 @@ export default function PPDB() {
                             </div>
 
                             <p className="mt-10 text-[13px] font-semibold uppercase tracking-[0.22em] text-[#d5a542]">
-                                Penerimaan Peserta Didik Baru
+                                {ppdbSetting.eyebrow}
                             </p>
 
                             <h1 className="mt-5 font-serif text-[52px] font-semibold leading-[1.04] tracking-[-0.05em] text-white sm:text-[68px] lg:text-[82px]">
-                                PPDB SMA Negeri 1
-                                <br />
-                                Mojokerto
+                                {ppdbSetting.hero_title}
                             </h1>
 
                             <p className="mt-8 max-w-[720px] text-[18px] font-medium leading-8 text-blue-50">
-                                Bergabung bersama sekolah berprestasi,
-                                berkarakter, dan berbudaya. Daftarkan diri untuk
-                                menjadi bagian dari generasi unggul.
+                                {ppdbSetting.hero_description}
                             </p>
 
+                            {!ppdbSetting.is_open ? (
+                                <div className="mt-8 rounded-[18px] border border-yellow-300/30 bg-yellow-400/15 p-5 text-yellow-50">
+                                    <div className="flex items-start gap-4">
+                                        <div className="text-[28px]">⚠️</div>
+
+                                        <div>
+                                            <h3 className="text-[17px] font-semibold text-white">
+                                                PPDB Sedang Ditutup
+                                            </h3>
+
+                                            <p className="mt-2 text-[14px] font-medium leading-7 text-yellow-50">
+                                                {ppdbSetting.closed_message ||
+                                                    "Pendaftaran PPDB saat ini belum dibuka."}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null}
+
                             <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-                                <a
-                                    href="/ppdb/daftar"
-                                    className="inline-flex min-h-[58px] items-center justify-center gap-4 rounded-[6px] bg-[#f7c46a] px-8 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#061b46] shadow-lg shadow-blue-950/20 transition hover:bg-[#ffd277]"
-                                >
-                                    Daftar Sekarang
-                                    <span className="text-[20px] leading-none">›</span>
-                                </a>
+                                {ppdbSetting.is_open ? (
+                                    <a
+                                        href={ctaUrl}
+                                        className="inline-flex min-h-[58px] items-center justify-center gap-4 rounded-[6px] bg-[#f7c46a] px-8 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#061b46] shadow-lg shadow-blue-950/20 transition hover:bg-[#ffd277]"
+                                    >
+                                        {ctaLabel}
+                                        <span className="text-[20px] leading-none">
+                                            ›
+                                        </span>
+                                    </a>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        disabled
+                                        className="inline-flex min-h-[58px] cursor-not-allowed items-center justify-center gap-4 rounded-[6px] bg-slate-300 px-8 text-[13px] font-semibold uppercase tracking-[0.08em] text-slate-600"
+                                    >
+                                        Pendaftaran Ditutup
+                                    </button>
+                                )}
 
                                 <a
                                     href="#alur-ppdb"
@@ -234,7 +336,10 @@ export default function PPDB() {
                         </div>
 
                         <div className="lg:pl-4">
-                            <TimelineCard />
+                            <TimelineCard
+                                setting={ppdbSetting}
+                                timelineItems={timelineItems}
+                            />
                         </div>
                     </div>
                 </div>
@@ -251,12 +356,22 @@ export default function PPDB() {
                         </p>
 
                         <h2 className="mt-4 font-serif text-[44px] font-semibold leading-tight tracking-[-0.04em] text-[#061b46] sm:text-[56px]">
-                            Tahapan Pendaftaran
+                            {ppdbSetting.section_title ||
+                                "Tahapan Pendaftaran"}
                         </h2>
 
+                        {ppdbSetting.section_description ? (
+                            <p className="mt-4 max-w-3xl text-[15px] font-medium leading-8 text-slate-600">
+                                {ppdbSetting.section_description}
+                            </p>
+                        ) : null}
+
                         <div className="mt-8 grid gap-5 md:grid-cols-2">
-                            {steps.map((item) => (
-                                <StepCard key={item.number} item={item} />
+                            {stepItems.map((item) => (
+                                <StepCard
+                                    key={item.id || item.number || item.title}
+                                    item={item}
+                                />
                             ))}
                         </div>
 
@@ -292,23 +407,45 @@ export default function PPDB() {
                         </p>
 
                         <h2 className="mt-4 font-serif text-[42px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[52px]">
-                            Berkas yang Disiapkan
+                            {ppdbSetting.requirement_title ||
+                                "Berkas yang Disiapkan"}
                         </h2>
 
+                        {ppdbSetting.requirement_description ? (
+                            <p className="mt-4 text-[14px] font-medium leading-7 text-blue-100">
+                                {ppdbSetting.requirement_description}
+                            </p>
+                        ) : null}
+
                         <div className="mt-8 space-y-4">
-                            {requirements.map((item) => (
-                                <RequirementItem key={item} item={item} />
+                            {requirementItems.map((item) => (
+                                <RequirementItem
+                                    key={item.id || item.title}
+                                    item={item}
+                                />
                             ))}
                         </div>
 
-                        <a
-                            id="mulai-pendaftaran"
-                            href="/ppdb/daftar"
-                            className="mt-8 inline-flex min-h-[62px] w-full items-center justify-center gap-4 rounded-[8px] bg-[#f7c46a] px-8 text-[15px] font-semibold uppercase tracking-[0.04em] text-[#061b46] shadow-lg shadow-blue-950/20 transition hover:bg-[#ffd277]"
-                        >
-                            Mulai Pendaftaran
-                            <span className="text-[22px] leading-none">›</span>
-                        </a>
+                        {ppdbSetting.is_open ? (
+                            <a
+                                id="mulai-pendaftaran"
+                                href={ctaUrl}
+                                className="mt-8 inline-flex min-h-[62px] w-full items-center justify-center gap-4 rounded-[8px] bg-[#f7c46a] px-8 text-[15px] font-semibold uppercase tracking-[0.04em] text-[#061b46] shadow-lg shadow-blue-950/20 transition hover:bg-[#ffd277]"
+                            >
+                                {ctaLabel}
+                                <span className="text-[22px] leading-none">
+                                    ›
+                                </span>
+                            </a>
+                        ) : (
+                            <button
+                                type="button"
+                                disabled
+                                className="mt-8 inline-flex min-h-[62px] w-full cursor-not-allowed items-center justify-center rounded-[8px] bg-slate-300 px-8 text-[15px] font-semibold uppercase tracking-[0.04em] text-slate-600"
+                            >
+                                Pendaftaran Ditutup
+                            </button>
+                        )}
 
                         <div className="mt-6 flex items-center justify-center gap-3 text-center text-[14px] font-medium text-blue-100">
                             <span className="text-[#f7c46a]">🔒</span>

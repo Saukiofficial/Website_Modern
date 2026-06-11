@@ -1,6 +1,17 @@
 import { useState } from "react";
 import Icon from "./Icon";
 
+function scrollToSection(id) {
+    const target = document.querySelector(id);
+
+    if (target) {
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }
+}
+
 export default function CalendarHero({ page = null }) {
     const [semester, setSemester] = useState("Semester 1");
 
@@ -45,6 +56,14 @@ export default function CalendarHero({ page = null }) {
             icon: "book",
         },
     ];
+
+    const handleSemesterClick = (value) => {
+        setSemester(value);
+
+        setTimeout(() => {
+            scrollToSection("#semester-roadmap");
+        }, 100);
+    };
 
     return (
         <section className="relative w-full overflow-hidden bg-[#052b66]">
@@ -96,21 +115,27 @@ export default function CalendarHero({ page = null }) {
                         </p>
 
                         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                            <a
-                                href="#"
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    scrollToSection("#academic-resources")
+                                }
                                 className="inline-flex min-h-[50px] items-center justify-center gap-3 rounded-[10px] bg-[#f7b733] px-7 text-[13px] font-semibold text-[#061b46] shadow-lg shadow-yellow-950/20 transition hover:bg-yellow-300"
                             >
                                 <Icon type="download" className="h-5 w-5" />
                                 Download Academic Calendar
-                            </a>
+                            </button>
 
-                            <a
-                                href="#"
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    scrollToSection("#semester-roadmap")
+                                }
                                 className="inline-flex min-h-[50px] items-center justify-center gap-3 rounded-[10px] border border-[#f7b733]/70 bg-[#052b66]/40 px-7 text-[13px] font-semibold text-white shadow-lg shadow-blue-950/20 backdrop-blur-sm transition hover:bg-white/10"
                             >
                                 <Icon type="calendar" className="h-5 w-5" />
                                 View Semester Schedule
-                            </a>
+                            </button>
                         </div>
 
                         <div className="mt-8 flex flex-col gap-3 text-white sm:flex-row sm:items-center sm:gap-4">
@@ -120,7 +145,9 @@ export default function CalendarHero({ page = null }) {
 
                             <button
                                 type="button"
-                                onClick={() => setSemester("Semester 1")}
+                                onClick={() =>
+                                    handleSemesterClick("Semester 1")
+                                }
                                 className={`inline-flex h-11 items-center gap-3 rounded-full border px-5 text-[12px] font-bold transition ${
                                     semester === "Semester 1"
                                         ? "border-[#f7b733] bg-[#0a3d85]/95 text-white shadow-lg shadow-blue-950/25"
@@ -139,7 +166,9 @@ export default function CalendarHero({ page = null }) {
 
                             <button
                                 type="button"
-                                onClick={() => setSemester("Semester 2")}
+                                onClick={() =>
+                                    handleSemesterClick("Semester 2")
+                                }
                                 className={`inline-flex h-11 items-center gap-3 rounded-full border px-5 text-[12px] font-bold transition ${
                                     semester === "Semester 2"
                                         ? "border-[#f7b733] bg-[#0a3d85]/95 text-white shadow-lg shadow-blue-950/25"

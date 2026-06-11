@@ -307,6 +307,169 @@ function CalendarRepeater({ items, onAdd, onChange, onToggle, onRemove, errors }
     );
 }
 
+function ResourceRepeater({
+    items,
+    onAdd,
+    onChange,
+    onFileChange,
+    onToggle,
+    onRemove,
+    errors,
+}) {
+    return (
+        <div>
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h3 className="text-[18px] font-black text-[#061b46]">
+                    Data Dokumen Akademik
+                </h3>
+
+                <button
+                    type="button"
+                    onClick={onAdd}
+                    className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] bg-blue-50 px-5 text-[12px] font-extrabold uppercase tracking-[0.08em] text-blue-700 transition hover:bg-blue-100"
+                >
+                    Tambah Dokumen
+                </button>
+            </div>
+
+            <div className="space-y-4">
+                {items.length > 0 ? (
+                    items.map((item, index) => (
+                        <div
+                            key={index}
+                            className="rounded-[24px] border border-slate-200 bg-slate-50 p-5"
+                        >
+                            <div className="mb-5 flex flex-col gap-3 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
+                                <div>
+                                    <p className="text-[12px] font-extrabold uppercase tracking-[0.14em] text-[#d59a25]">
+                                        Dokumen {index + 1}
+                                    </p>
+
+                                    <h3 className="mt-1 text-[20px] font-black text-[#061b46]">
+                                        {item.title || "Judul Dokumen"}
+                                    </h3>
+                                </div>
+
+                                <RemoveButton onClick={() => onRemove(index)} />
+                            </div>
+
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <TextInput
+                                    label="Judul Dokumen"
+                                    value={item.title}
+                                    onChange={(event) =>
+                                        onChange(index, "title", event.target.value)
+                                    }
+                                    error={errors?.[`resources.${index}.title`]}
+                                    placeholder="Academic Calendar 2026/2027"
+                                />
+
+                                <TextInput
+                                    label="Tipe File"
+                                    value={item.type}
+                                    onChange={(event) =>
+                                        onChange(index, "type", event.target.value)
+                                    }
+                                    error={errors?.[`resources.${index}.type`]}
+                                    placeholder="PDF"
+                                />
+
+                                <TextInput
+                                    label="Urutan"
+                                    type="number"
+                                    value={item.sort_order}
+                                    onChange={(event) =>
+                                        onChange(index, "sort_order", event.target.value)
+                                    }
+                                    error={errors?.[`resources.${index}.sort_order`]}
+                                    placeholder="1"
+                                />
+
+                                <label className="flex cursor-pointer items-center justify-between rounded-[18px] border border-slate-200 bg-white px-5 py-4">
+                                    <div>
+                                        <p className="text-[14px] font-extrabold text-[#061b46]">
+                                            Status Aktif
+                                        </p>
+
+                                        <p className="mt-1 text-[12px] font-semibold text-slate-500">
+                                            Tampilkan dokumen ini di frontend.
+                                        </p>
+                                    </div>
+
+                                    <input
+                                        type="checkbox"
+                                        checked={Boolean(item.is_active)}
+                                        onChange={(event) =>
+                                            onToggle(
+                                                index,
+                                                "is_active",
+                                                event.target.checked
+                                            )
+                                        }
+                                        className="h-5 w-5 rounded border-slate-300 text-[#0b73e8] focus:ring-[#0b73e8]"
+                                    />
+                                </label>
+
+                                <div className="md:col-span-2">
+                                    <label className="mb-2 block text-[13px] font-extrabold text-[#061b46]">
+                                        Upload File Dokumen
+                                    </label>
+
+                                    <label className="flex cursor-pointer flex-col items-center justify-center rounded-[22px] border-2 border-dashed border-slate-200 bg-white px-5 py-6 text-center transition hover:border-[#0b73e8] hover:bg-blue-50">
+                                        <input
+                                            type="file"
+                                            accept=".pdf,.doc,.docx,.xls,.xlsx"
+                                            onChange={(event) =>
+                                                onFileChange(index, event)
+                                            }
+                                            className="hidden"
+                                        />
+
+                                        <div className="text-[42px]">📄</div>
+
+                                        <p className="mt-3 text-[14px] font-extrabold text-[#061b46]">
+                                            {item.file
+                                                ? item.file.name
+                                                : item.file_url
+                                                ? "File sudah tersedia, klik untuk ganti"
+                                                : "Klik untuk upload dokumen"}
+                                        </p>
+
+                                        <p className="mt-2 text-[12px] font-semibold text-slate-500">
+                                            PDF, DOC, DOCX, XLS, XLSX. Maksimal 10MB.
+                                        </p>
+                                    </label>
+
+                                    {item.file_url ? (
+                                        <a
+                                            href={item.file_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="mt-3 inline-flex min-h-[40px] items-center justify-center rounded-[12px] bg-blue-50 px-4 text-[12px] font-extrabold text-blue-700 transition hover:bg-blue-100"
+                                        >
+                                            Lihat File Saat Ini
+                                        </a>
+                                    ) : null}
+
+                                    {errors?.[`resources.${index}.file`] ? (
+                                        <p className="mt-2 text-[12px] font-bold text-red-600">
+                                            {errors[`resources.${index}.file`]}
+                                        </p>
+                                    ) : null}
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-bold text-slate-500">
+                        Belum ada dokumen akademik.
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
 function PreviewCard({ data, page }) {
     const heroImage = data.hero_image
         ? URL.createObjectURL(data.hero_image)
@@ -357,11 +520,10 @@ function PreviewCard({ data, page }) {
 
                 <div className="rounded-[18px] border border-blue-100 bg-blue-50 p-4">
                     <p className="text-[26px] font-black text-[#061b46]">
-                        {data.calendars?.filter((item) => item.is_active)
-                            .length || 0}
+                        {data.resources?.length || 0}
                     </p>
                     <p className="mt-1 text-[12px] font-bold text-slate-600">
-                        Agenda Aktif
+                        Total Dokumen
                     </p>
                 </div>
             </div>
@@ -369,7 +531,7 @@ function PreviewCard({ data, page }) {
     );
 }
 
-export default function Edit({ page, calendars = [] }) {
+export default function Edit({ page, calendars = [], resources = [] }) {
     const { data, setData, post, processing, errors } = useForm({
         hero_title: page?.hero_title || "",
         hero_subtitle: page?.hero_subtitle || "",
@@ -391,6 +553,7 @@ export default function Edit({ page, calendars = [] }) {
         achievement_description: page?.achievement_description || "",
 
         calendars: Array.isArray(calendars) ? calendars : [],
+        resources: Array.isArray(resources) ? resources : [],
     });
 
     const setField = (field, value) => {
@@ -437,6 +600,50 @@ export default function Edit({ page, calendars = [] }) {
         ]);
     };
 
+    const updateResource = (index, field, value) => {
+        const nextResources = [...data.resources];
+
+        nextResources[index] = {
+            ...nextResources[index],
+            [field]: value,
+        };
+
+        setData("resources", nextResources);
+    };
+
+    const updateResourceFile = (index, event) => {
+        const nextResources = [...data.resources];
+
+        nextResources[index] = {
+            ...nextResources[index],
+            file: event.target.files?.[0] || null,
+        };
+
+        setData("resources", nextResources);
+    };
+
+    const removeResource = (index) => {
+        setData(
+            "resources",
+            data.resources.filter((_, currentIndex) => currentIndex !== index)
+        );
+    };
+
+    const addResource = () => {
+        setData("resources", [
+            ...data.resources,
+            {
+                id: null,
+                title: "",
+                type: "PDF",
+                file: null,
+                file_url: null,
+                sort_order: data.resources.length + 1,
+                is_active: true,
+            },
+        ]);
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -461,8 +668,8 @@ export default function Edit({ page, calendars = [] }) {
                     </h1>
 
                     <p className="mt-4 max-w-2xl text-[14px] font-medium leading-7 text-blue-100">
-                        Atur hero akademik, judul setiap tab, dan data kalender
-                        akademik yang tampil di frontend.
+                        Atur hero akademik, judul setiap tab, data kalender,
+                        dan dokumen akademik yang tampil di frontend.
                     </p>
                 </div>
 
@@ -676,6 +883,22 @@ export default function Edit({ page, calendars = [] }) {
                             onChange={updateCalendar}
                             onToggle={updateCalendar}
                             onRemove={removeCalendar}
+                            errors={errors}
+                        />
+                    </SectionCard>
+
+                    <SectionCard
+                        eyebrow="Dokumen"
+                        title="Dokumen Akademik"
+                        description="Upload dokumen seperti kalender akademik, jadwal ujian, panduan orang tua, dan dokumen pendukung lainnya."
+                    >
+                        <ResourceRepeater
+                            items={data.resources}
+                            onAdd={addResource}
+                            onChange={updateResource}
+                            onFileChange={updateResourceFile}
+                            onToggle={updateResource}
+                            onRemove={removeResource}
                             errors={errors}
                         />
                     </SectionCard>

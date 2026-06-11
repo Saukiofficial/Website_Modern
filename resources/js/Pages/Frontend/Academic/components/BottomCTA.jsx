@@ -1,5 +1,16 @@
 import Icon from "./Icon";
 
+function scrollToSection(id) {
+    const target = document.querySelector(id);
+
+    if (target) {
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }
+}
+
 export default function BottomCTA({ activeTab }) {
     if (activeTab === "calendar") {
         return (
@@ -9,6 +20,7 @@ export default function BottomCTA({ activeTab }) {
                         <div className="hidden h-20 w-20 shrink-0 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-[#f7b733] sm:flex">
                             <Icon type="graduate" className="h-12 w-12" />
                         </div>
+
                         <div>
                             <h2 className="text-[24px] font-semibold sm:text-[34px]">
                                 Academic Excellence Starts Here
@@ -21,20 +33,27 @@ export default function BottomCTA({ activeTab }) {
                     </div>
 
                     <div className="flex flex-col gap-3 sm:flex-row">
-                        <a
-                            href="#"
+                        <button
+                            type="button"
+                            onClick={() =>
+                                scrollToSection("#academic-resources")
+                            }
                             className="inline-flex h-12 items-center justify-center gap-3 rounded-xl bg-[#f7b733] px-7 text-[13px] font-semibold text-[#061b46] shadow-lg transition hover:bg-yellow-300"
                         >
                             <Icon type="download" className="h-4 w-4" />
                             Download Calendar
-                        </a>
-                        <a
-                            href="#"
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                scrollToSection("#academic-office")
+                            }
                             className="inline-flex h-12 items-center justify-center gap-3 rounded-xl border border-white/30 px-7 text-[13px] font-semibold text-white transition hover:bg-white/10"
                         >
                             Contact Academic Office
                             <span>→</span>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -48,6 +67,7 @@ export default function BottomCTA({ activeTab }) {
                     <div className="hidden h-20 w-20 shrink-0 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-[#f7b733] sm:flex">
                         <Icon type="graduate" className="h-12 w-12" />
                     </div>
+
                     <div>
                         <h2 className="text-[23px] font-semibold leading-tight sm:text-[28px]">
                             Bersama Sekolah Profesional
@@ -60,19 +80,21 @@ export default function BottomCTA({ activeTab }) {
 
                 <div className="flex flex-col gap-3 sm:flex-row">
                     <a
-                        href="#"
+                        href="/ppdb"
                         className="inline-flex h-12 items-center justify-center gap-3 rounded-xl bg-[#f7b733] px-7 text-[13px] font-semibold text-[#061b46] shadow-lg transition hover:bg-yellow-300"
                     >
-                        Hubungi Sekolah
+                        Daftar PPDB
                         <span>→</span>
                     </a>
-                    <a
-                        href="#"
+
+                    <button
+                        type="button"
+                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                         className="inline-flex h-12 items-center justify-center gap-3 rounded-xl border border-white/30 px-7 text-[13px] font-semibold text-white transition hover:bg-white/10"
                     >
                         Lihat Program Akademik
                         <span>›</span>
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>

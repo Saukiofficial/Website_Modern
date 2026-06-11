@@ -1,75 +1,131 @@
 import { Link, usePage } from "@inertiajs/react";
 import { useMemo, useState } from "react";
 
-const sidebarMenus = [
+const sidebarGroups = [
     {
-        label: "Dashboard",
-        href: "/admin/dashboard",
-        icon: "📊",
+        title: "Utama",
+        menus: [
+            {
+                label: "Dashboard",
+                href: "/admin/dashboard",
+                icon: "📊",
+            },
+        ],
     },
     {
-        label: "Setting Sekolah",
-        href: "/admin/settings",
-        icon: "🏫",
+        title: "Website",
+        menus: [
+            {
+                label: "Setting Sekolah",
+                href: "/admin/settings",
+                icon: "🏫",
+            },
+            {
+                label: "Navbar Menu",
+                href: "/admin/menus",
+                icon: "🧭",
+            },
+            {
+                label: "Beranda",
+                href: "/admin/home",
+                icon: "🏠",
+            },
+        ],
     },
     {
-        label: "Navbar Menu",
-        href: "/admin/menus",
-        icon: "🧭",
+        title: "Profil Sekolah",
+        menus: [
+            {
+                label: "Profil",
+                href: "/admin/profiles",
+                icon: "📘",
+            },
+            {
+                label: "Struktur Organisasi",
+                href: "/admin/profiles/structure",
+                icon: "🏛️",
+            },
+        ],
     },
     {
-        label: "Beranda",
-        href: "/admin/home",
-        icon: "🏠",
+        title: "Akademik",
+        menus: [
+            {
+                label: "Setting Akademik",
+                href: "/admin/academics",
+                icon: "🎓",
+            },
+            {
+                label: "Dewan Guru",
+                href: "/admin/academics/teachers",
+                icon: "🧑‍🏫",
+            },
+            {
+                label: "Ekstrakurikuler",
+                href: "/admin/academics/extracurriculars",
+                icon: "🏆",
+            },
+            {
+                label: "Pengurus OSIS",
+                href: "/admin/academics/osis-members",
+                icon: "👥",
+            },
+            {
+                label: "Prestasi Siswa",
+                href: "/admin/academics/achievements",
+                icon: "🏅",
+            },
+        ],
     },
     {
-        label: "Profil",
-        href: "/admin/profiles",
-        icon: "📘",
-    },
-
-    {
-    label: "Struktur Organisasi",
-    href: "/admin/profiles/structure",
-    icon: "🏛️",
-    },
-
-    {
-    label: "Akademik",
-    href: "/admin/academics",
-    icon: "🎓",
-    },
-
-    {
-    label: "Dewan Guru",
-    href: "/admin/academics/teachers",
-    icon: "🧑‍🏫",
-    },
-
-    {
-        label: "Kesiswaan",
-        href: "/admin/student-programs",
-        icon: "👥",
+        title: "Kesiswaan",
+        menus: [
+            {
+                label: "Program Kesiswaan",
+                href: "/admin/student-programs",
+                icon: "👥",
+            },
+            {
+                label: "Pendaftaran Kesiswaan",
+                href: "/admin/student-registrations",
+                icon: "📝",
+            },
+        ],
     },
     {
-        label: "Informasi",
-        href: "/admin/posts",
-        icon: "📰",
+        title: "Konten",
+        menus: [
+            {
+                label: "Informasi",
+                href: "/admin/posts",
+                icon: "📰",
+            },
+            {
+                label: "Galeri",
+                href: "/admin/galleries",
+                icon: "🖼️",
+            },
+        ],
     },
     {
-        label: "Galeri",
-        href: "/admin/galleries",
-        icon: "🖼️",
-    },
-    {
-        label: "PPDB",
-        href: "/admin/ppdb-periods",
-        icon: "📝",
-    },
-    {
-        label: "Pendaftar PPDB",
-        href: "/admin/ppdb-registrations",
-        icon: "📂",
+        title: "PPDB",
+        menus: [
+            {
+                label: "Setting PPDB",
+                href: "/admin/ppdb-periods",
+                icon: "📝",
+            },
+            {
+            label: "Konten PPDB",
+            href: "/admin/ppdb-content",
+            icon: "🧩",
+            },
+            {
+                label: "Pendaftar PPDB",
+                href: "/admin/ppdb-registrations",
+                icon: "📂",
+            },
+        ],
     },
 ];
 
@@ -79,6 +135,71 @@ function isActiveMenu(currentPath, href) {
     }
 
     return currentPath === href || currentPath.startsWith(`${href}/`);
+}
+
+function isActiveGroup(currentPath, menus) {
+    return menus.some((menu) => isActiveMenu(currentPath, menu.href));
+}
+
+function SidebarMenuItem({ menu, active, onClose }) {
+    return (
+        <Link
+            href={menu.href}
+            onClick={onClose}
+            className={`group flex min-h-[46px] items-center gap-3 rounded-[14px] px-3 text-[13px] font-bold transition ${
+                active
+                    ? "bg-white text-[#061b46] shadow-lg shadow-black/10"
+                    : "text-blue-50 hover:bg-white/10 hover:text-white"
+            }`}
+        >
+            <span
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[17px] transition ${
+                    active ? "bg-[#f4f8fc]" : "bg-white/5 group-hover:bg-white/10"
+                }`}
+            >
+                {menu.icon}
+            </span>
+
+            <span className="min-w-0 truncate">{menu.label}</span>
+        </Link>
+    );
+}
+
+function SidebarGroup({ group, currentPath, onClose }) {
+    const activeGroup = isActiveGroup(currentPath, group.menus);
+
+    return (
+        <div className="space-y-2">
+            <div className="flex items-center justify-between px-3">
+                <p
+                    className={`text-[10.5px] font-extrabold uppercase tracking-[0.18em] ${
+                        activeGroup ? "text-[#f7c46a]" : "text-blue-200/80"
+                    }`}
+                >
+                    {group.title}
+                </p>
+
+                {activeGroup ? (
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#f7c46a]" />
+                ) : null}
+            </div>
+
+            <div className="space-y-1.5">
+                {group.menus.map((menu) => {
+                    const active = isActiveMenu(currentPath, menu.href);
+
+                    return (
+                        <SidebarMenuItem
+                            key={menu.href}
+                            menu={menu}
+                            active={active}
+                            onClose={onClose}
+                        />
+                    );
+                })}
+            </div>
+        </div>
+    );
 }
 
 function SidebarContent({ currentPath, onClose }) {
@@ -93,6 +214,7 @@ function SidebarContent({ currentPath, onClose }) {
                     <h1 className="truncate text-[18px] font-extrabold leading-tight">
                         Admin Sekolah
                     </h1>
+
                     <p className="mt-1 truncate text-[12px] font-semibold text-blue-100">
                         Custom React Panel
                     </p>
@@ -100,50 +222,47 @@ function SidebarContent({ currentPath, onClose }) {
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-5">
-                <p className="px-3 text-[11px] font-extrabold uppercase tracking-[0.18em] text-blue-200">
-                    Menu Admin
-                </p>
+                <div className="mb-5 rounded-[18px] border border-white/10 bg-white/5 px-4 py-4">
+                    <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#f7c46a]">
+                        Menu Admin
+                    </p>
 
-                <nav className="mt-4 space-y-1.5">
-                    {sidebarMenus.map((menu) => {
-                        const active = isActiveMenu(currentPath, menu.href);
+                    <p className="mt-2 text-[12px] font-medium leading-5 text-blue-100">
+                        Kelola konten website sekolah berdasarkan kategori.
+                    </p>
+                </div>
 
-                        return (
-                            <Link
-                                key={menu.href}
-                                href={menu.href}
-                                onClick={onClose}
-                                className={`flex min-h-[46px] items-center gap-3 rounded-[14px] px-3 text-[13px] font-bold transition ${
-                                    active
-                                        ? "bg-white text-[#061b46] shadow-lg shadow-black/10"
-                                        : "text-blue-50 hover:bg-white/10 hover:text-white"
-                                }`}
-                            >
-                                <span className="text-[18px]">{menu.icon}</span>
-                                <span>{menu.label}</span>
-                            </Link>
-                        );
-                    })}
+                <nav className="space-y-6">
+                    {sidebarGroups.map((group) => (
+                        <SidebarGroup
+                            key={group.title}
+                            group={group}
+                            currentPath={currentPath}
+                            onClose={onClose}
+                        />
+                    ))}
                 </nav>
             </div>
 
-        <div className="space-y-3">
-            <Link
-                href="/"
-                className="flex min-h-[46px] items-center justify-center rounded-[14px] border border-white/15 bg-white/5 px-4 text-[13px] font-bold text-white transition hover:bg-white/10"
-            >
-                Lihat Frontend
-            </Link>
+            <div className="border-t border-white/10 p-4">
+                <div className="space-y-3">
+                    <Link
+                        href="/"
+                        className="flex min-h-[46px] items-center justify-center rounded-[14px] border border-white/15 bg-white/5 px-4 text-[13px] font-bold text-white transition hover:bg-white/10"
+                    >
+                        Lihat Frontend
+                    </Link>
 
-            <Link
-                href="/admin/logout"
-                method="post"
-                as="button"
-                className="flex min-h-[46px] w-full items-center justify-center rounded-[14px] bg-red-500 px-4 text-[13px] font-bold text-white transition hover:bg-red-600"
-            >
-                Logout
-            </Link>
-        </div>
+                    <Link
+                        href="/admin/logout"
+                        method="post"
+                        as="button"
+                        className="flex min-h-[46px] w-full items-center justify-center rounded-[14px] bg-red-500 px-4 text-[13px] font-bold text-white transition hover:bg-red-600"
+                    >
+                        Logout
+                    </Link>
+                </div>
+            </div>
         </div>
     );
 }
@@ -169,6 +288,7 @@ function Topbar({ title, onOpenSidebar }) {
                         <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#d59a25]">
                             Admin Panel
                         </p>
+
                         <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.03em] text-[#061b46] sm:text-[26px]">
                             {title}
                         </h2>
@@ -180,6 +300,7 @@ function Topbar({ title, onOpenSidebar }) {
                         <p className="text-[13px] font-extrabold text-[#061b46]">
                             {user?.name || "Administrator"}
                         </p>
+
                         <p className="mt-0.5 text-[11px] font-semibold text-slate-500">
                             {user?.email || "admin@sekolah.test"}
                         </p>

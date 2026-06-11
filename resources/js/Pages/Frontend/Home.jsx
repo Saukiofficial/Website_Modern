@@ -32,46 +32,64 @@ const fallbackStats = [
     },
 ];
 
-const news = [
+const fallbackNews = [
     {
         title: "SMA Negeri 1 Cerdas Raih Juara 1 Olimpiade Sains Nasional 2024",
         date: "10 Mei 2024",
         image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80",
+        url: "/informasi",
     },
     {
         title: "Kegiatan Pesantren Kilat Ramadan 1445 H",
         date: "25 Maret 2024",
         image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=400&q=80",
+        url: "/informasi",
     },
     {
         title: "Workshop Literasi Digital untuk Siswa",
         date: "15 Februari 2024",
         image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80",
+        url: "/informasi",
     },
 ];
 
-const gallery = [
-    "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=500&q=80",
+const fallbackGallery = [
+    {
+        title: "Galeri 1",
+        image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80",
+    },
+    {
+        title: "Galeri 2",
+        image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&fit=crop&w=500&q=80",
+    },
+    {
+        title: "Galeri 3",
+        image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=500&q=80",
+    },
+    {
+        title: "Galeri 4",
+        image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=500&q=80",
+    },
 ];
 
-const announcements = [
+const fallbackAnnouncements = [
     {
         day: "15",
         month: "MEI",
         title: "Libur Hari Kenaikan Isa Almasih",
+        url: "/informasi",
     },
     {
         day: "22",
         month: "MEI",
         title: "Asesmen Sumatif Akhir Semester Genap",
+        url: "/informasi",
     },
     {
         day: "01",
         month: "JUN",
         title: "Pembagian Rapor Semester Genap",
+        url: "/informasi",
     },
 ];
 
@@ -131,11 +149,33 @@ function getHomeValue(homeSection, key, fallback) {
     return homeSection[key] || fallback;
 }
 
-export default function Home({ homeSection = null, statistics = [] }) {
+export default function Home({
+    homeSection = null,
+    statistics = [],
+    latestNews = [],
+    galleryItems = [],
+    announcements = [],
+    ppdbSetting = null,
+}) {
     const dynamicStats =
         Array.isArray(statistics) && statistics.length > 0
             ? statistics
             : fallbackStats;
+
+    const dynamicNews =
+        Array.isArray(latestNews) && latestNews.length > 0
+            ? latestNews
+            : fallbackNews;
+
+    const dynamicGallery =
+        Array.isArray(galleryItems) && galleryItems.length > 0
+            ? galleryItems
+            : fallbackGallery;
+
+    const dynamicAnnouncements =
+        Array.isArray(announcements) && announcements.length > 0
+            ? announcements
+            : fallbackAnnouncements;
 
     const heroTitle = getHomeValue(
         homeSection,
@@ -166,29 +206,25 @@ export default function Home({ homeSection = null, statistics = [] }) {
 
     const heroImage = homeSection?.hero_image_url || fallbackImagePath.students;
 
-    const ppdbTitle = getHomeValue(
-        homeSection,
-        "ppdb_title",
-        "PPDB 2024/2025"
-    );
+    const ppdbTitle =
+        homeSection?.ppdb_title ||
+        `PPDB ${ppdbSetting?.academic_year || "2026/2027"}`;
 
     const ppdbDescription = getHomeValue(
         homeSection,
         "ppdb_description",
-        "Bergabunglah bersama kami dan wujudkan masa depan terbaik Anda!"
+        ppdbSetting?.is_open === false
+            ? "Pendaftaran peserta didik baru saat ini belum dibuka. Pantau terus informasi resmi dari sekolah."
+            : "Bergabunglah bersama kami dan wujudkan masa depan terbaik Anda!"
     );
 
-    const ppdbButtonText = getHomeValue(
-        homeSection,
-        "ppdb_button_text",
-        "Daftar Sekarang"
-    );
+    const ppdbButtonText =
+        homeSection?.ppdb_button_text ||
+        ppdbSetting?.cta_label ||
+        (ppdbSetting?.is_open === false ? "PPDB Ditutup" : "Daftar Sekarang");
 
-    const ppdbButtonUrl = getHomeValue(
-        homeSection,
-        "ppdb_button_url",
-        "/ppdb/daftar"
-    );
+    const ppdbButtonUrl =
+        homeSection?.ppdb_button_url || ppdbSetting?.cta_url || "/ppdb/daftar";
 
     return (
         <FrontendLayout>
@@ -211,21 +247,24 @@ export default function Home({ homeSection = null, statistics = [] }) {
                     <div
                         className="absolute inset-y-0 left-0 z-10 hidden w-[70%] bg-[linear-gradient(90deg,rgba(5,37,86,0.96)_0%,rgba(6,68,147,0.88)_45%,rgba(6,68,147,0.34)_75%,rgba(6,68,147,0)_100%)] md:block lg:w-[66%]"
                         style={{
-                            clipPath: "polygon(0 0, 76% 0, 60% 100%, 0 100%)",
+                            clipPath:
+                                "polygon(0 0, 76% 0, 60% 100%, 0 100%)",
                         }}
                     />
 
                     <div
                         className="absolute inset-y-0 left-0 z-10 hidden w-[58%] bg-[radial-gradient(circle_at_28%_45%,rgba(0,0,0,0.20)_0%,rgba(0,0,0,0.12)_38%,rgba(0,0,0,0)_72%)] md:block lg:w-[54%]"
                         style={{
-                            clipPath: "polygon(0 0, 84% 0, 65% 100%, 0 100%)",
+                            clipPath:
+                                "polygon(0 0, 84% 0, 65% 100%, 0 100%)",
                         }}
                     />
 
                     <div
                         className="absolute inset-y-0 left-[36%] z-10 hidden w-[24%] bg-white/5 backdrop-blur-[1px] md:block lg:left-[35%] lg:w-[25%]"
                         style={{
-                            clipPath: "polygon(28% 0, 100% 0, 66% 100%, 0 100%)",
+                            clipPath:
+                                "polygon(28% 0, 100% 0, 66% 100%, 0 100%)",
                         }}
                     />
 
@@ -315,13 +354,17 @@ export default function Home({ homeSection = null, statistics = [] }) {
                     </div>
 
                     <div className="space-y-4">
-                        {news.map((item) => (
-                            <article
-                                key={item.title}
-                                className="flex gap-4 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0"
+                        {dynamicNews.map((item) => (
+                            <a
+                                href={item.url || "/informasi"}
+                                key={item.id || item.title}
+                                className="flex gap-4 border-b border-slate-100 pb-4 transition hover:opacity-85 last:border-b-0 last:pb-0"
                             >
                                 <img
-                                    src={item.image}
+                                    src={
+                                        item.image ||
+                                        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80"
+                                    }
                                     alt={item.title}
                                     className="h-[72px] w-[86px] shrink-0 rounded-xl object-cover sm:h-[82px] sm:w-[96px]"
                                 />
@@ -331,10 +374,10 @@ export default function Home({ homeSection = null, statistics = [] }) {
                                         {item.title}
                                     </h3>
                                     <p className="mt-2 text-[11px] font-semibold text-slate-500">
-                                        {item.date}
+                                        {item.date || "-"}
                                     </p>
                                 </div>
-                            </article>
+                            </a>
                         ))}
                     </div>
                 </div>
@@ -356,13 +399,21 @@ export default function Home({ homeSection = null, statistics = [] }) {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                        {gallery.map((item, index) => (
-                            <img
-                                key={index}
-                                src={item}
-                                alt={`Galeri ${index + 1}`}
-                                className="h-[76px] w-full rounded-xl object-cover sm:h-[96px] md:h-[92px]"
-                            />
+                        {dynamicGallery.map((item, index) => (
+                            <a
+                                href="/galeri"
+                                key={item.id || index}
+                                className="group block overflow-hidden rounded-xl bg-slate-100"
+                            >
+                                <img
+                                    src={
+                                        item.image ||
+                                        "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80"
+                                    }
+                                    alt={item.title || `Galeri ${index + 1}`}
+                                    className="h-[76px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[96px] md:h-[92px]"
+                                />
+                            </a>
                         ))}
                     </div>
                 </div>
@@ -381,24 +432,25 @@ export default function Home({ homeSection = null, statistics = [] }) {
                     </div>
 
                     <div className="space-y-3">
-                        {announcements.map((item) => (
-                            <article
-                                key={item.title}
-                                className="flex gap-3 border-b border-slate-100 pb-3 last:border-b-0 last:pb-0"
+                        {dynamicAnnouncements.map((item) => (
+                            <a
+                                href={item.url || "/informasi"}
+                                key={item.id || item.title}
+                                className="flex gap-3 border-b border-slate-100 pb-3 transition hover:opacity-85 last:border-b-0 last:pb-0"
                             >
                                 <div className="flex h-[50px] w-[46px] shrink-0 flex-col items-center justify-center rounded-md bg-blue-50 text-[#064493] sm:h-[54px] sm:w-[52px]">
                                     <span className="text-[20px] font-extrabold leading-none sm:text-[23px]">
-                                        {item.day}
+                                        {item.day || "-"}
                                     </span>
                                     <span className="mt-1 text-[9px] font-extrabold sm:text-[10px]">
-                                        {item.month}
+                                        {item.month || "-"}
                                     </span>
                                 </div>
 
                                 <h3 className="pt-1 text-[11.5px] font-extrabold leading-snug text-slate-950 sm:text-[13px]">
                                     {item.title}
                                 </h3>
-                            </article>
+                            </a>
                         ))}
                     </div>
 
@@ -431,12 +483,21 @@ export default function Home({ homeSection = null, statistics = [] }) {
                         </div>
 
                         <div className="flex flex-col justify-end gap-4">
-                            <a
-                                href={ppdbButtonUrl}
-                                className="flex h-[48px] items-center justify-center rounded-xl bg-white px-4 text-[16px] font-extrabold text-[#064493] shadow-lg transition hover:bg-blue-50"
-                            >
-                                {ppdbButtonText}
-                            </a>
+                            {ppdbSetting?.is_open === false ? (
+                                <a
+                                    href="/ppdb"
+                                    className="flex h-[48px] items-center justify-center rounded-xl bg-white/20 px-4 text-[16px] font-extrabold text-white ring-1 ring-white/30 transition hover:bg-white/25"
+                                >
+                                    {ppdbButtonText}
+                                </a>
+                            ) : (
+                                <a
+                                    href={ppdbButtonUrl}
+                                    className="flex h-[48px] items-center justify-center rounded-xl bg-white px-4 text-[16px] font-extrabold text-[#064493] shadow-lg transition hover:bg-blue-50"
+                                >
+                                    {ppdbButtonText}
+                                </a>
+                            )}
 
                             <div className="flex items-center gap-3 lg:mt-1">
                                 <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40">

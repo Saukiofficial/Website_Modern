@@ -1,6 +1,17 @@
 import { tabs } from "../data";
 import Icon from "./Icon";
 
+function scrollToSection(id) {
+    const target = document.querySelector(id);
+
+    if (target) {
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    }
+}
+
 export default function SidebarMenu({ activeTab, setActiveTab }) {
     return (
         <aside className="lg:sticky lg:top-[96px]">
@@ -59,26 +70,30 @@ export default function SidebarMenu({ activeTab, setActiveTab }) {
                     <div className="text-[42px] leading-none text-[#f7b733]">
                         “
                     </div>
+
                     <p className="mt-2 text-[18px] font-semibold leading-8">
                         Pendidikan adalah bekal terbaik untuk masa depan yang
                         penuh peluang.
                     </p>
+
                     <p className="mt-4 text-[12px] font-medium text-blue-100">
                         — Ki Hajar Dewantara
                     </p>
 
                     <div className="mt-8 rounded-2xl bg-white/10 p-4">
                         <h3 className="text-[15px] font-semibold">Need Help?</h3>
+
                         <p className="mt-2 text-[12px] leading-6 text-blue-100">
                             Hubungi bagian akademik jika ada pertanyaan.
                         </p>
 
-                        <a
-                            href="#"
-                            className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-white px-5 text-[12px] font-semibold text-[#063f8d]"
+                        <button
+                            type="button"
+                            onClick={() => scrollToSection("#academic-office")}
+                            className="mt-4 inline-flex h-11 items-center justify-center rounded-xl bg-white px-5 text-[12px] font-semibold text-[#063f8d] transition hover:bg-blue-50"
                         >
                             Hubungi Kami
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

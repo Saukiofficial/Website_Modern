@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicCalendar;
 use App\Models\AcademicPage;
+use App\Models\AcademicResource;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -59,6 +60,22 @@ class AcademicController extends Controller
                 ];
             });
 
+        $resources = AcademicResource::query()
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(function (AcademicResource $resource) {
+                return [
+                    'id' => $resource->id,
+                    'title' => $resource->title,
+                    'type' => $resource->type,
+                    'file_path' => $resource->file_path,
+                    'file_url' => $resource->file_url,
+                    'sort_order' => $resource->sort_order,
+                    'is_active' => $resource->is_active,
+                ];
+            });
+
         return Inertia::render('Admin/Academics/Edit', [
             'page' => [
                 'id' => $page->id,
@@ -82,6 +99,7 @@ class AcademicController extends Controller
                 'achievement_description' => $page->achievement_description,
             ],
             'calendars' => $calendars,
+            'resources' => $resources,
         ]);
     }
 
@@ -124,6 +142,14 @@ class AcademicController extends Controller
             'calendars.*.icon' => ['nullable', 'string', 'max:255'],
             'calendars.*.sort_order' => ['nullable', 'integer', 'min:0'],
             'calendars.*.is_active' => ['nullable'],
+
+            'resources' => ['nullable', 'array'],
+            'resources.*.id' => ['nullable'],
+            'resources.*.title' => ['required_with:resources', 'string', 'max:255'],
+            'resources.*.type' => ['nullable', 'string', 'max:50'],
+            'resources.*.file' => ['nullable', 'file', 'mimes:pdf,doc,docx,xls,xlsx', 'max:10240'],
+            'resources.*.sort_order' => ['nullable', 'integer', 'min:0'],
+            'resources.*.is_active' => ['nullable'],
         ]);
 
         $pagePayload = [
@@ -188,6 +214,51 @@ class AcademicController extends Controller
         AcademicCalendar::query()
             ->whereNotIn('id', $calendarIds)
             ->delete();
+
+        $resourceIds = [];
+
+        foreach ($validated['resources'] ?? [] as $index => $resourceData) {
+            $resource = ! empty($resourceData['id'])
+                ? AcademicResource::query()->find($resourceData['id'])
+                : new AcademicResource();
+
+            if (! $resource) {
+                $resource = new AcademicResource();
+            }
+
+            $resource->fill([
+                'title' => $resourceData['title'],
+                'type' => $resourceData['type'] ?? 'PDF',
+                'sort_order' => $resourceData['sort_order'] ?? $index + 1,
+                'is_active' => filter_var($resourceData['is_active'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            ]);
+
+            if ($request->hasFile("resources.$index.file")) {
+                if ($resource->file_path && Storage::disk('public')->exists($resource->file_path)) {
+                    Storage::disk('public')->delete($resource->file_path);
+                }
+
+                $resource->file_path = $request
+                    ->file("resources.$index.file")
+                    ->store('academic/resources', 'public');
+            }
+
+            $resource->save();
+
+            $resourceIds[] = $resource->id;
+        }
+
+        $deletedResources = AcademicResource::query()
+            ->whereNotIn('id', $resourceIds)
+            ->get();
+
+        foreach ($deletedResources as $deletedResource) {
+            if ($deletedResource->file_path && Storage::disk('public')->exists($deletedResource->file_path)) {
+                Storage::disk('public')->delete($deletedResource->file_path);
+            }
+
+            $deletedResource->delete();
+        }
 
         return redirect()
             ->route('admin.academics.edit')

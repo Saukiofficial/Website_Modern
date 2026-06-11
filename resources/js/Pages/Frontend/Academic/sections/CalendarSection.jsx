@@ -2,13 +2,42 @@ import { useMemo, useState } from "react";
 import {
     calendarItems,
     faqItems,
-    miniCalendarDays,
     resourceFiles,
     semesterOneRoadmap,
     semesterTwoRoadmap,
     upcomingEvents,
 } from "../data";
 import Icon from "../components/Icon";
+
+const monthNames = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember",
+];
+
+const monthShortNames = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MEI",
+    "JUN",
+    "JUL",
+    "AGU",
+    "SEP",
+    "OKT",
+    "NOV",
+    "DES",
+];
 
 function getTypeBadge(type) {
     if (type === "Akademik") return "bg-blue-100 text-[#1f5bd3]";
@@ -28,25 +57,47 @@ function getEventColor(color) {
     return "text-[#1f5bd3]";
 }
 
-function getMonthFromDateText(dateText) {
-    if (!dateText) return "JUL";
+function parseDate(value) {
+    if (!value) return null;
 
-    const text = String(dateText).toUpperCase();
+    const date = new Date(value);
 
-    if (text.includes("JAN")) return "JAN";
-    if (text.includes("FEB")) return "FEB";
-    if (text.includes("MAR")) return "MAR";
-    if (text.includes("APR")) return "APR";
-    if (text.includes("MEI")) return "MEI";
-    if (text.includes("JUN")) return "JUN";
-    if (text.includes("JUL")) return "JUL";
-    if (text.includes("AGU")) return "AGU";
-    if (text.includes("SEP")) return "SEP";
-    if (text.includes("OKT")) return "OKT";
-    if (text.includes("NOV")) return "NOV";
-    if (text.includes("DES")) return "DES";
+    if (Number.isNaN(date.getTime())) {
+        return null;
+    }
 
-    return "JUL";
+    return date;
+}
+
+function getMonthIndexFromDateText(dateText) {
+    if (!dateText) return 6;
+
+    const text = String(dateText).toLowerCase();
+
+    if (text.includes("januari") || text.includes("jan")) return 0;
+    if (text.includes("februari") || text.includes("feb")) return 1;
+    if (text.includes("maret") || text.includes("mar")) return 2;
+    if (text.includes("april") || text.includes("apr")) return 3;
+    if (text.includes("mei")) return 4;
+    if (text.includes("juni") || text.includes("jun")) return 5;
+    if (text.includes("juli") || text.includes("jul")) return 6;
+    if (text.includes("agustus") || text.includes("agu")) return 7;
+    if (text.includes("september") || text.includes("sep")) return 8;
+    if (text.includes("oktober") || text.includes("okt")) return 9;
+    if (text.includes("november") || text.includes("nov")) return 10;
+    if (text.includes("desember") || text.includes("des")) return 11;
+
+    return 6;
+}
+
+function getYearFromDateText(dateText, fallbackYear = 2026) {
+    if (!dateText) return fallbackYear;
+
+    const match = String(dateText).match(/\b(20\d{2})\b/);
+
+    if (!match) return fallbackYear;
+
+    return Number(match[1]);
 }
 
 function getDayFromDateText(dateText, index) {
@@ -59,22 +110,76 @@ function getDayFromDateText(dateText, index) {
     return match[0].padStart(2, "0");
 }
 
+function getMonthOptionLabel(monthIndex, year) {
+    return `${monthNames[monthIndex]} ${year}`;
+}
+
+function getSemesterFromMonth(monthIndex) {
+    return monthIndex >= 6 && monthIndex <= 11 ? "Semester 1" : "Semester 2";
+}
+
+function getColorFromType(type) {
+    if (type === "Ujian") return "red";
+    if (type === "Kegiatan") return "green";
+    if (type === "Informasi") return "yellow";
+
+    return "blue";
+}
+
 function normalizeCalendarItems(calendars) {
     if (!Array.isArray(calendars) || calendars.length === 0) {
-        return calendarItems;
+        return calendarItems.map((item, index) => {
+            const monthIndex = getMonthIndexFromDateText(item.fullDate);
+            const year = getYearFromDateText(item.fullDate, 2026);
+
+            return {
+                id: item.id || `fallback-${index}`,
+                date: item.date || getDayFromDateText(item.fullDate, index),
+                month: item.month || monthShortNames[monthIndex],
+                monthIndex,
+                year,
+                monthLabel: getMonthOptionLabel(monthIndex, year),
+                semester: getSemesterFromMonth(monthIndex),
+                fullDate: item.fullDate,
+                type: item.type || "Akademik",
+                title: item.title || "Agenda Akademik",
+                description:
+                    item.description || "Informasi kegiatan akademik sekolah.",
+                icon: item.icon || "📅",
+            };
+        });
     }
 
     return calendars.map((item, index) => {
+        const dateObject = parseDate(item.start_date);
         const fullDate = item.date_text || item.fullDate || item.start_date || "-";
+
+        const monthIndex = dateObject
+            ? dateObject.getMonth()
+            : getMonthIndexFromDateText(fullDate);
+
+        const year = dateObject
+            ? dateObject.getFullYear()
+            : getYearFromDateText(fullDate, 2026);
+
+        const date = dateObject
+            ? String(dateObject.getDate()).padStart(2, "0")
+            : getDayFromDateText(fullDate, index);
 
         return {
             id: item.id || index,
-            date: item.date || getDayFromDateText(fullDate, index),
-            month: item.month || getMonthFromDateText(fullDate),
+            date,
+            month: monthShortNames[monthIndex],
+            monthIndex,
+            year,
+            monthLabel: getMonthOptionLabel(monthIndex, year),
+            semester: getSemesterFromMonth(monthIndex),
             fullDate,
             type: item.category || item.type || "Akademik",
             title: item.title || "Agenda Akademik",
-            description: item.description || "Informasi kegiatan akademik sekolah.",
+            description:
+                item.description || "Informasi kegiatan akademik sekolah.",
+            icon: item.icon || "📅",
         };
     });
 }
@@ -85,34 +190,167 @@ function normalizeUpcomingEvents(items) {
     }
 
     return items.slice(0, 4).map((item, index) => ({
-        date: item.date || getDayFromDateText(item.fullDate || item.date_text, index),
-        month: item.month || getMonthFromDateText(item.fullDate || item.date_text),
+        date: item.date || getDayFromDateText(item.fullDate, index),
+        month: item.month || monthShortNames[item.monthIndex || 6],
         title: item.title || "Agenda Akademik",
         subtitle: item.fullDate || item.date_text || "-",
-        color:
-            item.type === "Ujian"
-                ? "red"
-                : item.type === "Kegiatan"
-                ? "green"
-                : item.type === "Informasi"
-                ? "yellow"
-                : "blue",
+        color: getColorFromType(item.type),
     }));
 }
 
-export default function CalendarSection({ calendars = [] }) {
-    const [semester, setSemester] = useState("Semester 1");
-    const [category, setCategory] = useState("Semua");
-    const [month, setMonth] = useState("Juli 2026");
-    const [search, setSearch] = useState("");
+function buildMiniCalendarDays(year, monthIndex, events) {
+    const firstDate = new Date(year, monthIndex, 1);
+    const lastDate = new Date(year, monthIndex + 1, 0);
 
+    const firstDay = firstDate.getDay() === 0 ? 6 : firstDate.getDay() - 1;
+    const totalDays = lastDate.getDate();
+
+    const previousMonthLastDate = new Date(year, monthIndex, 0).getDate();
+
+    const days = [];
+
+    for (let index = firstDay - 1; index >= 0; index -= 1) {
+        days.push({
+            value: String(previousMonthLastDate - index),
+            muted: true,
+        });
+    }
+
+    for (let day = 1; day <= totalDays; day += 1) {
+        const event = events.find((item) => Number(item.date) === day);
+
+        let active = null;
+
+        if (event) {
+            if (event.type === "Ujian") {
+                active = "holiday";
+            } else if (event.type === "Kegiatan") {
+                active = "event";
+            } else {
+                active = "academic";
+            }
+        }
+
+        const realDate = new Date(year, monthIndex, day);
+
+        days.push({
+            value: String(day),
+            active,
+            sunday: realDate.getDay() === 0,
+        });
+    }
+
+    let nextDay = 1;
+
+    while (days.length % 7 !== 0) {
+        days.push({
+            value: String(nextDay),
+            muted: true,
+        });
+
+        nextDay += 1;
+    }
+
+    return days;
+}
+
+function ResourceButton({ item }) {
+    const url = item.file_url || item.url || item.file || item.path || null;
+
+    if (!url) {
+        return (
+            <button
+                type="button"
+                disabled
+                className="flex cursor-not-allowed items-center justify-between rounded-[18px] border border-slate-200 bg-slate-50 px-5 py-4 opacity-70"
+                title="Dokumen belum tersedia dari admin."
+            >
+                <div className="flex items-center gap-4">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#1f5bd3] shadow-sm">
+                        <Icon type="file" className="h-5 w-5" />
+                    </div>
+
+                    <div className="text-left">
+                        <p className="text-[13px] font-semibold text-[#061b46]">
+                            {item.title}
+                        </p>
+
+                        <p className="mt-1 text-[11px] font-bold uppercase text-slate-400">
+                            {item.type || "PDF"} • Belum tersedia
+                        </p>
+                    </div>
+                </div>
+
+                <Icon type="download" className="h-5 w-5 text-slate-300" />
+            </button>
+        );
+    }
+
+    return (
+        <a
+            href={url}
+            download
+            className="flex items-center justify-between rounded-[18px] border border-slate-200 bg-slate-50 px-5 py-4 transition hover:border-blue-200 hover:bg-blue-50"
+        >
+            <div className="flex items-center gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#1f5bd3] shadow-sm">
+                    <Icon type="file" className="h-5 w-5" />
+                </div>
+
+                <div>
+                    <p className="text-[13px] font-semibold text-[#061b46]">
+                        {item.title}
+                    </p>
+
+                    <p className="mt-1 text-[11px] font-bold uppercase text-slate-400">
+                        {item.type || "PDF"}
+                    </p>
+                </div>
+            </div>
+
+            <Icon type="download" className="h-5 w-5 text-slate-400" />
+        </a>
+    );
+}
+
+export default function CalendarSection({ calendars = [], resources = [] }) {
     const dynamicCalendarItems = useMemo(() => {
         return normalizeCalendarItems(calendars);
     }, [calendars]);
 
-    const dynamicUpcomingEvents = useMemo(() => {
-        return normalizeUpcomingEvents(dynamicCalendarItems);
+    const monthOptions = useMemo(() => {
+        const options = dynamicCalendarItems.map((item) => item.monthLabel);
+        return Array.from(new Set(options));
     }, [dynamicCalendarItems]);
+
+    const defaultMonth = monthOptions[0] || "Juli 2026";
+
+    const [semester, setSemester] = useState("Semester 1");
+    const [category, setCategory] = useState("Semua");
+    const [month, setMonth] = useState(defaultMonth);
+    const [search, setSearch] = useState("");
+
+    const activeMonth = month || defaultMonth;
+
+    const selectedMonthInfo = useMemo(() => {
+        const found = dynamicCalendarItems.find(
+            (item) => item.monthLabel === activeMonth
+        );
+
+        if (found) {
+            return {
+                monthIndex: found.monthIndex,
+                year: found.year,
+                label: found.monthLabel,
+            };
+        }
+
+        return {
+            monthIndex: 6,
+            year: 2026,
+            label: "Juli 2026",
+        };
+    }, [dynamicCalendarItems, activeMonth]);
 
     const categoryOptions = useMemo(() => {
         const categories = dynamicCalendarItems
@@ -122,19 +360,74 @@ export default function CalendarSection({ calendars = [] }) {
         return ["Semua", ...Array.from(new Set(categories))];
     }, [dynamicCalendarItems]);
 
-    const filteredItems = dynamicCalendarItems.filter((item) => {
-        const matchCategory = category === "Semua" || item.type === category;
+    const filteredItems = useMemo(() => {
+        return dynamicCalendarItems.filter((item) => {
+            const matchCategory =
+                category === "Semua" || item.type === category;
 
-        const matchSearch =
-            search.trim() === "" ||
-            item.title.toLowerCase().includes(search.toLowerCase()) ||
-            item.description.toLowerCase().includes(search.toLowerCase());
+            const matchMonth = item.monthLabel === activeMonth;
 
-        return matchCategory && matchSearch;
-    });
+            const matchSemester = item.semester === semester;
+
+            const keyword = search.trim().toLowerCase();
+
+            const matchSearch =
+                keyword === "" ||
+                String(item.title || "")
+                    .toLowerCase()
+                    .includes(keyword) ||
+                String(item.description || "")
+                    .toLowerCase()
+                    .includes(keyword) ||
+                String(item.type || "")
+                    .toLowerCase()
+                    .includes(keyword) ||
+                String(item.fullDate || "")
+                    .toLowerCase()
+                    .includes(keyword);
+
+            return matchCategory && matchMonth && matchSemester && matchSearch;
+        });
+    }, [dynamicCalendarItems, category, activeMonth, semester, search]);
+
+    const monthEvents = useMemo(() => {
+        return dynamicCalendarItems.filter(
+            (item) => item.monthLabel === activeMonth
+        );
+    }, [dynamicCalendarItems, activeMonth]);
+
+    const dynamicUpcomingEvents = useMemo(() => {
+        return normalizeUpcomingEvents(dynamicCalendarItems);
+    }, [dynamicCalendarItems]);
 
     const activeRoadmap =
         semester === "Semester 1" ? semesterOneRoadmap : semesterTwoRoadmap;
+
+    const miniCalendarDays = useMemo(() => {
+        return buildMiniCalendarDays(
+            selectedMonthInfo.year,
+            selectedMonthInfo.monthIndex,
+            monthEvents
+        );
+    }, [selectedMonthInfo, monthEvents]);
+
+    const resourceItems = resources.length > 0 ? resources : resourceFiles;
+
+    const goToPreviousMonth = () => {
+        const currentIndex = monthOptions.indexOf(activeMonth);
+
+        if (currentIndex > 0) {
+            setMonth(monthOptions[currentIndex - 1]);
+        }
+    };
+
+    const goToNextMonth = () => {
+        const currentIndex = monthOptions.indexOf(activeMonth);
+
+        if (currentIndex < monthOptions.length - 1) {
+            setMonth(monthOptions[currentIndex + 1]);
+        }
+    };
 
     return (
         <div className="space-y-6">
@@ -186,18 +479,15 @@ export default function CalendarSection({ calendars = [] }) {
                             </label>
 
                             <select
-                                value={month}
+                                value={activeMonth}
                                 onChange={(event) =>
                                     setMonth(event.target.value)
                                 }
                                 className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-700 outline-none focus:border-[#1f5bd3] focus:ring-[#1f5bd3]"
                             >
-                                <option>Juli 2026</option>
-                                <option>Agustus 2026</option>
-                                <option>September 2026</option>
-                                <option>Oktober 2026</option>
-                                <option>November 2026</option>
-                                <option>Desember 2026</option>
+                                {monthOptions.map((item) => (
+                                    <option key={item}>{item}</option>
+                                ))}
                             </select>
                         </div>
 
@@ -228,7 +518,7 @@ export default function CalendarSection({ calendars = [] }) {
                     <div className="mt-8 grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
                         <div>
                             <h3 className="text-[22px] font-semibold uppercase text-[#163678]">
-                                July 2026
+                                {activeMonth}
                             </h3>
 
                             <div className="mt-4 overflow-hidden rounded-[20px] border border-slate-200">
@@ -287,8 +577,8 @@ export default function CalendarSection({ calendars = [] }) {
                                         </h3>
 
                                         <p className="mt-2 text-[13px] font-medium text-slate-500">
-                                            Coba ubah kategori atau kata kunci
-                                            pencarian.
+                                            Coba ubah semester, bulan, kategori,
+                                            atau kata kunci pencarian.
                                         </p>
                                     </div>
                                 )}
@@ -299,18 +589,27 @@ export default function CalendarSection({ calendars = [] }) {
                             <div className="flex items-center justify-between">
                                 <button
                                     type="button"
-                                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50"
+                                    onClick={goToPreviousMonth}
+                                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    disabled={
+                                        monthOptions.indexOf(activeMonth) <= 0
+                                    }
                                 >
                                     ‹
                                 </button>
 
                                 <h3 className="text-[24px] font-semibold uppercase text-[#163678]">
-                                    July 2026
+                                    {activeMonth}
                                 </h3>
 
                                 <button
                                     type="button"
-                                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50"
+                                    onClick={goToNextMonth}
+                                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    disabled={
+                                        monthOptions.indexOf(activeMonth) ===
+                                        monthOptions.length - 1
+                                    }
                                 >
                                     ›
                                 </button>
@@ -384,7 +683,7 @@ export default function CalendarSection({ calendars = [] }) {
                         <div className="mt-5 space-y-4">
                             {dynamicUpcomingEvents.map((item) => (
                                 <div
-                                    key={item.title}
+                                    key={`${item.title}-${item.subtitle}`}
                                     className="flex gap-4 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0"
                                 >
                                     <div className="rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
@@ -415,7 +714,10 @@ export default function CalendarSection({ calendars = [] }) {
                         </div>
                     </div>
 
-                    <div className="rounded-[26px] bg-[#052b66] p-5 text-white shadow-xl shadow-blue-200">
+                    <div
+                        id="academic-office"
+                        className="scroll-mt-28 rounded-[26px] bg-[#052b66] p-5 text-white shadow-xl shadow-blue-200"
+                    >
                         <div className="flex items-center gap-4">
                             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-[#f7b733]">
                                 <Icon type="building" className="h-8 w-8" />
@@ -448,7 +750,12 @@ export default function CalendarSection({ calendars = [] }) {
                                             type="phone"
                                             className="h-4 w-4"
                                         />
-                                        <span>(021) 1234 5678</span>
+                                        <a
+                                            href="tel:02112345678"
+                                            className="hover:text-white"
+                                        >
+                                            (021) 1234 5678
+                                        </a>
                                     </div>
 
                                     <div className="flex items-center gap-3">
@@ -456,7 +763,12 @@ export default function CalendarSection({ calendars = [] }) {
                                             type="mail"
                                             className="h-4 w-4"
                                         />
-                                        <span>akademik@sman1cerdas.sch.id</span>
+                                        <a
+                                            href="mailto:akademik@sman1cerdas.sch.id"
+                                            className="break-all hover:text-white"
+                                        >
+                                            akademik@sman1cerdas.sch.id
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -465,7 +777,10 @@ export default function CalendarSection({ calendars = [] }) {
                 </div>
             </div>
 
-            <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6">
+            <div
+                id="semester-roadmap"
+                className="scroll-mt-28 rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6"
+            >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#1f5bd3]">
@@ -524,7 +839,10 @@ export default function CalendarSection({ calendars = [] }) {
             </div>
 
             <div className="grid gap-6 xl:grid-cols-[1fr_0.78fr]">
-                <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6">
+                <div
+                    id="academic-resources"
+                    className="scroll-mt-28 rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6"
+                >
                     <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#1f5bd3]">
                         Academic Resources
                     </p>
@@ -533,37 +851,17 @@ export default function CalendarSection({ calendars = [] }) {
                         Download Dokumen Akademik
                     </h2>
 
+                    <p className="mt-3 text-[13px] font-medium leading-6 text-slate-500">
+                        Unduh dokumen akademik resmi yang sudah disediakan oleh
+                        sekolah.
+                    </p>
+
                     <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                        {resourceFiles.map((item) => (
-                            <a
-                                key={item.title}
-                                href="#"
-                                className="flex items-center justify-between rounded-[18px] border border-slate-200 bg-slate-50 px-5 py-4 transition hover:border-blue-200 hover:bg-blue-50"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#1f5bd3] shadow-sm">
-                                        <Icon
-                                            type="file"
-                                            className="h-5 w-5"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <p className="text-[13px] font-semibold text-[#061b46]">
-                                            {item.title}
-                                        </p>
-
-                                        <p className="mt-1 text-[11px] font-bold uppercase text-slate-400">
-                                            {item.type}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <Icon
-                                    type="download"
-                                    className="h-5 w-5 text-slate-400"
-                                />
-                            </a>
+                        {resourceItems.map((item) => (
+                            <ResourceButton
+                                key={item.id || item.title}
+                                item={item}
+                            />
                         ))}
                     </div>
                 </div>

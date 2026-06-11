@@ -106,7 +106,7 @@ function MissionCard({ item, index }) {
     return (
         <article className="relative rounded-[22px] border border-slate-200 bg-white p-5 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-6">
             <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 text-[42px]">
-                {item.icon}
+                {item.icon || "🎓"}
 
                 <div className="absolute -bottom-3 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full bg-[#052b66] text-[11px] font-semibold text-white">
                     {String(index + 1).padStart(2, "0")}
@@ -128,7 +128,7 @@ function CoreValueCard({ item }) {
     return (
         <article className="rounded-[18px] border border-slate-200 bg-white p-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
             <div className="text-[42px] leading-none text-[#d5a542]">
-                {item.icon}
+                {item.icon || "☆"}
             </div>
 
             <h3 className="mt-5 text-[17px] font-semibold text-[#061b46]">
@@ -153,7 +153,7 @@ function ActionStepCard({ item }) {
                     : "border-slate-200 bg-white text-[#061b46]"
             }`}
         >
-            <div className="text-[34px]">{item.icon}</div>
+            <div className="text-[34px]">{item.icon || "👁️"}</div>
 
             <h3 className="mt-3 text-[15px] font-semibold uppercase">
                 {item.title}
@@ -175,6 +175,12 @@ function ActionStepCard({ item }) {
 export default function VisionSection({ profileData }) {
     const school = profileData?.school || {};
 
+    const visionHeroImage =
+        school.visionHeroImage || "/frontend/images/vision-hero.jpg";
+
+    const visionBannerImage =
+        school.visionBannerImage || "/frontend/images/vision-banner.jpg";
+
     const missionItems =
         Array.isArray(profileData?.visionMissionItems) &&
         profileData.visionMissionItems.length > 0
@@ -195,28 +201,80 @@ export default function VisionSection({ profileData }) {
 
     return (
         <div className="space-y-10">
-            <section className="relative overflow-hidden rounded-[28px] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8 lg:p-10">
-                <div className="absolute bottom-0 right-0 hidden opacity-20 lg:block">
-                    <div className="text-[260px] leading-none">🏫</div>
-                </div>
+            <section className="overflow-hidden rounded-[28px] bg-white shadow-xl shadow-slate-200/70">
+                <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
+                    <div className="relative min-h-[320px] overflow-hidden bg-[#052b66] sm:min-h-[420px] lg:min-h-[520px]">
+                        <img
+                            src={visionHeroImage}
+                            alt="Visi dan Misi Sekolah"
+                            className="absolute inset-0 h-full w-full object-cover"
+                            onError={(event) => {
+                                event.currentTarget.src =
+                                    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=85";
+                            }}
+                        />
 
-                <div className="relative max-w-[760px]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0d58cf]">
-                        Our Vision
-                    </p>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#052b66]/80 via-[#052b66]/30 to-transparent" />
 
-                    <h2 className="mt-4 font-serif text-[34px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
-                        {school.vision ||
-                            "Menjadi sekolah unggul yang menghasilkan pemimpin masa depan berkarakter, berprestasi, dan berwawasan global."}
-                    </h2>
+                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white sm:p-8">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#f7c46a]">
+                                Visi Misi Sekolah
+                            </p>
 
-                    <div className="mt-6 h-[2px] w-20 rounded-full bg-[#d5a542]" />
+                            <h3 className="mt-3 max-w-[560px] font-serif text-[28px] font-semibold leading-tight tracking-[-0.035em] sm:text-[38px]">
+                                Arah Pendidikan untuk Masa Depan Siswa
+                            </h3>
+                        </div>
+                    </div>
 
-                    <p className="mt-7 max-w-[680px] text-[15px] font-medium leading-8 text-slate-600">
-                        Kami berkomitmen menciptakan lingkungan pendidikan yang
-                        inspiratif, inovatif, dan inklusif untuk mencetak
-                        generasi unggul yang siap menghadapi tantangan dunia.
-                    </p>
+                    <div className="relative overflow-hidden p-6 sm:p-8 lg:p-10">
+                        <div className="absolute -right-10 -top-10 hidden h-44 w-44 rounded-full bg-blue-50 lg:block" />
+                        <div className="absolute -bottom-12 -left-12 hidden h-52 w-52 rounded-full bg-[#f7c46a]/10 lg:block" />
+
+                        <div className="relative">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0d58cf]">
+                                Our Vision
+                            </p>
+
+                            <h2 className="mt-4 font-serif text-[34px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
+                                {school.vision ||
+                                    "Menjadi sekolah unggul yang menghasilkan pemimpin masa depan berkarakter, berprestasi, dan berwawasan global."}
+                            </h2>
+
+                            <div className="mt-6 h-[2px] w-20 rounded-full bg-[#d5a542]" />
+
+                            <p className="mt-7 max-w-[680px] text-[15px] font-medium leading-8 text-slate-600">
+                                Kami berkomitmen menciptakan lingkungan
+                                pendidikan yang inspiratif, inovatif, dan
+                                inklusif untuk mencetak generasi unggul yang
+                                siap menghadapi tantangan dunia.
+                            </p>
+
+                            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                                <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+                                    <div className="text-[34px]">🎯</div>
+                                    <h3 className="mt-4 text-[16px] font-semibold text-[#061b46]">
+                                        Fokus Tujuan
+                                    </h3>
+                                    <p className="mt-2 text-[12.5px] font-medium leading-6 text-slate-600">
+                                        Menyelaraskan program sekolah dengan
+                                        kebutuhan peserta didik.
+                                    </p>
+                                </div>
+
+                                <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+                                    <div className="text-[34px]">🌐</div>
+                                    <h3 className="mt-4 text-[16px] font-semibold text-[#061b46]">
+                                        Wawasan Global
+                                    </h3>
+                                    <p className="mt-2 text-[12.5px] font-medium leading-6 text-slate-600">
+                                        Membentuk siswa yang siap bersaing dan
+                                        berkontribusi luas.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -230,6 +288,27 @@ export default function VisionSection({ profileData }) {
                 </h2>
 
                 <div className="mt-5 h-[2px] w-20 rounded-full bg-[#d5a542]" />
+
+                {Array.isArray(school.missions) && school.missions.length > 0 ? (
+                    <div className="mt-8 rounded-[22px] border border-blue-100 bg-blue-50 p-5 sm:p-6">
+                        <div className="grid gap-4 md:grid-cols-2">
+                            {school.missions.map((mission, index) => (
+                                <div
+                                    key={`${mission}-${index}`}
+                                    className="flex gap-4 rounded-[18px] bg-white p-4 shadow-sm"
+                                >
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#052b66] text-[12px] font-semibold text-white">
+                                        {String(index + 1).padStart(2, "0")}
+                                    </div>
+
+                                    <p className="text-[13.5px] font-medium leading-7 text-slate-700">
+                                        {mission}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : null}
 
                 <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                     {missionItems.map((item, index) => (
@@ -291,10 +370,7 @@ export default function VisionSection({ profileData }) {
                 <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
                     <div className="min-h-[280px]">
                         <img
-                            src={
-                                school.visionBannerImage ||
-                                "/frontend/images/vision-banner.jpg"
-                            }
+                            src={visionBannerImage}
                             alt="Learning Today Leading Tomorrow"
                             className="h-full w-full object-cover"
                             onError={(event) => {

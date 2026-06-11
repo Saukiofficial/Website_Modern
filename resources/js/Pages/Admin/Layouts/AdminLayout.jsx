@@ -116,9 +116,9 @@ const sidebarGroups = [
                 icon: "📝",
             },
             {
-            label: "Konten PPDB",
-            href: "/admin/ppdb-content",
-            icon: "🧩",
+                label: "Konten PPDB",
+                href: "/admin/ppdb-content",
+                icon: "🧩",
             },
             {
                 label: "Pendaftar PPDB",
@@ -146,15 +146,17 @@ function SidebarMenuItem({ menu, active, onClose }) {
         <Link
             href={menu.href}
             onClick={onClose}
-            className={`group flex min-h-[46px] items-center gap-3 rounded-[14px] px-3 text-[13px] font-bold transition ${
+            className={`group flex min-h-[44px] items-center gap-3 rounded-[14px] px-3 text-[13px] font-semibold transition duration-200 ${
                 active
                     ? "bg-white text-[#061b46] shadow-lg shadow-black/10"
-                    : "text-blue-50 hover:bg-white/10 hover:text-white"
+                    : "text-blue-50/90 hover:bg-white/10 hover:text-white"
             }`}
         >
             <span
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[17px] transition ${
-                    active ? "bg-[#f4f8fc]" : "bg-white/5 group-hover:bg-white/10"
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-[16px] transition ${
+                    active
+                        ? "bg-[#f4f8fc]"
+                        : "bg-white/5 group-hover:bg-white/10"
                 }`}
             >
                 {menu.icon}
@@ -172,8 +174,8 @@ function SidebarGroup({ group, currentPath, onClose }) {
         <div className="space-y-2">
             <div className="flex items-center justify-between px-3">
                 <p
-                    className={`text-[10.5px] font-extrabold uppercase tracking-[0.18em] ${
-                        activeGroup ? "text-[#f7c46a]" : "text-blue-200/80"
+                    className={`text-[10.5px] font-semibold uppercase tracking-[0.18em] ${
+                        activeGroup ? "text-[#f7c46a]" : "text-blue-200/75"
                     }`}
                 >
                     {group.title}
@@ -205,17 +207,17 @@ function SidebarGroup({ group, currentPath, onClose }) {
 function SidebarContent({ currentPath, onClose }) {
     return (
         <div className="flex h-full flex-col bg-[#061b46] text-white">
-            <div className="flex min-h-[92px] items-center gap-4 border-b border-white/10 px-6">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#d59a25] text-[22px] font-black text-white shadow-lg shadow-black/20">
+            <div className="flex min-h-[88px] items-center gap-4 border-b border-white/10 px-5">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-[#d59a25] text-[20px] font-semibold text-white shadow-lg shadow-black/20">
                     A
                 </div>
 
                 <div className="min-w-0">
-                    <h1 className="truncate text-[18px] font-extrabold leading-tight">
+                    <h1 className="truncate text-[18px] font-semibold leading-tight text-white">
                         Admin Sekolah
                     </h1>
 
-                    <p className="mt-1 truncate text-[12px] font-semibold text-blue-100">
+                    <p className="mt-1 truncate text-[12px] font-medium text-blue-100">
                         Custom React Panel
                     </p>
                 </div>
@@ -223,7 +225,7 @@ function SidebarContent({ currentPath, onClose }) {
 
             <div className="flex-1 overflow-y-auto px-4 py-5">
                 <div className="mb-5 rounded-[18px] border border-white/10 bg-white/5 px-4 py-4">
-                    <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#f7c46a]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#f7c46a]">
                         Menu Admin
                     </p>
 
@@ -232,7 +234,7 @@ function SidebarContent({ currentPath, onClose }) {
                     </p>
                 </div>
 
-                <nav className="space-y-6">
+                <nav className="space-y-6 pb-4">
                     {sidebarGroups.map((group) => (
                         <SidebarGroup
                             key={group.title}
@@ -243,12 +245,41 @@ function SidebarContent({ currentPath, onClose }) {
                     ))}
                 </nav>
             </div>
+        </div>
+    );
+}
 
-            <div className="border-t border-white/10 p-4">
-                <div className="space-y-3">
+function Topbar({ title, onOpenSidebar }) {
+    const { props } = usePage();
+    const user = props.auth?.user;
+
+    return (
+        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
+            <div className="flex min-h-[76px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+                <div className="flex min-w-0 items-center gap-3">
+                    <button
+                        type="button"
+                        onClick={onOpenSidebar}
+                        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#061b46] shadow-sm transition hover:bg-slate-50 lg:hidden"
+                    >
+                        ☰
+                    </button>
+
+                    <div className="min-w-0">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
+                            Admin Panel
+                        </p>
+
+                        <h2 className="mt-1 truncate text-[21px] font-semibold tracking-[-0.03em] text-[#061b46] sm:text-[25px]">
+                            {title}
+                        </h2>
+                    </div>
+                </div>
+
+                <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                     <Link
                         href="/"
-                        className="flex min-h-[46px] items-center justify-center rounded-[14px] border border-white/15 bg-white/5 px-4 text-[13px] font-bold text-white transition hover:bg-white/10"
+                        className="hidden min-h-[42px] items-center justify-center rounded-[14px] border border-slate-200 bg-white px-4 text-[12px] font-semibold text-[#061b46] transition hover:bg-slate-50 md:inline-flex"
                     >
                         Lihat Frontend
                     </Link>
@@ -257,59 +288,43 @@ function SidebarContent({ currentPath, onClose }) {
                         href="/admin/logout"
                         method="post"
                         as="button"
-                        className="flex min-h-[46px] w-full items-center justify-center rounded-[14px] bg-red-500 px-4 text-[13px] font-bold text-white transition hover:bg-red-600"
+                        className="hidden min-h-[42px] items-center justify-center rounded-[14px] bg-red-50 px-4 text-[12px] font-semibold text-red-700 transition hover:bg-red-100 md:inline-flex"
                     >
                         Logout
                     </Link>
-                </div>
-            </div>
-        </div>
-    );
-}
 
-function Topbar({ title, onOpenSidebar }) {
-    const { props } = usePage();
-
-    const user = props.auth?.user;
-
-    return (
-        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
-            <div className="flex min-h-[76px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center gap-3">
-                    <button
-                        type="button"
-                        onClick={onOpenSidebar}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-[#061b46] shadow-sm lg:hidden"
-                    >
-                        ☰
-                    </button>
-
-                    <div>
-                        <p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#d59a25]">
-                            Admin Panel
-                        </p>
-
-                        <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.03em] text-[#061b46] sm:text-[26px]">
-                            {title}
-                        </h2>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-3">
                     <div className="hidden text-right sm:block">
-                        <p className="text-[13px] font-extrabold text-[#061b46]">
+                        <p className="text-[13px] font-semibold text-[#061b46]">
                             {user?.name || "Administrator"}
                         </p>
 
-                        <p className="mt-0.5 text-[11px] font-semibold text-slate-500">
+                        <p className="mt-0.5 text-[11px] font-medium text-slate-500">
                             {user?.email || "admin@sekolah.test"}
                         </p>
                     </div>
 
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#061b46] text-[15px] font-black text-white shadow-lg shadow-slate-300">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#061b46] text-[15px] font-semibold text-white shadow-lg shadow-slate-300">
                         {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
                     </div>
                 </div>
+            </div>
+
+            <div className="flex gap-2 border-t border-slate-100 px-4 py-3 md:hidden">
+                <Link
+                    href="/"
+                    className="inline-flex min-h-[40px] flex-1 items-center justify-center rounded-[13px] border border-slate-200 bg-white px-4 text-[12px] font-semibold text-[#061b46]"
+                >
+                    Lihat Frontend
+                </Link>
+
+                <Link
+                    href="/admin/logout"
+                    method="post"
+                    as="button"
+                    className="inline-flex min-h-[40px] flex-1 items-center justify-center rounded-[13px] bg-red-50 px-4 text-[12px] font-semibold text-red-700"
+                >
+                    Logout
+                </Link>
             </div>
         </header>
     );
@@ -341,7 +356,7 @@ function FlashMessage({ flash }) {
     return (
         <div className="fixed right-4 top-[92px] z-[90] max-w-[360px] sm:right-6">
             <div
-                className={`rounded-[16px] border px-5 py-4 text-[13px] font-bold shadow-xl shadow-slate-300/50 ${style[type]}`}
+                className={`rounded-[16px] border px-5 py-4 text-[13px] font-semibold shadow-xl shadow-slate-300/50 ${style[type]}`}
             >
                 {message}
             </div>

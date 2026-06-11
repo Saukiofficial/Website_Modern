@@ -4,7 +4,7 @@ import AdminLayout from "../Layouts/AdminLayout";
 function Input({ label, value, onChange, error, placeholder, type = "text" }) {
     return (
         <div>
-            <label className="mb-2 block text-[13px] font-extrabold text-[#061b46]">
+            <label className="mb-2 block text-[13px] font-semibold text-[#061b46]">
                 {label}
             </label>
 
@@ -13,11 +13,11 @@ function Input({ label, value, onChange, error, placeholder, type = "text" }) {
                 value={value || ""}
                 onChange={onChange}
                 placeholder={placeholder}
-                className="h-[54px] w-full rounded-[16px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#0b73e8] focus:ring-4 focus:ring-blue-100"
+                className="h-[54px] w-full rounded-[16px] border border-slate-200 bg-white px-4 text-[14px] font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#0b73e8] focus:ring-4 focus:ring-blue-100"
             />
 
             {error ? (
-                <p className="mt-2 text-[12px] font-bold text-red-600">
+                <p className="mt-2 text-[12px] font-semibold text-red-600">
                     {error}
                 </p>
             ) : null}
@@ -28,7 +28,7 @@ function Input({ label, value, onChange, error, placeholder, type = "text" }) {
 function Textarea({ label, value, onChange, error, placeholder, rows = 4 }) {
     return (
         <div>
-            <label className="mb-2 block text-[13px] font-extrabold text-[#061b46]">
+            <label className="mb-2 block text-[13px] font-semibold text-[#061b46]">
                 {label}
             </label>
 
@@ -37,11 +37,11 @@ function Textarea({ label, value, onChange, error, placeholder, rows = 4 }) {
                 onChange={onChange}
                 placeholder={placeholder}
                 rows={rows}
-                className="w-full resize-none rounded-[16px] border border-slate-200 bg-white px-4 py-4 text-[14px] font-semibold text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#0b73e8] focus:ring-4 focus:ring-blue-100"
+                className="w-full resize-none rounded-[16px] border border-slate-200 bg-white px-4 py-4 text-[14px] font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#0b73e8] focus:ring-4 focus:ring-blue-100"
             />
 
             {error ? (
-                <p className="mt-2 text-[12px] font-bold text-red-600">
+                <p className="mt-2 text-[12px] font-semibold text-red-600">
                     {error}
                 </p>
             ) : null}
@@ -53,12 +53,12 @@ function Toggle({ label, checked, onChange, description }) {
     return (
         <label className="flex min-h-[58px] cursor-pointer items-center justify-between gap-4 rounded-[16px] border border-slate-200 bg-white px-4 py-3">
             <div>
-                <span className="text-[13px] font-extrabold text-[#061b46]">
+                <span className="text-[13px] font-semibold text-[#061b46]">
                     {label}
                 </span>
 
                 {description ? (
-                    <p className="mt-1 text-[11.5px] font-semibold text-slate-500">
+                    <p className="mt-1 text-[11.5px] font-medium text-slate-500">
                         {description}
                     </p>
                 ) : null}
@@ -74,6 +74,207 @@ function Toggle({ label, checked, onChange, description }) {
     );
 }
 
+function UploadBox({
+    label,
+    description,
+    preview,
+    icon = "🖼️",
+    error,
+    onChange,
+}) {
+    return (
+        <div>
+            <label className="mb-2 block text-[13px] font-semibold text-[#061b46]">
+                {label}
+            </label>
+
+            <label className="flex cursor-pointer items-center gap-4 rounded-[18px] border-2 border-dashed border-slate-200 bg-slate-50 p-4 transition hover:border-blue-300 hover:bg-blue-50">
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                        onChange(event.target.files?.[0] || null)
+                    }
+                    className="hidden"
+                />
+
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-white shadow-sm">
+                    {preview ? (
+                        <img
+                            src={preview}
+                            alt={label}
+                            className="h-full w-full object-contain p-2"
+                        />
+                    ) : (
+                        <span className="text-[30px]">{icon}</span>
+                    )}
+                </div>
+
+                <div>
+                    <p className="text-[13px] font-semibold text-[#061b46]">
+                        Klik untuk upload
+                    </p>
+
+                    <p className="mt-1 text-[12px] font-medium text-slate-500">
+                        {description}
+                    </p>
+                </div>
+            </label>
+
+            {error ? (
+                <p className="mt-2 text-[12px] font-semibold text-red-600">
+                    {error}
+                </p>
+            ) : null}
+        </div>
+    );
+}
+
+function FormHeaderPreview({ data, formLogoPreview, committeeSignaturePreview }) {
+    return (
+        <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/70">
+            <div className="mb-5">
+                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
+                    Live Preview
+                </p>
+
+                <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
+                    Formulir PPDB
+                </h2>
+            </div>
+
+            <div className="overflow-hidden rounded-[18px] bg-slate-100 p-4">
+                <div className="mx-auto min-h-[640px] max-w-[620px] bg-white p-7 shadow-xl">
+                    <div className="flex items-center gap-5 border-b-[4px] border-[#061b46] pb-5">
+                        <div className="flex h-[76px] w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] border-2 border-[#061b46] text-center text-[11px] font-semibold leading-tight text-[#061b46]">
+                            {formLogoPreview ? (
+                                <img
+                                    src={formLogoPreview}
+                                    alt="Logo"
+                                    className="h-full w-full object-contain p-2"
+                                />
+                            ) : (
+                                <>
+                                    LOGO
+                                    <br />
+                                    SEKOLAH
+                                </>
+                            )}
+                        </div>
+
+                        <div className="flex-1 text-center">
+                            <h1 className="text-[17px] font-semibold uppercase tracking-[0.04em] text-[#061b46]">
+                                {data.form_title ||
+                                    "FORMULIR PENDAFTARAN PESERTA DIDIK BARU"}
+                            </h1>
+
+                            <h2 className="mt-1 text-[15px] font-semibold uppercase text-[#061b46]">
+                                {data.form_school_name ||
+                                    "SMA NEGERI 1 MOJOKERTO"}
+                            </h2>
+
+                            <p className="mt-2 text-[11px] font-medium text-slate-600">
+                                {data.form_address ||
+                                    "Jl. Contoh Alamat Sekolah, Mojokerto, Jawa Timur"}
+                            </p>
+
+                            <p className="mt-1 text-[11px] font-medium text-slate-600">
+                                Website:{" "}
+                                {data.form_website || "sekolah.sch.id"} | Email:{" "}
+                                {data.form_email || "admin@sekolah.sch.id"}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-5 rounded-[10px] border border-slate-300 p-4 text-center">
+                        <h3 className="text-[15px] font-semibold uppercase text-[#061b46]">
+                            Bukti Formulir Pendaftaran PPDB
+                        </h3>
+
+                        <p className="mt-2 text-[12px] font-semibold text-slate-700">
+                            Nomor Pendaftaran: PPDB-20260611-DEMO1
+                        </p>
+
+                        <p className="mt-1 text-[12px] font-semibold text-slate-700">
+                            Tanggal Daftar: 11 Jun 2026 06:45
+                        </p>
+                    </div>
+
+                    <div className="mt-5 grid grid-cols-[120px_1fr] gap-5">
+                        <div className="h-[150px] rounded-[10px] bg-slate-200" />
+
+                        <div className="space-y-3">
+                            <div className="rounded-[10px] border border-slate-300 p-4">
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                    Nama Lengkap
+                                </p>
+                                <p className="mt-2 text-[13px] font-semibold text-slate-900">
+                                    Nama Calon Siswa
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="rounded-[10px] border border-slate-300 p-4">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                        NISN
+                                    </p>
+                                    <p className="mt-2 text-[13px] font-semibold text-slate-900">
+                                        123456789
+                                    </p>
+                                </div>
+
+                                <div className="rounded-[10px] border border-slate-300 p-4">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                        Jenis Kelamin
+                                    </p>
+                                    <p className="mt-2 text-[13px] font-semibold text-slate-900">
+                                        Laki-laki
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-5 rounded-[8px] bg-[#061b46] px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.1em] text-white">
+                        A. Data Calon Peserta Didik
+                    </div>
+
+                    <div className="mt-8 grid grid-cols-2 gap-8 text-center">
+                        <div>
+                            <div className="mx-auto h-[78px] border-b border-slate-400" />
+
+                            <p className="mt-2 text-[12px] font-semibold text-[#061b46]">
+                                Orang Tua / Wali
+                            </p>
+                        </div>
+
+                        <div>
+                            <div className="mx-auto flex h-[78px] items-end justify-center border-b border-slate-400">
+                                {committeeSignaturePreview ? (
+                                    <img
+                                        src={committeeSignaturePreview}
+                                        alt="Tanda tangan panitia"
+                                        className="max-h-[70px] max-w-[170px] object-contain"
+                                    />
+                                ) : null}
+                            </div>
+
+                            <p className="mt-2 text-[12px] font-semibold text-slate-900">
+                                {data.committee_name || "Panitia PPDB"}
+                            </p>
+
+                            <p className="mt-1 text-[11px] font-semibold text-[#061b46]">
+                                {data.committee_position ||
+                                    "Ketua Panitia PPDB"}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Edit({ setting }) {
     const { data, setData, post, processing, errors } = useForm({
         academic_year: setting?.academic_year || "",
@@ -81,6 +282,24 @@ export default function Edit({ setting }) {
         hero_title: setting?.hero_title || "",
         hero_description: setting?.hero_description || "",
         hero_image: null,
+
+        form_logo: null,
+        form_title:
+            setting?.form_title ||
+            "FORMULIR PENDAFTARAN PESERTA DIDIK BARU",
+        form_school_name:
+            setting?.form_school_name || "SMA NEGERI 1 MOJOKERTO",
+        form_address:
+            setting?.form_address ||
+            "Jl. Contoh Alamat Sekolah, Mojokerto, Jawa Timur",
+        form_website: setting?.form_website || "sekolah.sch.id",
+        form_email: setting?.form_email || "admin@sekolah.sch.id",
+
+        committee_signature: null,
+        committee_name: setting?.committee_name || "Panitia PPDB",
+        committee_position:
+            setting?.committee_position || "Ketua Panitia PPDB",
+
         section_title: setting?.section_title || "",
         section_description: setting?.section_description || "",
         requirement_title: setting?.requirement_title || "",
@@ -94,6 +313,14 @@ export default function Edit({ setting }) {
     const heroPreview = data.hero_image
         ? URL.createObjectURL(data.hero_image)
         : setting?.hero_image_url || null;
+
+    const formLogoPreview = data.form_logo
+        ? URL.createObjectURL(data.form_logo)
+        : setting?.form_logo_url || null;
+
+    const committeeSignaturePreview = data.committee_signature
+        ? URL.createObjectURL(data.committee_signature)
+        : setting?.committee_signature_url || null;
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -110,39 +337,188 @@ export default function Edit({ setting }) {
 
             <div className="mb-6 flex flex-col gap-4 rounded-[28px] bg-gradient-to-br from-[#061b46] to-[#0b3b85] p-6 text-white shadow-2xl shadow-blue-200 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <p className="text-[12px] font-extrabold uppercase tracking-[0.22em] text-[#f7c46a]">
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.22em] text-[#f7c46a]">
                         PPDB
                     </p>
 
-                    <h1 className="mt-3 text-[34px] font-black leading-tight tracking-[-0.05em] sm:text-[42px]">
-                        Setting Halaman PPDB
+                    <h1 className="mt-3 text-[34px] font-semibold leading-tight tracking-[-0.05em] sm:text-[42px]">
+                        Setting Halaman & Formulir PPDB
                     </h1>
 
                     <p className="mt-4 max-w-2xl text-[14px] font-medium leading-7 text-blue-100">
-                        Kelola konten utama halaman PPDB yang tampil di
-                        frontend.
+                        Kelola halaman PPDB, header formulir, logo, dan tanda
+                        tangan panitia yang tampil pada formulir pendaftaran.
                     </p>
                 </div>
 
                 <Link
                     href="/ppdb"
-                    className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-white/15 bg-white/10 px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-white/20"
+                    className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-white/15 bg-white/10 px-6 text-[13px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-white/20"
                 >
                     Lihat Frontend
                 </Link>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid gap-6 xl:grid-cols-[1fr_380px] xl:items-start">
+                <div className="grid gap-6 xl:grid-cols-[1fr_520px] xl:items-start">
                     <div className="space-y-6">
                         <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
                             <div className="border-b border-slate-200 pb-6">
-                                <p className="text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#d59a25]">
+                                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
+                                    Header Formulir
+                                </p>
+
+                                <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
+                                    Kop Formulir Pendaftaran
+                                </h2>
+                            </div>
+
+                            <div className="mt-7 grid gap-5 md:grid-cols-2">
+                                <div className="md:col-span-2">
+                                    <UploadBox
+                                        label="Logo Formulir"
+                                        description="JPG, PNG, WEBP. Maksimal 2MB."
+                                        preview={formLogoPreview}
+                                        icon="🏫"
+                                        error={errors.form_logo}
+                                        onChange={(file) =>
+                                            setData("form_logo", file)
+                                        }
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Input
+                                        label="Judul Formulir"
+                                        value={data.form_title}
+                                        onChange={(event) =>
+                                            setData(
+                                                "form_title",
+                                                event.target.value
+                                            )
+                                        }
+                                        error={errors.form_title}
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Input
+                                        label="Nama Sekolah"
+                                        value={data.form_school_name}
+                                        onChange={(event) =>
+                                            setData(
+                                                "form_school_name",
+                                                event.target.value
+                                            )
+                                        }
+                                        error={errors.form_school_name}
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Input
+                                        label="Alamat Sekolah"
+                                        value={data.form_address}
+                                        onChange={(event) =>
+                                            setData(
+                                                "form_address",
+                                                event.target.value
+                                            )
+                                        }
+                                        error={errors.form_address}
+                                    />
+                                </div>
+
+                                <Input
+                                    label="Website"
+                                    value={data.form_website}
+                                    onChange={(event) =>
+                                        setData(
+                                            "form_website",
+                                            event.target.value
+                                        )
+                                    }
+                                    error={errors.form_website}
+                                />
+
+                                <Input
+                                    label="Email"
+                                    value={data.form_email}
+                                    onChange={(event) =>
+                                        setData(
+                                            "form_email",
+                                            event.target.value
+                                        )
+                                    }
+                                    error={errors.form_email}
+                                />
+                            </div>
+                        </section>
+
+                        <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
+                            <div className="border-b border-slate-200 pb-6">
+                                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
+                                    Tanda Tangan
+                                </p>
+
+                                <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
+                                    Panitia PPDB
+                                </h2>
+                            </div>
+
+                            <div className="mt-7 grid gap-5 md:grid-cols-2">
+                                <div className="md:col-span-2">
+                                    <UploadBox
+                                        label="Tanda Tangan Panitia"
+                                        description="Upload tanda tangan transparan PNG lebih disarankan. Maksimal 2MB."
+                                        preview={committeeSignaturePreview}
+                                        icon="✍️"
+                                        error={errors.committee_signature}
+                                        onChange={(file) =>
+                                            setData(
+                                                "committee_signature",
+                                                file
+                                            )
+                                        }
+                                    />
+                                </div>
+
+                                <Input
+                                    label="Nama Panitia"
+                                    value={data.committee_name}
+                                    onChange={(event) =>
+                                        setData(
+                                            "committee_name",
+                                            event.target.value
+                                        )
+                                    }
+                                    error={errors.committee_name}
+                                    placeholder="Panitia PPDB"
+                                />
+
+                                <Input
+                                    label="Jabatan Panitia"
+                                    value={data.committee_position}
+                                    onChange={(event) =>
+                                        setData(
+                                            "committee_position",
+                                            event.target.value
+                                        )
+                                    }
+                                    error={errors.committee_position}
+                                    placeholder="Ketua Panitia PPDB"
+                                />
+                            </div>
+                        </section>
+
+                        <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
+                            <div className="border-b border-slate-200 pb-6">
+                                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
                                     Hero PPDB
                                 </p>
 
-                                <h2 className="mt-2 text-[24px] font-black tracking-[-0.04em] text-[#061b46]">
-                                    Konten Utama
+                                <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
+                                    Konten Halaman PPDB
                                 </h2>
                             </div>
 
@@ -157,7 +533,6 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.academic_year}
-                                    placeholder="2026/2027"
                                 />
 
                                 <Input
@@ -167,7 +542,6 @@ export default function Edit({ setting }) {
                                         setData("eyebrow", event.target.value)
                                     }
                                     error={errors.eyebrow}
-                                    placeholder="Penerimaan Peserta Didik Baru"
                                 />
 
                                 <div className="md:col-span-2">
@@ -181,7 +555,6 @@ export default function Edit({ setting }) {
                                             )
                                         }
                                         error={errors.hero_title}
-                                        placeholder="PPDB SMA Negeri 1 Mojokerto"
                                     />
                                 </div>
 
@@ -196,7 +569,6 @@ export default function Edit({ setting }) {
                                             )
                                         }
                                         error={errors.hero_description}
-                                        placeholder="Deskripsi singkat PPDB"
                                     />
                                 </div>
                             </div>
@@ -204,11 +576,11 @@ export default function Edit({ setting }) {
 
                         <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
                             <div className="border-b border-slate-200 pb-6">
-                                <p className="text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#d59a25]">
+                                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
                                     Konten Section
                                 </p>
 
-                                <h2 className="mt-2 text-[24px] font-black tracking-[-0.04em] text-[#061b46]">
+                                <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
                                     Alur & Persyaratan
                                 </h2>
                             </div>
@@ -224,7 +596,6 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.section_title}
-                                    placeholder="Tahapan Pendaftaran"
                                 />
 
                                 <Input
@@ -237,7 +608,6 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.requirement_title}
-                                    placeholder="Berkas yang Disiapkan"
                                 />
 
                                 <Textarea
@@ -250,7 +620,6 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.section_description}
-                                    placeholder="Deskripsi bagian alur"
                                 />
 
                                 <Textarea
@@ -263,7 +632,6 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.requirement_description}
-                                    placeholder="Deskripsi persyaratan"
                                 />
 
                                 <Input
@@ -276,7 +644,6 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.cta_label}
-                                    placeholder="Daftar Sekarang"
                                 />
 
                                 <Input
@@ -286,18 +653,17 @@ export default function Edit({ setting }) {
                                         setData("cta_url", event.target.value)
                                     }
                                     error={errors.cta_url}
-                                    placeholder="/ppdb/daftar"
                                 />
                             </div>
                         </section>
 
                         <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
                             <div className="border-b border-slate-200 pb-6">
-                                <p className="text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#d59a25]">
+                                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
                                     Status Pendaftaran
                                 </p>
 
-                                <h2 className="mt-2 text-[24px] font-black tracking-[-0.04em] text-[#061b46]">
+                                <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
                                     Buka / Tutup PPDB
                                 </h2>
                             </div>
@@ -322,58 +688,67 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.closed_message}
-                                    placeholder="Pendaftaran PPDB saat ini belum dibuka."
                                 />
                             </div>
                         </section>
                     </div>
 
                     <aside className="xl:sticky xl:top-[98px]">
-                        <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70">
-                            <p className="text-[12px] font-extrabold uppercase tracking-[0.18em] text-[#d59a25]">
-                                Gambar Hero
-                            </p>
+                        <div className="space-y-6">
+                            <FormHeaderPreview
+                                data={data}
+                                formLogoPreview={formLogoPreview}
+                                committeeSignaturePreview={
+                                    committeeSignaturePreview
+                                }
+                            />
 
-                            <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-[24px] border-2 border-dashed border-slate-200 bg-slate-50 p-4 transition hover:border-blue-300 hover:bg-blue-50">
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(event) =>
-                                        setData(
-                                            "hero_image",
-                                            event.target.files?.[0] || null
-                                        )
-                                    }
-                                    className="hidden"
-                                />
+                            <section className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/70">
+                                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
+                                    Gambar Hero
+                                </p>
 
-                                {heroPreview ? (
-                                    <img
-                                        src={heroPreview}
-                                        alt="Preview"
-                                        className="h-[250px] w-full rounded-[20px] object-cover"
+                                <label className="mt-5 flex cursor-pointer flex-col items-center justify-center rounded-[24px] border-2 border-dashed border-slate-200 bg-slate-50 p-4 transition hover:border-blue-300 hover:bg-blue-50">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(event) =>
+                                            setData(
+                                                "hero_image",
+                                                event.target.files?.[0] || null
+                                            )
+                                        }
+                                        className="hidden"
                                     />
-                                ) : (
-                                    <div className="flex h-[250px] w-full items-center justify-center rounded-[20px] bg-white text-[52px] shadow-sm">
-                                        🖼️
-                                    </div>
-                                )}
 
-                                <p className="mt-4 text-center text-[13px] font-extrabold text-[#061b46]">
-                                    Klik untuk upload gambar hero
-                                </p>
+                                    {heroPreview ? (
+                                        <img
+                                            src={heroPreview}
+                                            alt="Preview"
+                                            className="h-[220px] w-full rounded-[20px] object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex h-[220px] w-full items-center justify-center rounded-[20px] bg-white text-[52px] shadow-sm">
+                                            🖼️
+                                        </div>
+                                    )}
 
-                                <p className="mt-1 text-center text-[11px] font-semibold text-slate-500">
-                                    JPG, PNG, WEBP. Maksimal 4MB.
-                                </p>
-                            </label>
+                                    <p className="mt-4 text-center text-[13px] font-semibold text-[#061b46]">
+                                        Klik untuk upload gambar hero
+                                    </p>
 
-                            {errors.hero_image ? (
-                                <p className="mt-2 text-[12px] font-bold text-red-600">
-                                    {errors.hero_image}
-                                </p>
-                            ) : null}
-                        </section>
+                                    <p className="mt-1 text-center text-[11px] font-medium text-slate-500">
+                                        JPG, PNG, WEBP. Maksimal 4MB.
+                                    </p>
+                                </label>
+
+                                {errors.hero_image ? (
+                                    <p className="mt-2 text-[12px] font-semibold text-red-600">
+                                        {errors.hero_image}
+                                    </p>
+                                ) : null}
+                            </section>
+                        </div>
                     </aside>
                 </div>
 
@@ -381,7 +756,7 @@ export default function Edit({ setting }) {
                     <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end">
                         <Link
                             href="/admin/dashboard"
-                            className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-slate-200 bg-white px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-slate-600 transition hover:bg-slate-50"
+                            className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-slate-200 bg-white px-6 text-[13px] font-semibold uppercase tracking-[0.08em] text-slate-600 transition hover:bg-slate-50"
                         >
                             Kembali
                         </Link>
@@ -389,7 +764,7 @@ export default function Edit({ setting }) {
                         <button
                             type="submit"
                             disabled={processing}
-                            className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] bg-[#061b46] px-7 text-[13px] font-extrabold uppercase tracking-[0.08em] text-white shadow-xl shadow-blue-200 transition hover:bg-[#0b3b85] disabled:cursor-not-allowed disabled:opacity-70"
+                            className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] bg-[#061b46] px-7 text-[13px] font-semibold uppercase tracking-[0.08em] text-white shadow-xl shadow-blue-200 transition hover:bg-[#0b3b85] disabled:cursor-not-allowed disabled:opacity-70"
                         >
                             {processing
                                 ? "Menyimpan..."

@@ -13,6 +13,18 @@ class PpdbSetting extends Model
         'hero_title',
         'hero_description',
         'hero_image',
+
+        'form_logo',
+        'form_title',
+        'form_school_name',
+        'form_address',
+        'form_website',
+        'form_email',
+
+        'committee_signature',
+        'committee_name',
+        'committee_position',
+
         'section_title',
         'section_description',
         'requirement_title',
@@ -29,22 +41,39 @@ class PpdbSetting extends Model
 
     protected $appends = [
         'hero_image_url',
+        'form_logo_url',
+        'committee_signature_url',
     ];
+
+    public function getCommitteeSignatureUrlAttribute(): ?string
+    {
+        return $this->fileUrl($this->committee_signature);
+    }
 
     public function getHeroImageUrlAttribute(): ?string
     {
-        if (! $this->hero_image) {
+        return $this->fileUrl($this->hero_image);
+    }
+
+    public function getFormLogoUrlAttribute(): ?string
+    {
+        return $this->fileUrl($this->form_logo);
+    }
+
+    private function fileUrl(?string $file): ?string
+    {
+        if (! $file) {
             return null;
         }
 
-        if (str_starts_with($this->hero_image, 'http')) {
-            return $this->hero_image;
+        if (str_starts_with($file, 'http')) {
+            return $file;
         }
 
-        if (str_starts_with($this->hero_image, '/')) {
-            return $this->hero_image;
+        if (str_starts_with($file, '/')) {
+            return $file;
         }
 
-        return Storage::url($this->hero_image);
+        return Storage::url($file);
     }
 }

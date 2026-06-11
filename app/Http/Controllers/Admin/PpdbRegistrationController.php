@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PpdbRegistration;
+use App\Models\PpdbSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -95,12 +96,15 @@ class PpdbRegistrationController extends Controller
             ->with('success', 'Data pendaftar PPDB berhasil dihapus.');
     }
 
-    public function print(PpdbRegistration $registration)
-    {
-        return view('admin.ppdb-registrations.print', [
-            'registration' => $registration,
-        ]);
-    }
+        public function print(PpdbRegistration $registration)
+        {
+            $setting = PpdbSetting::query()->first();
+
+            return view('admin.ppdb-registrations.print', [
+                'registration' => $registration,
+                'setting' => $setting,
+            ]);
+        }
 
     public function export(Request $request)
     {

@@ -15,12 +15,12 @@ class SchoolWebsiteSeeder extends Seeder
         SchoolSetting::updateOrCreate(
             ['id' => 1],
             [
-                'school_name' => 'SMA Negeri 1 Mojokerto',
+                'school_name' => 'SMA Negeri 1 Sumenep',
                 'tagline' => 'Sekolah Berprestasi, Berkarakter, dan Berdaya Saing Global',
                 'logo' => null,
                 'phone' => '0321-123456',
-                'email' => 'info@sman1mojokerto.sch.id',
-                'address' => 'Jl. Pendidikan No. 1, Mojokerto, Jawa Timur',
+                'email' => 'info@sman1Sumenep.sch.id',
+                'address' => 'Jl. Pendidikan No. 1, Sumenep, Jawa Timur',
                 'facebook_url' => '#',
                 'instagram_url' => '#',
                 'youtube_url' => '#',

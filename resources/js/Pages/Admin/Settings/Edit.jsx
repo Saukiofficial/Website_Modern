@@ -86,7 +86,7 @@ function PreviewCard({ data, previewLogo, setting }) {
 
                     <div className="min-w-0">
                         <h2 className="truncate font-serif text-[24px] font-semibold uppercase leading-tight tracking-[-0.03em] text-[#061b46]">
-                            {data.school_name || "SMA Negeri 1 Mojokerto"}
+                            {data.school_name || "SMA Negeri 1 Sumenep"}
                         </h2>
 
                         <p className="mt-1 truncate text-[13px] font-semibold text-slate-600">
@@ -208,7 +208,7 @@ export default function Edit({ setting }) {
                                 value={data.school_name}
                                 onChange={handleChange}
                                 error={errors.school_name}
-                                placeholder="Contoh: SMA Negeri 1 Mojokerto"
+                                placeholder="Contoh: SMA Negeri 1 Sumenep"
                             />
                         </div>
 

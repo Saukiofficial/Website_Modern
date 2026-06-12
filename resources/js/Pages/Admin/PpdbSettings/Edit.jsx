@@ -131,6 +131,14 @@ function UploadBox({
 }
 
 function FormHeaderPreview({ data, formLogoPreview, committeeSignaturePreview }) {
+    const reportDate = new Date().toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+
+    const reportLocation = data.report_location || "Sumenep";
+
     return (
         <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/70">
             <div className="mb-5">
@@ -139,7 +147,7 @@ function FormHeaderPreview({ data, formLogoPreview, committeeSignaturePreview })
                 </p>
 
                 <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
-                    Formulir PPDB
+                    Formulir & Laporan PPDB
                 </h2>
             </div>
 
@@ -170,12 +178,12 @@ function FormHeaderPreview({ data, formLogoPreview, committeeSignaturePreview })
 
                             <h2 className="mt-1 text-[15px] font-semibold uppercase text-[#061b46]">
                                 {data.form_school_name ||
-                                    "SMA NEGERI 1 MOJOKERTO"}
+                                    "SMA NEGERI 1 Sumenep"}
                             </h2>
 
                             <p className="mt-2 text-[11px] font-medium text-slate-600">
                                 {data.form_address ||
-                                    "Jl. Contoh Alamat Sekolah, Mojokerto, Jawa Timur"}
+                                    "Jl. Contoh Alamat Sekolah"}
                             </p>
 
                             <p className="mt-1 text-[11px] font-medium text-slate-600">
@@ -249,6 +257,10 @@ function FormHeaderPreview({ data, formLogoPreview, committeeSignaturePreview })
                         </div>
 
                         <div>
+                            <p className="mb-2 text-[12px] font-semibold text-[#061b46]">
+                                {reportLocation}, {reportDate}
+                            </p>
+
                             <div className="mx-auto flex h-[78px] items-end justify-center border-b border-slate-400">
                                 {committeeSignaturePreview ? (
                                     <img
@@ -269,6 +281,20 @@ function FormHeaderPreview({ data, formLogoPreview, committeeSignaturePreview })
                             </p>
                         </div>
                     </div>
+
+                    <div className="mt-6 rounded-[12px] border border-dashed border-slate-300 bg-slate-50 p-4">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                            Preview Surat Pengumuman
+                        </p>
+
+                        <p className="mt-2 text-[12px] font-semibold leading-6 text-slate-700">
+                            Bagian cetak pengumuman frontend juga akan memakai
+                            lokasi laporan:
+                            <span className="ml-1 font-bold text-[#061b46]">
+                                {reportLocation}, {reportDate}
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -288,10 +314,8 @@ export default function Edit({ setting }) {
             setting?.form_title ||
             "FORMULIR PENDAFTARAN PESERTA DIDIK BARU",
         form_school_name:
-            setting?.form_school_name || "SMA NEGERI 1 MOJOKERTO",
-        form_address:
-            setting?.form_address ||
-            "Jl. Contoh Alamat Sekolah, Mojokerto, Jawa Timur",
+            setting?.form_school_name || "SMA NEGERI 1 Sumenep",
+        form_address: setting?.form_address || "Jl. Contoh Alamat Sekolah",
         form_website: setting?.form_website || "sekolah.sch.id",
         form_email: setting?.form_email || "admin@sekolah.sch.id",
 
@@ -299,6 +323,7 @@ export default function Edit({ setting }) {
         committee_name: setting?.committee_name || "Panitia PPDB",
         committee_position:
             setting?.committee_position || "Ketua Panitia PPDB",
+        report_location: setting?.report_location || "Sumenep",
 
         section_title: setting?.section_title || "",
         section_description: setting?.section_description || "",
@@ -346,8 +371,9 @@ export default function Edit({ setting }) {
                     </h1>
 
                     <p className="mt-4 max-w-2xl text-[14px] font-medium leading-7 text-blue-100">
-                        Kelola halaman PPDB, header formulir, logo, dan tanda
-                        tangan panitia yang tampil pada formulir pendaftaran.
+                        Kelola halaman PPDB, header formulir, logo, lokasi
+                        laporan, dan tanda tangan panitia yang tampil pada
+                        formulir serta surat pengumuman PPDB.
                     </p>
                 </div>
 
@@ -369,7 +395,7 @@ export default function Edit({ setting }) {
                                 </p>
 
                                 <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
-                                    Kop Formulir Pendaftaran
+                                    Kop Formulir & Surat Pengumuman
                                 </h2>
                             </div>
 
@@ -389,7 +415,7 @@ export default function Edit({ setting }) {
 
                                 <div className="md:col-span-2">
                                     <Input
-                                        label="Judul Formulir"
+                                        label="Judul Formulir / Laporan"
                                         value={data.form_title}
                                         onChange={(event) =>
                                             setData(
@@ -398,6 +424,7 @@ export default function Edit({ setting }) {
                                             )
                                         }
                                         error={errors.form_title}
+                                        placeholder="Contoh: FORMULIR PENDAFTARAN PESERTA DIDIK BARU"
                                     />
                                 </div>
 
@@ -412,6 +439,7 @@ export default function Edit({ setting }) {
                                             )
                                         }
                                         error={errors.form_school_name}
+                                        placeholder="Contoh: SMA Negeri 1 Jakarta"
                                     />
                                 </div>
 
@@ -426,6 +454,7 @@ export default function Edit({ setting }) {
                                             )
                                         }
                                         error={errors.form_address}
+                                        placeholder="Contoh: Jl. Pendidikan No. 1"
                                     />
                                 </div>
 
@@ -439,6 +468,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.form_website}
+                                    placeholder="Contoh: sekolah.sch.id"
                                 />
 
                                 <Input
@@ -451,6 +481,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.form_email}
+                                    placeholder="Contoh: admin@sekolah.sch.id"
                                 />
                             </div>
                         </section>
@@ -462,7 +493,7 @@ export default function Edit({ setting }) {
                                 </p>
 
                                 <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46]">
-                                    Panitia PPDB
+                                    Panitia PPDB & Lokasi Laporan
                                 </h2>
                             </div>
 
@@ -493,7 +524,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.committee_name}
-                                    placeholder="Panitia PPDB"
+                                    placeholder="Contoh: Luluk Kusfiah"
                                 />
 
                                 <Input
@@ -506,8 +537,46 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.committee_position}
-                                    placeholder="Ketua Panitia PPDB"
+                                    placeholder="Contoh: Ketua Panitia"
                                 />
+
+                                <div className="md:col-span-2">
+                                    <Input
+                                        label="Lokasi Laporan"
+                                        value={data.report_location}
+                                        onChange={(event) =>
+                                            setData(
+                                                "report_location",
+                                                event.target.value
+                                            )
+                                        }
+                                        error={errors.report_location}
+                                        placeholder="Contoh: Jakarta"
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2 rounded-[18px] border border-blue-100 bg-blue-50 p-5">
+                                    <p className="text-[13px] font-semibold text-[#061b46]">
+                                        Lokasi laporan akan tampil di bagian tanda
+                                        tangan cetak laporan.
+                                    </p>
+
+                                    <p className="mt-2 text-[13px] font-medium leading-6 text-slate-600">
+                                        Contoh hasil:{" "}
+                                        <span className="font-semibold text-[#061b46]">
+                                            {(data.report_location ||
+                                                "Jakarta") + ", "}
+                                            {new Date().toLocaleDateString(
+                                                "id-ID",
+                                                {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                }
+                                            )}
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
                         </section>
 
@@ -533,6 +602,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.academic_year}
+                                    placeholder="Contoh: 2026/2027"
                                 />
 
                                 <Input
@@ -542,6 +612,7 @@ export default function Edit({ setting }) {
                                         setData("eyebrow", event.target.value)
                                     }
                                     error={errors.eyebrow}
+                                    placeholder="Contoh: Penerimaan Peserta Didik Baru"
                                 />
 
                                 <div className="md:col-span-2">
@@ -555,6 +626,7 @@ export default function Edit({ setting }) {
                                             )
                                         }
                                         error={errors.hero_title}
+                                        placeholder="Contoh: PPDB SMA Negeri 1 Jakarta"
                                     />
                                 </div>
 
@@ -569,6 +641,7 @@ export default function Edit({ setting }) {
                                             )
                                         }
                                         error={errors.hero_description}
+                                        placeholder="Tulis deskripsi singkat halaman PPDB"
                                     />
                                 </div>
                             </div>
@@ -596,6 +669,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.section_title}
+                                    placeholder="Contoh: Tahapan Pendaftaran"
                                 />
 
                                 <Input
@@ -608,6 +682,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.requirement_title}
+                                    placeholder="Contoh: Berkas yang Disiapkan"
                                 />
 
                                 <Textarea
@@ -620,6 +695,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.section_description}
+                                    placeholder="Tulis deskripsi alur PPDB"
                                 />
 
                                 <Textarea
@@ -632,6 +708,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.requirement_description}
+                                    placeholder="Tulis deskripsi persyaratan PPDB"
                                 />
 
                                 <Input
@@ -644,6 +721,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.cta_label}
+                                    placeholder="Contoh: Daftar Sekarang"
                                 />
 
                                 <Input
@@ -653,6 +731,7 @@ export default function Edit({ setting }) {
                                         setData("cta_url", event.target.value)
                                     }
                                     error={errors.cta_url}
+                                    placeholder="Contoh: /ppdb/daftar"
                                 />
                             </div>
                         </section>
@@ -688,6 +767,7 @@ export default function Edit({ setting }) {
                                         )
                                     }
                                     error={errors.closed_message}
+                                    placeholder="Tulis pesan saat pendaftaran ditutup"
                                 />
                             </div>
                         </section>

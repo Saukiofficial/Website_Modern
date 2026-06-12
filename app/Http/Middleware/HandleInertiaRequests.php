@@ -78,7 +78,7 @@ class HandleInertiaRequests extends Middleware
                 'instagram_url' => $schoolSetting->instagram_url,
                 'youtube_url' => $schoolSetting->youtube_url,
             ] : [
-                'school_name' => 'SMA Negeri 1 Mojokerto',
+                'school_name' => 'SMA Negeri 1 Sumenep',
                 'tagline' => 'Sekolah Berprestasi',
                 'logo_url' => null,
                 'phone' => null,

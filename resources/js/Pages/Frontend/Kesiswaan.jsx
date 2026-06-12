@@ -306,7 +306,7 @@ export default function Kesiswaan() {
 
             <footer className="bg-[#052b66] px-4 py-7 text-center text-white sm:px-6">
                 <p className="text-[13px] font-medium text-blue-100">
-                    © 2025 SMA Negeri 1 Mojokerto. All Rights Reserved.
+                    © 2025 SMA Negeri 1 Sumenep. All Rights Reserved.
                 </p>
             </footer>
         </FrontendLayout>

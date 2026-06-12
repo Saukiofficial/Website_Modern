@@ -14,9 +14,9 @@ class SchoolProfileSeeder extends Seeder
         SchoolProfile::updateOrCreate(
             ['id' => 1],
             [
-                'school_name' => 'SMA Negeri 1 Mojokerto',
+                'school_name' => 'SMA Negeri 1 Sumenep',
                 'short_name' => 'SMA Negeri 1',
-                'city' => 'Mojokerto',
+                'city' => 'Sumenep',
                 'tagline' => 'Berprestasi, Berkarakter, Berbudaya',
                 'description' => 'SMA Negeri 1 Cerdas merupakan sekolah menengah atas yang berkomitmen membentuk peserta didik yang unggul dalam akademik, berkarakter, kreatif, berbudaya, serta siap bersaing di era global.',
 
@@ -44,14 +44,14 @@ class SchoolProfileSeeder extends Seeder
                 ],
 
                 'identity' => [
-                    ['label' => 'Nama Sekolah', 'value' => 'SMA Negeri 1 Mojokerto'],
+                    ['label' => 'Nama Sekolah', 'value' => 'SMA Negeri 1 Sumenep'],
                     ['label' => 'NPSN', 'value' => '20500001'],
                     ['label' => 'Akreditasi', 'value' => 'A'],
                     ['label' => 'Status Sekolah', 'value' => 'Negeri'],
                     ['label' => 'Jenjang', 'value' => 'Sekolah Menengah Atas'],
                     ['label' => 'Kurikulum', 'value' => 'Kurikulum Merdeka'],
-                    ['label' => 'Alamat', 'value' => 'Jl. Pendidikan No. 21, Mojokerto, Jawa Timur'],
-                    ['label' => 'Email', 'value' => 'info@sman1mojokerto.sch.id'],
+                    ['label' => 'Alamat', 'value' => 'Jl. Pendidikan No. 21, Sumenep, Jawa Timur'],
+                    ['label' => 'Email', 'value' => 'info@sman1Sumenep.sch.id'],
                     ['label' => 'Telepon', 'value' => '0812-3456-7890'],
                     ['label' => 'Tahun Berdiri', 'value' => '1998'],
                 ],
@@ -254,7 +254,7 @@ class SchoolProfileSeeder extends Seeder
             [
                 'role' => 'Kepala Sekolah',
                 'name' => 'Drs. Ahmad Fauzi, M.Pd.',
-                'description' => 'Memimpin dan bertanggung jawab atas penyelenggaraan pendidikan secara menyeluruh di SMA Negeri 1 Mojokerto.',
+                'description' => 'Memimpin dan bertanggung jawab atas penyelenggaraan pendidikan secara menyeluruh di SMA Negeri 1 Sumenep.',
                 'image' => '/frontend/images/principal.jpg',
                 'fallback_image' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=85',
                 'sort_order' => 1,

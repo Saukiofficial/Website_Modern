@@ -19,20 +19,21 @@ class PpdbSettingController extends Controller
             [
                 'academic_year' => '2026/2027',
                 'eyebrow' => 'Penerimaan Peserta Didik Baru',
-                'hero_title' => 'PPDB SMA Negeri 1 Mojokerto',
+                'hero_title' => 'PPDB SMA Negeri 1 Sumenep',
                 'hero_description' => 'Bergabung bersama sekolah berprestasi, berkarakter, dan berbudaya. Daftarkan diri untuk menjadi bagian dari generasi unggul.',
                 'hero_image' => '/frontend/images/ppdb-hero.jpg',
 
                 'form_logo' => null,
                 'form_title' => 'FORMULIR PENDAFTARAN PESERTA DIDIK BARU',
-                'form_school_name' => 'SMA NEGERI 1 MOJOKERTO',
-                'form_address' => 'Jl. Contoh Alamat Sekolah, Mojokerto, Jawa Timur',
+                'form_school_name' => 'SMA NEGERI 1 Sumenep',
+                'form_address' => 'Jl. Contoh Alamat Sekolah',
                 'form_website' => 'sekolah.sch.id',
                 'form_email' => 'admin@sekolah.sch.id',
 
                 'committee_signature' => null,
                 'committee_name' => 'Panitia PPDB',
                 'committee_position' => 'Ketua Panitia PPDB',
+                'report_location' => 'Sumenep',
 
                 'section_title' => 'Tahapan Pendaftaran',
                 'section_description' => 'Ikuti alur pendaftaran peserta didik baru secara online dengan mudah, cepat, dan aman.',
@@ -68,6 +69,7 @@ class PpdbSettingController extends Controller
                 'committee_signature_url' => $setting->committee_signature_url,
                 'committee_name' => $setting->committee_name,
                 'committee_position' => $setting->committee_position,
+                'report_location' => $setting->report_location,
 
                 'section_title' => $setting->section_title,
                 'section_description' => $setting->section_description,
@@ -85,7 +87,37 @@ class PpdbSettingController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
-        $setting = PpdbSetting::query()->firstOrCreate(['id' => 1]);
+        $setting = PpdbSetting::query()->firstOrCreate(
+            ['id' => 1],
+            [
+                'academic_year' => '2026/2027',
+                'eyebrow' => 'Penerimaan Peserta Didik Baru',
+                'hero_title' => 'PPDB SMA Negeri 1 Sumenep',
+                'hero_description' => 'Bergabung bersama sekolah berprestasi, berkarakter, dan berbudaya. Daftarkan diri untuk menjadi bagian dari generasi unggul.',
+                'hero_image' => '/frontend/images/ppdb-hero.jpg',
+
+                'form_logo' => null,
+                'form_title' => 'FORMULIR PENDAFTARAN PESERTA DIDIK BARU',
+                'form_school_name' => 'SMA NEGERI 1 Sumenep',
+                'form_address' => 'Jl. Contoh Alamat Sekolah',
+                'form_website' => 'sekolah.sch.id',
+                'form_email' => 'admin@sekolah.sch.id',
+
+                'committee_signature' => null,
+                'committee_name' => 'Panitia PPDB',
+                'committee_position' => 'Ketua Panitia PPDB',
+                'report_location' => 'Sumenep',
+
+                'section_title' => 'Tahapan Pendaftaran',
+                'section_description' => 'Ikuti alur pendaftaran peserta didik baru secara online dengan mudah, cepat, dan aman.',
+                'requirement_title' => 'Berkas yang Disiapkan',
+                'requirement_description' => 'Siapkan dokumen persyaratan sebelum melakukan pendaftaran online.',
+                'cta_label' => 'Daftar Sekarang',
+                'cta_url' => '/ppdb/daftar',
+                'is_open' => true,
+                'closed_message' => 'Pendaftaran PPDB saat ini belum dibuka.',
+            ]
+        );
 
         $validated = $request->validate([
             'academic_year' => ['nullable', 'string', 'max:255'],
@@ -104,6 +136,7 @@ class PpdbSettingController extends Controller
             'committee_signature' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'committee_name' => ['nullable', 'string', 'max:255'],
             'committee_position' => ['nullable', 'string', 'max:255'],
+            'report_location' => ['nullable', 'string', 'max:255'],
 
             'section_title' => ['nullable', 'string', 'max:255'],
             'section_description' => ['nullable', 'string'],
@@ -143,6 +176,7 @@ class PpdbSettingController extends Controller
 
             'committee_name' => $validated['committee_name'] ?? null,
             'committee_position' => $validated['committee_position'] ?? null,
+            'report_location' => $validated['report_location'] ?? null,
 
             'section_title' => $validated['section_title'] ?? null,
             'section_description' => $validated['section_description'] ?? null,

@@ -1,7 +1,7 @@
 export const school = {
-    name: "SMA Negeri 1 Mojokerto",
+    name: "SMA Negeri 1 Sumenep",
     shortName: "SMA Negeri 1",
-    city: "Mojokerto",
+    city: "Sumenep",
     tagline: "Berprestasi, Berkarakter, Berbudaya",
     description:
         "SMA Negeri 1 Cerdas merupakan sekolah menengah atas yang berkomitmen membentuk peserta didik yang unggul dalam akademik, berkarakter, kreatif, berbudaya, serta siap bersaing di era global.",
@@ -26,14 +26,14 @@ export const school = {
         "Membangun kerja sama dengan orang tua, masyarakat, dan berbagai pihak dalam mendukung kemajuan sekolah.",
     ],
     identity: [
-        ["Nama Sekolah", "SMA Negeri 1 Mojokerto"],
+        ["Nama Sekolah", "SMA Negeri 1 Sumenep"],
         ["NPSN", "20500001"],
         ["Akreditasi", "A"],
         ["Status Sekolah", "Negeri"],
         ["Jenjang", "Sekolah Menengah Atas"],
         ["Kurikulum", "Kurikulum Merdeka"],
-        ["Alamat", "Jl. Pendidikan No. 21, Mojokerto, Jawa Timur"],
-        ["Email", "info@sman1mojokerto.sch.id"],
+        ["Alamat", "Jl. Pendidikan No. 21, Sumenep, Jawa Timur"],
+        ["Email", "info@sman1Sumenep.sch.id"],
         ["Telepon", "0812-3456-7890"],
     ],
 };

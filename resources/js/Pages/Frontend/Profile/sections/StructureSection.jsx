@@ -3,7 +3,7 @@ const fallbackLeaders = [
         role: "Kepala Sekolah",
         name: "Drs. Ahmad Fauzi, M.Pd.",
         description:
-            "Memimpin dan bertanggung jawab atas penyelenggaraan pendidikan secara menyeluruh di SMA Negeri 1 Mojokerto.",
+            "Memimpin dan bertanggung jawab atas penyelenggaraan pendidikan secara menyeluruh di SMA Negeri 1 Sumenep.",
         image: "/frontend/images/principal.jpg",
         fallback:
             "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=700&q=85",

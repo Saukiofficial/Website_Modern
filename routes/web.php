@@ -7,9 +7,13 @@ use App\Http\Controllers\Admin\AcademicOsisMemberController;
 use App\Http\Controllers\Admin\AcademicTeacherController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\HomeSectionController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\PpdbContentController;
+use App\Http\Controllers\Admin\PpdbRegistrationController as AdminPpdbRegistrationController;
+use App\Http\Controllers\Admin\PpdbSettingController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ProfileStructureController;
 use App\Http\Controllers\Admin\SchoolSettingController;
@@ -23,10 +27,10 @@ use App\Http\Controllers\Frontend\PostController as FrontendPostController;
 use App\Http\Controllers\Frontend\PPDBController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\StudentProgramRegistrationController;
-use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
-use App\Http\Controllers\Admin\PpdbSettingController;
-use App\Http\Controllers\Admin\PpdbContentController;
-use App\Http\Controllers\Admin\PpdbRegistrationController as AdminPpdbRegistrationController;
+use App\Http\Controllers\Admin\StudentController as AdminStudentController;
+use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
+use App\Http\Controllers\Admin\OsisElectionController as AdminOsisElectionController;
+use App\Http\Controllers\Frontend\OsisVotingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -53,11 +57,53 @@ Route::get('/informasi/{slug}', [FrontendPostController::class, 'show'])
 
 Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
 
+/*
+|--------------------------------------------------------------------------
+| Frontend PPDB
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/ppdb', [PPDBController::class, 'index'])->name('ppdb');
 
-Route::get('/ppdb/daftar', [PPDBController::class, 'register'])->name('ppdb.register');
+Route::get('/ppdb/pengumuman', [PPDBController::class, 'announcement'])
+    ->name('ppdb.announcement');
 
-Route::post('/ppdb/daftar', [PPDBController::class, 'store'])->name('ppdb.store');
+Route::post('/ppdb/pengumuman/cek', [PPDBController::class, 'checkAnnouncement'])
+    ->name('ppdb.announcement.check');
+
+Route::get('/ppdb/pengumuman/cetak/{registration}', [PPDBController::class, 'printAnnouncement'])
+    ->name('ppdb.announcement.print');
+
+Route::get('/ppdb/daftar', [PPDBController::class, 'register'])
+    ->name('ppdb.register');
+
+Route::post('/ppdb/daftar', [PPDBController::class, 'store'])
+    ->name('ppdb.store');
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Front End Pemilihan Ketua Osis
+|--------------------------------------------------------------------------
+*/
+Route::get('/pemilihan-osis', [OsisVotingController::class, 'index'])
+    ->name('osis-voting.index');
+
+Route::post('/pemilihan-osis/login', [OsisVotingController::class, 'login'])
+    ->name('osis-voting.login');
+
+Route::get('/pemilihan-osis/vote', [OsisVotingController::class, 'votePage'])
+    ->name('osis-voting.vote');
+
+Route::post('/pemilihan-osis/vote', [OsisVotingController::class, 'submitVote'])
+    ->name('osis-voting.submit');
+
+Route::post('/pemilihan-osis/logout', [OsisVotingController::class, 'logout'])
+    ->name('osis-voting.logout');
+
+/*
+
 
 /*
 |--------------------------------------------------------------------------
@@ -287,6 +333,7 @@ Route::prefix('admin')
 
         Route::post('/ppdb-periods', [PpdbSettingController::class, 'update'])
             ->name('ppdb-periods.update');
+
         Route::get('/ppdb-content', [PpdbContentController::class, 'edit'])
             ->name('ppdb-content.edit');
 
@@ -299,6 +346,9 @@ Route::prefix('admin')
         Route::get('/ppdb-registrations/export', [AdminPpdbRegistrationController::class, 'export'])
             ->name('ppdb-registrations.export');
 
+        Route::get('/ppdb-registrations/export-pdf', [AdminPpdbRegistrationController::class, 'exportPdf'])
+            ->name('ppdb-registrations.export-pdf');
+
         Route::get('/ppdb-registrations/{registration}', [AdminPpdbRegistrationController::class, 'show'])
             ->name('ppdb-registrations.show');
 
@@ -310,4 +360,87 @@ Route::prefix('admin')
 
         Route::get('/ppdb-registrations/{registration}/print', [AdminPpdbRegistrationController::class, 'print'])
             ->name('ppdb-registrations.print');
+
+        Route::get('/students', [AdminStudentController::class, 'index'])
+            ->name('students.index');
+
+        Route::post('/students', [AdminStudentController::class, 'store'])
+            ->name('students.store');
+
+        Route::get('/students', [AdminStudentController::class, 'index'])
+            ->name('students.index');
+
+        Route::post('/students', [AdminStudentController::class, 'store'])
+            ->name('students.store');
+
+        Route::get('/students/export', [AdminStudentController::class, 'export'])
+            ->name('students.export');
+
+        Route::get('/students/import-template', [AdminStudentController::class, 'downloadImportTemplate'])
+            ->name('students.import-template');
+
+        Route::post('/students/import', [AdminStudentController::class, 'import'])
+            ->name('students.import');
+
+        Route::post('/students/{student}/generate-token', [AdminStudentController::class, 'generateToken'])
+            ->name('students.generate-token');
+
+        Route::post('/students/{student}', [AdminStudentController::class, 'update'])
+            ->name('students.update');
+
+        Route::delete('/students/{student}', [AdminStudentController::class, 'destroy'])
+            ->name('students.destroy');
+
+        Route::get('/alumni', [AdminAlumniController::class, 'index'])
+            ->name('alumni.index');
+
+        Route::post('/alumni', [AdminAlumniController::class, 'store'])
+            ->name('alumni.store');
+
+        Route::get('/alumni/export', [AdminAlumniController::class, 'export'])
+            ->name('alumni.export');
+
+        Route::get('/alumni/import-template', [AdminAlumniController::class, 'downloadImportTemplate'])
+            ->name('alumni.import-template');
+
+        Route::post('/alumni/import', [AdminAlumniController::class, 'import'])
+            ->name('alumni.import');
+
+        Route::post('/alumni/{alumni}', [AdminAlumniController::class, 'update'])
+            ->name('alumni.update');
+
+        Route::delete('/alumni/{alumni}', [AdminAlumniController::class, 'destroy'])
+            ->name('alumni.destroy');
+
+        Route::get('/osis-election', [AdminOsisElectionController::class, 'index'])
+            ->name('osis-election.index');
+
+        Route::post('/osis-election/periods', [AdminOsisElectionController::class, 'storePeriod'])
+            ->name('osis-election.periods.store');
+
+        Route::post('/osis-election/periods/{period}', [AdminOsisElectionController::class, 'updatePeriod'])
+            ->name('osis-election.periods.update');
+
+        Route::delete('/osis-election/periods/{period}', [AdminOsisElectionController::class, 'destroyPeriod'])
+            ->name('osis-election.periods.destroy');
+
+        Route::post('/osis-election/candidates', [AdminOsisElectionController::class, 'storeCandidate'])
+            ->name('osis-election.candidates.store');
+
+        Route::delete('/osis-election/candidates/{candidate}', [AdminOsisElectionController::class, 'destroyCandidate'])
+            ->name('osis-election.candidates.destroy');
+
+        Route::post('/osis-election/periods/{period}/generate-voters', [AdminOsisElectionController::class, 'generateVoters'])
+            ->name('osis-election.voters.generate');
+
+        Route::post('/osis-election/voters/{voter}/regenerate-token', [AdminOsisElectionController::class, 'regenerateVoterToken'])
+            ->name('osis-election.voters.regenerate-token');
+
+        Route::get('/osis-election/periods/{period}/export-voters', [AdminOsisElectionController::class, 'exportVoters'])
+            ->name('osis-election.voters.export');
+
+        Route::get('/osis-election/periods/{period}/export-results', [AdminOsisElectionController::class, 'exportResults'])
+            ->name('osis-election.results.export');
+        Route::get('/osis-election/periods/{period}/print-tokens', [AdminOsisElectionController::class, 'printTokens'])
+            ->name('osis-election.voters.print-tokens');
     });

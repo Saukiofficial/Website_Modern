@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\PpdbRegistration;
 use App\Models\PpdbSetting;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -107,91 +108,136 @@ class PpdbRegistrationController extends Controller
         }
 
     public function export(Request $request)
-    {
-        $status = $request->query('status', 'all');
-        $search = $request->query('search', '');
+{
+    $status = $request->query('status', 'all');
+    $search = $request->query('search', '');
 
-        $query = PpdbRegistration::query()
-            ->latest('submitted_at')
-            ->latest('id');
+    $query = $this->filteredRegistrationQuery($status, $search);
 
-        if ($status !== 'all') {
-            $query->where('status', $status);
-        }
+    $fileName = 'laporan-pendaftar-ppdb-' . now()->format('Y-m-d-His') . '.csv';
 
-        if ($search) {
-            $query->where(function ($builder) use ($search) {
-                $builder
-                    ->where('registration_number', 'like', "%{$search}%")
-                    ->orWhere('student_name', 'like', "%{$search}%")
-                    ->orWhere('nisn', 'like', "%{$search}%")
-                    ->orWhere('previous_school', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
+    $headers = [
+        'Content-Type' => 'text/csv; charset=UTF-8',
+        'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+    ];
 
-        $fileName = 'data-pendaftar-ppdb-' . now()->format('Y-m-d-His') . '.csv';
+    return response()->streamDownload(function () use ($query, $status, $search) {
+        $handle = fopen('php://output', 'w');
 
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
-        ];
+        fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-        return response()->streamDownload(function () use ($query) {
-            $handle = fopen('php://output', 'w');
+        fputcsv($handle, ['LAPORAN DATA PENDAFTAR PPDB'], ';');
+        fputcsv($handle, ['Tanggal Export', now()->format('d/m/Y H:i')], ';');
+        fputcsv($handle, ['Filter Status', $status === 'all' ? 'Semua Status' : $status], ';');
+        fputcsv($handle, ['Pencarian', $search ?: '-'], ';');
+        fputcsv($handle, ['Total Data', (clone $query)->count()], ';');
+        fputcsv($handle, [], ';');
 
-            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+        fputcsv($handle, [
+            'No',
+            'Nomor Pendaftaran',
+            'Nama Lengkap',
+            'NISN',
+            'Jenis Kelamin',
+            'Tempat Lahir',
+            'Tanggal Lahir',
+            'Agama',
+            'Asal Sekolah',
+            'Alamat',
+            'Nama Ayah',
+            'Pekerjaan Ayah',
+            'Nama Ibu',
+            'Pekerjaan Ibu',
+            'No HP',
+            'Email',
+            'Status',
+            'Catatan Panitia',
+            'Tanggal Daftar',
+        ], ';');
 
-            fputcsv($handle, [
-                'Nomor Pendaftaran',
-                'Nama Siswa',
-                'NISN',
-                'Jenis Kelamin',
-                'Tempat Lahir',
-                'Tanggal Lahir',
-                'Agama',
-                'Asal Sekolah',
-                'Alamat',
-                'Nama Ayah',
-                'Pekerjaan Ayah',
-                'Nama Ibu',
-                'Pekerjaan Ibu',
-                'No HP',
-                'Email',
-                'Status',
-                'Catatan Admin',
-                'Tanggal Daftar',
-            ]);
+        $number = 1;
 
-            $query->chunk(200, function ($registrations) use ($handle) {
-                foreach ($registrations as $registration) {
-                    fputcsv($handle, [
-                        $registration->registration_number,
-                        $registration->student_name,
-                        $registration->nisn,
-                        $registration->gender,
-                        $registration->birth_place,
-                        $registration->birth_date?->format('d/m/Y'),
-                        $registration->religion,
-                        $registration->previous_school,
-                        $registration->address,
-                        $registration->father_name,
-                        $registration->father_job,
-                        $registration->mother_name,
-                        $registration->mother_job,
-                        $registration->phone,
-                        $registration->email,
-                        $registration->status,
-                        $registration->admin_note,
-                        $registration->submitted_at?->format('d/m/Y H:i'),
-                    ]);
-                }
-            });
+        $query->chunk(200, function ($registrations) use ($handle, &$number) {
+            foreach ($registrations as $registration) {
+                fputcsv($handle, [
+                    $number++,
+                    $registration->registration_number ?: '-',
+                    $registration->student_name ?: '-',
+                    $registration->nisn ?: '-',
+                    $registration->gender ?: '-',
+                    $registration->birth_place ?: '-',
+                    $registration->birth_date?->format('d/m/Y') ?: '-',
+                    $registration->religion ?: '-',
+                    $registration->previous_school ?: '-',
+                    $registration->address ?: '-',
+                    $registration->father_name ?: '-',
+                    $registration->father_job ?: '-',
+                    $registration->mother_name ?: '-',
+                    $registration->mother_job ?: '-',
+                    $registration->phone ?: '-',
+                    $registration->email ?: '-',
+                    $registration->status ?: 'Baru',
+                    $registration->admin_note ?: '-',
+                    $registration->submitted_at?->format('d/m/Y H:i') ?: '-',
+                ], ';');
+            }
+        });
 
-            fclose($handle);
-        }, $fileName, $headers);
+        fclose($handle);
+    }, $fileName, $headers);
+}
+
+public function exportPdf(Request $request)
+{
+    $status = $request->query('status', 'all');
+    $search = $request->query('search', '');
+
+    $registrations = $this->filteredRegistrationQuery($status, $search)->get();
+    $setting = PpdbSetting::query()->first();
+
+    $summary = [
+        'total' => $registrations->count(),
+        'baru' => $registrations->where('status', 'Baru')->count(),
+        'diproses' => $registrations->where('status', 'Diproses')->count(),
+        'diterima' => $registrations->where('status', 'Diterima')->count(),
+        'ditolak' => $registrations->where('status', 'Ditolak')->count(),
+    ];
+
+    $pdf = Pdf::loadView('admin.ppdb-registrations.export-pdf', [
+        'registrations' => $registrations,
+        'setting' => $setting,
+        'summary' => $summary,
+        'status' => $status,
+        'search' => $search,
+    ])->setPaper('a4', 'landscape');
+
+    return $pdf->download('laporan-pendaftar-ppdb-' . now()->format('Y-m-d-His') . '.pdf');
+}
+
+private function filteredRegistrationQuery(string $status = 'all', string $search = '')
+{
+    $query = PpdbRegistration::query()
+        ->latest('submitted_at')
+        ->latest('id');
+
+    if ($status !== 'all') {
+        $query->where('status', $status);
     }
+
+    if ($search) {
+        $query->where(function ($builder) use ($search) {
+            $builder
+                ->where('registration_number', 'like', "%{$search}%")
+                ->orWhere('student_name', 'like', "%{$search}%")
+                ->orWhere('nisn', 'like', "%{$search}%")
+                ->orWhere('previous_school', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+        });
+    }
+
+    return $query;
+}
 
     private function registrationPayload(PpdbRegistration $registration): array
     {

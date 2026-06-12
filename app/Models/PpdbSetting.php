@@ -24,6 +24,7 @@ class PpdbSetting extends Model
         'committee_signature',
         'committee_name',
         'committee_position',
+        'report_location',
 
         'section_title',
         'section_description',

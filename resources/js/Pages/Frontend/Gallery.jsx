@@ -290,7 +290,7 @@ export default function Gallery({ galleries = [], categories = [] }) {
                             <p className="mt-2 text-[14px] font-medium leading-7 text-slate-600">
                                 Kirimkan foto kegiatan sekolah Anda untuk
                                 ditampilkan di galeri resmi SMA Negeri 1
-                                Mojokerto.
+                                Sumenep.
                             </p>
                         </div>
 

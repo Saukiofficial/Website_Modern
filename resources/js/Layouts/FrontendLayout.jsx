@@ -223,7 +223,7 @@ function LogoBlock({ schoolSetting }) {
 
             <div className="min-w-0">
                 <h1 className="truncate font-serif text-[20px] font-semibold uppercase leading-tight tracking-[-0.03em] text-[#061b46] sm:text-[24px] lg:text-[28px]">
-                    {schoolSetting?.school_name || "SMA Negeri 1 Mojokerto"}
+                    {schoolSetting?.school_name || "SMA Negeri 1 Sumenep"}
                 </h1>
 
                 <p className="mt-1 truncate text-[12px] font-medium text-slate-600 sm:text-[13px] lg:text-[14px]">
@@ -321,7 +321,7 @@ function MegaMenu({
                                 Menjadi bagian dari generasi unggul berkarakter
                                 dan berprestasi di{" "}
                                 {schoolSetting?.school_name ||
-                                    "SMA Negeri 1 Mojokerto"}
+                                    "SMA Negeri 1 Sumenep"}
                                 .
                             </p>
 

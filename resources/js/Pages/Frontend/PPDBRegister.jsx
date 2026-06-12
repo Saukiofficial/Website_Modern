@@ -478,7 +478,7 @@ export default function PPDBRegister({ setting = null, flash = {} }) {
                                         name="tempatLahir"
                                         value={data.tempatLahir}
                                         onChange={handleChange}
-                                        placeholder="Contoh: Mojokerto"
+                                        placeholder="Contoh: Sumenep"
                                         error={errors.tempatLahir}
                                     />
 
@@ -518,7 +518,7 @@ export default function PPDBRegister({ setting = null, flash = {} }) {
                                         name="asalSekolah"
                                         value={data.asalSekolah}
                                         onChange={handleChange}
-                                        placeholder="Contoh: SMP Negeri 1 Mojokerto"
+                                        placeholder="Contoh: SMP Negeri 1 Sumenep"
                                         error={errors.asalSekolah}
                                     />
 

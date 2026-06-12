@@ -30,7 +30,7 @@ function MainProfileHero({ school, heroStats }) {
                                 {school.shortName || "SMA Negeri 1"}
                             </span>
                             <br />
-                            {school.city || "Mojokerto"}
+                            {school.city || "Sumenep"}
                         </h1>
 
                         <p className="mt-7 max-w-[620px] text-[16px] font-medium leading-8 text-blue-50 sm:text-[18px]">
@@ -249,7 +249,7 @@ function StructureHero({ activeMenu, school }) {
 function SimpleProfileHero({ activeMenu, school }) {
     const heroTitle =
         activeMenu.key === "history"
-            ? `Sejarah ${school.name || "SMA Negeri 1 Mojokerto"}`
+            ? `Sejarah ${school.name || "SMA Negeri 1 Sumenep"}`
             : activeMenu.label;
 
     const heroDescription =

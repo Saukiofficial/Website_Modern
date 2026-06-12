@@ -400,10 +400,40 @@
                 margin: 12px auto;
                 padding: 36px 28px;
             }
+
+            .top-data {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-box {
+                margin: 0 auto;
+            }
+
+            .data-grid,
+            .grid-2,
+            .signatures {
+                grid-template-columns: 1fr;
+            }
+
+            .document-row {
+                grid-template-columns: 40px 1fr 100px;
+            }
         }
     </style>
 </head>
 <body>
+    @php
+        $formTitle = $setting?->form_title ?: 'FORMULIR PENDAFTARAN PESERTA DIDIK BARU';
+        $schoolName = $setting?->form_school_name ?: 'Nama Sekolah Belum Diatur';
+        $schoolAddress = $setting?->form_address ?: 'Alamat sekolah belum diatur';
+        $schoolWebsite = $setting?->form_website ?: 'Website belum diatur';
+        $schoolEmail = $setting?->form_email ?: 'Email belum diatur';
+
+        $committeeName = $setting?->committee_name ?: 'Panitia PPDB';
+        $committeePosition = $setting?->committee_position ?: 'Ketua Panitia PPDB';
+        $reportLocation = $setting?->report_location ?: 'Lokasi';
+    @endphp
+
     <div class="toolbar">
         <div class="toolbar-inner">
             <button type="button" onclick="window.print()">
@@ -427,20 +457,25 @@
             </div>
 
             <div class="kop-text">
-                <h1>{{ $setting?->form_title ?: 'Formulir Pendaftaran Peserta Didik Baru' }}</h1>
-                <h2>{{ $setting?->form_school_name ?: 'SMA Negeri 1 Mojokerto' }}</h2>
-                <p>{{ $setting?->form_address ?: 'Jl. Contoh Alamat Sekolah, Mojokerto, Jawa Timur' }}</p>
+                <h1>{{ $formTitle }}</h1>
+                <h2>{{ $schoolName }}</h2>
+                <p>{{ $schoolAddress }}</p>
                 <p>
-                    Website: {{ $setting?->form_website ?: 'sekolah.sch.id' }}
+                    Website: {{ $schoolWebsite }}
                     |
-                    Email: {{ $setting?->form_email ?: 'admin@sekolah.sch.id' }}
+                    Email: {{ $schoolEmail }}
                 </p>
             </div>
         </div>
 
         <section class="registration-box">
             <h3>Bukti Formulir Pendaftaran PPDB</h3>
-            <p>Nomor Pendaftaran: {{ $registration->registration_number }}</p>
+
+            <p>
+                Nomor Pendaftaran:
+                {{ $registration->registration_number ?: '-' }}
+            </p>
+
             <p>
                 Tanggal Daftar:
                 {{ optional($registration->submitted_at)->format('d M Y H:i') ?: '-' }}
@@ -461,18 +496,40 @@
             <div class="top-info">
                 <div class="field">
                     <div class="field-label">Nama Lengkap</div>
-                    <div class="field-value">{{ $registration->student_name ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->student_name ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="grid-2">
                     <div class="field">
                         <div class="field-label">NISN</div>
-                        <div class="field-value">{{ $registration->nisn ?: '-' }}</div>
+                        <div class="field-value">
+                            {{ $registration->nisn ?: '-' }}
+                        </div>
                     </div>
 
                     <div class="field">
                         <div class="field-label">Jenis Kelamin</div>
-                        <div class="field-value">{{ $registration->gender ?: '-' }}</div>
+                        <div class="field-value">
+                            {{ $registration->gender ?: '-' }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field">
+                        <div class="field-label">Status Pendaftaran</div>
+                        <div class="field-value">
+                            {{ $registration->status ?: 'Baru' }}
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">Tahun Ajaran</div>
+                        <div class="field-value">
+                            {{ $setting?->academic_year ?: '-' }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -484,7 +541,9 @@
             <div class="data-grid">
                 <div class="field">
                     <div class="field-label">Tempat Lahir</div>
-                    <div class="field-value">{{ $registration->birth_place ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->birth_place ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field">
@@ -496,17 +555,23 @@
 
                 <div class="field">
                     <div class="field-label">Agama</div>
-                    <div class="field-value">{{ $registration->religion ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->religion ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field">
                     <div class="field-label">Asal Sekolah</div>
-                    <div class="field-value">{{ $registration->previous_school ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->previous_school ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field full">
                     <div class="field-label">Alamat</div>
-                    <div class="field-value">{{ $registration->address ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->address ?: '-' }}
+                    </div>
                 </div>
             </div>
         </section>
@@ -517,32 +582,44 @@
             <div class="data-grid">
                 <div class="field">
                     <div class="field-label">Nama Ayah</div>
-                    <div class="field-value">{{ $registration->father_name ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->father_name ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field">
                     <div class="field-label">Pekerjaan Ayah</div>
-                    <div class="field-value">{{ $registration->father_job ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->father_job ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field">
                     <div class="field-label">Nama Ibu</div>
-                    <div class="field-value">{{ $registration->mother_name ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->mother_name ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field">
                     <div class="field-label">Pekerjaan Ibu</div>
-                    <div class="field-value">{{ $registration->mother_job ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->mother_job ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field">
                     <div class="field-label">No. HP</div>
-                    <div class="field-value">{{ $registration->phone ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->phone ?: '-' }}
+                    </div>
                 </div>
 
                 <div class="field">
                     <div class="field-label">Email</div>
-                    <div class="field-value">{{ $registration->email ?: '-' }}</div>
+                    <div class="field-value">
+                        {{ $registration->email ?: '-' }}
+                    </div>
                 </div>
             </div>
         </section>
@@ -554,37 +631,59 @@
                 <div class="document-row">
                     <div class="number">1</div>
                     <div>Kartu Keluarga</div>
-                    <div class="status">{{ $registration->family_card_url ? 'Terlampir' : 'Belum Ada' }}</div>
+                    <div class="status">
+                        {{ $registration->family_card_url ? 'Terlampir' : 'Belum Ada' }}
+                    </div>
                 </div>
 
                 <div class="document-row">
                     <div class="number">2</div>
                     <div>Akta Kelahiran</div>
-                    <div class="status">{{ $registration->birth_certificate_url ? 'Terlampir' : 'Belum Ada' }}</div>
+                    <div class="status">
+                        {{ $registration->birth_certificate_url ? 'Terlampir' : 'Belum Ada' }}
+                    </div>
                 </div>
 
                 <div class="document-row">
                     <div class="number">3</div>
                     <div>Sertifikat / Piagam</div>
-                    <div class="status">{{ $registration->certificate_url ? 'Terlampir' : 'Belum Ada' }}</div>
+                    <div class="status">
+                        {{ $registration->certificate_url ? 'Terlampir' : 'Belum Ada' }}
+                    </div>
                 </div>
 
                 <div class="document-row">
                     <div class="number">4</div>
                     <div>Rapor</div>
-                    <div class="status">{{ $registration->report_card_url ? 'Terlampir' : 'Belum Ada' }}</div>
+                    <div class="status">
+                        {{ $registration->report_card_url ? 'Terlampir' : 'Belum Ada' }}
+                    </div>
                 </div>
 
                 <div class="document-row">
                     <div class="number">5</div>
                     <div>Pas Foto</div>
-                    <div class="status">{{ $registration->photo_url ? 'Terlampir' : 'Belum Ada' }}</div>
+                    <div class="status">
+                        {{ $registration->photo_url ? 'Terlampir' : 'Belum Ada' }}
+                    </div>
                 </div>
             </div>
         </section>
 
         <section>
-            <div class="section-title">D. Pernyataan</div>
+            <div class="section-title">D. Catatan Panitia</div>
+
+            <div class="statement">
+                @if ($registration->admin_note)
+                    {{ $registration->admin_note }}
+                @else
+                    Tidak ada catatan tambahan dari panitia PPDB.
+                @endif
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">E. Pernyataan</div>
 
             <div class="statement">
                 Dengan ini saya menyatakan bahwa data yang diisi pada formulir pendaftaran
@@ -609,7 +708,7 @@
 
             <div>
                 <div class="signature-date">
-                    Panitia PPDB
+                    {{ $reportLocation }}, {{ now()->format('d M Y') }}
                 </div>
 
                 <div class="signature-space">
@@ -619,11 +718,11 @@
                 </div>
 
                 <div class="signature-name">
-                    {{ $setting?->committee_name ?: 'Panitia PPDB' }}
+                    {{ $committeeName }}
                 </div>
 
                 <div class="signature-title">
-                    {{ $setting?->committee_position ?: 'Ketua Panitia PPDB' }}
+                    {{ $committeePosition }}
                 </div>
             </div>
         </section>

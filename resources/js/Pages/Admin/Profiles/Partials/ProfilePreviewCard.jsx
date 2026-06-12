@@ -28,7 +28,7 @@ export default function ProfilePreviewCard({ data, profile, activeTab }) {
                         <h3 className="mt-4 font-serif text-[32px] font-semibold leading-tight">
                             {data.short_name || "SMA Negeri 1"}
                             <br />
-                            {data.city || "Mojokerto"}
+                            {data.city || "Sumenep"}
                         </h3>
                     </div>
                 </div>

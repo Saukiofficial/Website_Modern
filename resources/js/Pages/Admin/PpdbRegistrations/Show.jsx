@@ -76,7 +76,7 @@ function FormPreview({ registration }) {
                     </h2>
 
                     <p className="mt-2 text-[13px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-                        SMA Negeri 1 Mojokerto
+                        SMA Negeri 1 Sumenep
                     </p>
 
                     <p className="mt-2 text-[13px] font-bold text-[#061b46]">

@@ -18,7 +18,7 @@ class SchoolSettingController extends Controller
 
         if (! $setting) {
             $setting = SchoolSetting::query()->create([
-                'school_name' => 'SMA Negeri 1 Mojokerto',
+                'school_name' => 'SMA Negeri 1 Sumenep',
                 'tagline' => 'Sekolah Berprestasi, Berkarakter, dan Berdaya Saing Global',
                 'logo' => null,
                 'phone' => null,

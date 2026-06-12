@@ -24,7 +24,7 @@ export default function ProfileSchoolSection({
                         value={data.school_name}
                         onChange={(event) => updateField("school_name", event.target.value)}
                         error={errors.school_name}
-                        placeholder="SMA Negeri 1 Mojokerto"
+                        placeholder="SMA Negeri 1 Sumenep"
                     />
                     <TextInput
                         label="Nama Singkat"
@@ -38,7 +38,7 @@ export default function ProfileSchoolSection({
                         value={data.city}
                         onChange={(event) => updateField("city", event.target.value)}
                         error={errors.city}
-                        placeholder="Mojokerto"
+                        placeholder="Sumenep"
                     />
                     <TextInput
                         label="Tagline"

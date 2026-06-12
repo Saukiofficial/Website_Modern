@@ -14,9 +14,9 @@ import IdentitySection from "./sections/IdentitySection";
 
 const defaultProfileData = {
     school: {
-        name: "SMA Negeri 1 Mojokerto",
+        name: "SMA Negeri 1 Sumenep",
         shortName: "SMA Negeri 1",
-        city: "Mojokerto",
+        city: "Sumenep",
         tagline: "Berprestasi, Berkarakter, Berbudaya",
         description:
             "SMA Negeri 1 Cerdas merupakan sekolah menengah atas yang berkomitmen membentuk peserta didik yang unggul dalam akademik, berkarakter, kreatif, berbudaya, serta siap bersaing di era global.",

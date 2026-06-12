@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 const sidebarGroups = [
     {
         title: "Utama",
+        icon: "📌",
+        defaultOpen: true,
         menus: [
             {
                 label: "Dashboard",
@@ -13,7 +15,28 @@ const sidebarGroups = [
         ],
     },
     {
+        title: "Master Data",
+        icon: "🗃️",
+        defaultOpen: true,
+        menus: [
+            {
+                label: "Data Siswa",
+                href: "/admin/students",
+                icon: "🎒",
+                badge: "Soon",
+            },
+            {
+                label: "Data Alumni",
+                href: "/admin/alumni",
+                icon: "🎓",
+                badge: "Soon",
+            },
+        ],
+    },
+    {
         title: "Website",
+        icon: "🌐",
+        defaultOpen: false,
         menus: [
             {
                 label: "Setting Sekolah",
@@ -30,10 +53,22 @@ const sidebarGroups = [
                 href: "/admin/home",
                 icon: "🏠",
             },
+            {
+                label: "Informasi",
+                href: "/admin/posts",
+                icon: "📰",
+            },
+            {
+                label: "Galeri",
+                href: "/admin/galleries",
+                icon: "🖼️",
+            },
         ],
     },
     {
         title: "Profil Sekolah",
+        icon: "🏛️",
+        defaultOpen: false,
         menus: [
             {
                 label: "Profil",
@@ -49,6 +84,8 @@ const sidebarGroups = [
     },
     {
         title: "Akademik",
+        icon: "📚",
+        defaultOpen: false,
         menus: [
             {
                 label: "Setting Akademik",
@@ -79,6 +116,8 @@ const sidebarGroups = [
     },
     {
         title: "Kesiswaan",
+        icon: "👥",
+        defaultOpen: false,
         menus: [
             {
                 label: "Program Kesiswaan",
@@ -90,30 +129,23 @@ const sidebarGroups = [
                 href: "/admin/student-registrations",
                 icon: "📝",
             },
-        ],
-    },
-    {
-        title: "Konten",
-        menus: [
-            {
-                label: "Informasi",
-                href: "/admin/posts",
-                icon: "📰",
-            },
-            {
-                label: "Galeri",
-                href: "/admin/galleries",
-                icon: "🖼️",
+                    {
+            label: "Pemilihan Ketua OSIS",
+            href: "/admin/osis-election",
+            icon: "🗳️",
+            badge: "Soon",
             },
         ],
     },
     {
         title: "PPDB",
+        icon: "📝",
+        defaultOpen: false,
         menus: [
             {
                 label: "Setting PPDB",
                 href: "/admin/ppdb-periods",
-                icon: "📝",
+                icon: "⚙️",
             },
             {
                 label: "Konten PPDB",
@@ -141,12 +173,24 @@ function isActiveGroup(currentPath, menus) {
     return menus.some((menu) => isActiveMenu(currentPath, menu.href));
 }
 
+function getInitialOpenGroups(currentPath) {
+    const initial = {};
+
+    sidebarGroups.forEach((group) => {
+        const activeGroup = isActiveGroup(currentPath, group.menus);
+
+        initial[group.title] = Boolean(group.defaultOpen || activeGroup);
+    });
+
+    return initial;
+}
+
 function SidebarMenuItem({ menu, active, onClose }) {
     return (
         <Link
             href={menu.href}
             onClick={onClose}
-            className={`group flex min-h-[44px] items-center gap-3 rounded-[14px] px-3 text-[13px] font-semibold transition duration-200 ${
+            className={`group flex min-h-[42px] items-center gap-3 rounded-[14px] px-3 text-[13px] font-semibold transition duration-200 ${
                 active
                     ? "bg-white text-[#061b46] shadow-lg shadow-black/10"
                     : "text-blue-50/90 hover:bg-white/10 hover:text-white"
@@ -162,49 +206,106 @@ function SidebarMenuItem({ menu, active, onClose }) {
                 {menu.icon}
             </span>
 
-            <span className="min-w-0 truncate">{menu.label}</span>
+            <span className="min-w-0 flex-1 truncate">{menu.label}</span>
+
+            {menu.badge ? (
+                <span
+                    className={`rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] ${
+                        active
+                            ? "bg-[#061b46] text-white"
+                            : "bg-[#f7c46a]/15 text-[#f7c46a]"
+                    }`}
+                >
+                    {menu.badge}
+                </span>
+            ) : null}
         </Link>
     );
 }
 
-function SidebarGroup({ group, currentPath, onClose }) {
+function SidebarGroup({ group, currentPath, onClose, isOpen, onToggle }) {
     const activeGroup = isActiveGroup(currentPath, group.menus);
 
     return (
-        <div className="space-y-2">
-            <div className="flex items-center justify-between px-3">
-                <p
-                    className={`text-[10.5px] font-semibold uppercase tracking-[0.18em] ${
-                        activeGroup ? "text-[#f7c46a]" : "text-blue-200/75"
-                    }`}
-                >
-                    {group.title}
-                </p>
+        <div className="rounded-[18px] border border-white/10 bg-white/[0.035] p-2">
+            <button
+                type="button"
+                onClick={onToggle}
+                className={`flex min-h-[42px] w-full items-center justify-between gap-3 rounded-[14px] px-3 text-left transition ${
+                    activeGroup
+                        ? "bg-white/10 text-white"
+                        : "text-blue-100 hover:bg-white/5 hover:text-white"
+                }`}
+            >
+                <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/5 text-[16px]">
+                        {group.icon}
+                    </span>
 
-                {activeGroup ? (
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#f7c46a]" />
-                ) : null}
-            </div>
+                    <div className="min-w-0">
+                        <p
+                            className={`truncate text-[11px] font-semibold uppercase tracking-[0.16em] ${
+                                activeGroup
+                                    ? "text-[#f7c46a]"
+                                    : "text-blue-200/80"
+                            }`}
+                        >
+                            {group.title}
+                        </p>
 
-            <div className="space-y-1.5">
-                {group.menus.map((menu) => {
-                    const active = isActiveMenu(currentPath, menu.href);
+                        <p className="mt-0.5 text-[10.5px] font-medium text-blue-100/60">
+                            {group.menus.length} menu
+                        </p>
+                    </div>
+                </div>
 
-                    return (
-                        <SidebarMenuItem
-                            key={menu.href}
-                            menu={menu}
-                            active={active}
-                            onClose={onClose}
-                        />
-                    );
-                })}
-            </div>
+                <div className="flex items-center gap-2">
+                    {activeGroup ? (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#f7c46a]" />
+                    ) : null}
+
+                    <span
+                        className={`text-[14px] font-semibold transition duration-200 ${
+                            isOpen ? "rotate-180" : ""
+                        }`}
+                    >
+                        ⌄
+                    </span>
+                </div>
+            </button>
+
+            {isOpen ? (
+                <div className="mt-2 space-y-1.5">
+                    {group.menus.map((menu) => {
+                        const active = isActiveMenu(currentPath, menu.href);
+
+                        return (
+                            <SidebarMenuItem
+                                key={menu.href}
+                                menu={menu}
+                                active={active}
+                                onClose={onClose}
+                            />
+                        );
+                    })}
+                </div>
+            ) : null}
         </div>
     );
 }
 
 function SidebarContent({ currentPath, onClose }) {
+    const [openGroups, setOpenGroups] = useState(() =>
+        getInitialOpenGroups(currentPath)
+    );
+
+    const toggleGroup = (title) => {
+        setOpenGroups((previous) => ({
+            ...previous,
+            [title]: !previous[title],
+        }));
+    };
+
     return (
         <div className="flex h-full flex-col bg-[#061b46] text-white">
             <div className="flex min-h-[88px] items-center gap-4 border-b border-white/10 px-5">
@@ -230,17 +331,20 @@ function SidebarContent({ currentPath, onClose }) {
                     </p>
 
                     <p className="mt-2 text-[12px] font-medium leading-5 text-blue-100">
-                        Kelola konten website sekolah berdasarkan kategori.
+                        Kelola konten, master data, PPDB, dan fitur website
+                        sekolah berdasarkan kategori.
                     </p>
                 </div>
 
-                <nav className="space-y-6 pb-4">
+                <nav className="space-y-3 pb-4">
                     {sidebarGroups.map((group) => (
                         <SidebarGroup
                             key={group.title}
                             group={group}
                             currentPath={currentPath}
                             onClose={onClose}
+                            isOpen={Boolean(openGroups[group.title])}
+                            onToggle={() => toggleGroup(group.title)}
                         />
                     ))}
                 </nav>

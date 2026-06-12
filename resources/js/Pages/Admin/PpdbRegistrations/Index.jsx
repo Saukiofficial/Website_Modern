@@ -90,12 +90,17 @@ export default function Index({
             },
             {
                 preserveState: true,
+                preserveScroll: true,
                 replace: true,
             }
         );
     };
 
     const exportUrl = `/admin/ppdb-registrations/export?status=${encodeURIComponent(
+        filters.status || "all"
+    )}&search=${encodeURIComponent(filters.search || "")}`;
+
+    const exportPdfUrl = `/admin/ppdb-registrations/export-pdf?status=${encodeURIComponent(
         filters.status || "all"
     )}&search=${encodeURIComponent(filters.search || "")}`;
 
@@ -115,17 +120,24 @@ export default function Index({
 
                     <p className="mt-4 max-w-2xl text-[14px] font-medium leading-7 text-blue-100">
                         Kelola data pendaftaran peserta didik baru, verifikasi
-                        dokumen, cetak formulir pendaftar, dan export data ke
-                        CSV.
+                        dokumen, cetak formulir pendaftar, export CSV, dan unduh
+                        laporan PDF.
                     </p>
                 </div>
 
-                <div className="flex flex-col gap-3 sm:flex-row">
-                    <a
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    {/* <a
                         href={exportUrl}
                         className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-white/15 bg-white/10 px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-white/20"
                     >
                         Export CSV
+                    </a> */}
+
+                    <a
+                        href={exportPdfUrl}
+                        className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-white/15 bg-white/10 px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-white/20"
+                    >
+                        Unduh PDF
                     </a>
 
                     <Link
@@ -184,6 +196,35 @@ export default function Index({
                         <option value="Diterima">Diterima</option>
                         <option value="Ditolak">Ditolak</option>
                     </select>
+                </div>
+
+                <div className="mt-4 flex flex-col gap-3 rounded-[18px] bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p className="text-[13px] font-extrabold text-[#061b46]">
+                            Export mengikuti filter aktif
+                        </p>
+
+                        <p className="mt-1 text-[12px] font-semibold text-slate-500">
+                            Status: {filters.status === "all" || !filters.status ? "Semua Status" : filters.status}
+                            {" "}• Pencarian: {filters.search || "-"}
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                        <a
+                            href={exportUrl}
+                            className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] bg-white px-5 text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#061b46] ring-1 ring-slate-200 transition hover:bg-blue-50"
+                        >
+                            Export CSV
+                        </a>
+
+                        <a
+                            href={exportPdfUrl}
+                            className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] bg-[#061b46] px-5 text-[12px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-[#0b3b85]"
+                        >
+                            Unduh PDF
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -244,6 +285,7 @@ export default function Index({
                                                 <p className="text-[13px] font-semibold text-slate-700">
                                                     {item.phone || "-"}
                                                 </p>
+
                                                 <p className="mt-1 text-[12px] font-semibold text-slate-400">
                                                     {item.email || "-"}
                                                 </p>
@@ -299,12 +341,15 @@ export default function Index({
                             mengirim formulir.
                         </p>
 
-                        <a
-                            href={exportUrl}
-                            className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-[16px] bg-[#061b46] px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-[#0b3b85]"
-                        >
-                            Export CSV
-                        </a>
+                        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+ \
+                            <a
+                                href={exportPdfUrl}
+                                className="inline-flex min-h-[48px] items-center justify-center rounded-[16px] bg-[#061b46] px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-[#0b3b85]"
+                            >
+                                Unduh PDF
+                            </a>
+                        </div>
                     </div>
                 )}
             </div>

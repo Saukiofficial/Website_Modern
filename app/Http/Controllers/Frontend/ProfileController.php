@@ -17,9 +17,9 @@ class ProfileController extends Controller
 
         if (! $profile) {
             $profile = SchoolProfile::query()->create([
-                'school_name' => 'SMA Negeri 1 Mojokerto',
+                'school_name' => 'SMA Negeri 1 Sumenep',
                 'short_name' => 'SMA Negeri 1',
-                'city' => 'Mojokerto',
+                'city' => 'Sumenep',
                 'tagline' => 'Berprestasi, Berkarakter, Berbudaya',
                 'description' => 'SMA Negeri 1 Cerdas merupakan sekolah menengah atas yang berkomitmen membentuk peserta didik yang unggul dalam akademik, berkarakter, kreatif, berbudaya, serta siap bersaing di era global.',
             ]);

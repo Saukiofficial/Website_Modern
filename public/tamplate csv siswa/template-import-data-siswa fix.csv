@@ -1,0 +1,3 @@
+﻿student_number,nisn,name,gender,class_level,class_name,birth_place,birth_date,religion,address,phone,email,father_name,mother_name,is_active
+2026001,1234567890,Ahmad Fauzi,Laki-laki,7,7A,Jakarta,1/15/2012,Islam,Jl. Pendidikan No. 1,81234567890,ahmad@example.com,Bapak Ahmad,Ibu Ahmad,1
+2026002,1234567891,Siti Aminah,Perempuan,8,8B,Bandung,5/20/2011,Islam,Jl. Sekolah No. 2,81234567891,siti@example.com,Bapak Siti,Ibu Siti,1

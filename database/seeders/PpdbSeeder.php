@@ -17,7 +17,7 @@ class PpdbSeeder extends Seeder
             [
                 'academic_year' => '2026/2027',
                 'eyebrow' => 'Penerimaan Peserta Didik Baru',
-                'hero_title' => 'PPDB SMA Negeri 1 Mojokerto',
+                'hero_title' => 'PPDB SMA Negeri 1 Sumenep',
                 'hero_description' => 'Bergabung bersama sekolah berprestasi, berkarakter, dan berbudaya. Daftarkan diri untuk menjadi bagian dari generasi unggul.',
                 'hero_image' => '/frontend/images/ppdb-hero.jpg',
                 'section_title' => 'Tahapan Pendaftaran',

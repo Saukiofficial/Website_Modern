@@ -3,7 +3,7 @@ import FrontendLayout from "../../Layouts/FrontendLayout";
 const fallbackSetting = {
     academic_year: "2026/2027",
     eyebrow: "Penerimaan Peserta Didik Baru",
-    hero_title: "PPDB SMA Negeri 1 Mojokerto",
+    hero_title: "PPDB SMA Negeri 1 Sumenep",
     hero_description:
         "Bergabung bersama sekolah berprestasi, berkarakter, dan berbudaya. Daftarkan diri untuk menjadi bagian dari generasi unggul.",
     hero_image_url: "/frontend/images/ppdb-hero.jpg",
@@ -305,7 +305,7 @@ export default function PPDB({
                                 </div>
                             ) : null}
 
-                            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
+                            <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
                                 {ppdbSetting.is_open ? (
                                     <a
                                         href={ctaUrl}
@@ -325,6 +325,13 @@ export default function PPDB({
                                         Pendaftaran Ditutup
                                     </button>
                                 )}
+
+                                <a
+                                    href="/ppdb/pengumuman"
+                                    className="inline-flex min-h-[58px] items-center justify-center rounded-[6px] border border-[#f7c46a]/70 bg-[#052b66]/40 px-8 text-[13px] font-semibold uppercase tracking-[0.08em] text-white shadow-lg shadow-blue-950/20 backdrop-blur-sm transition hover:bg-white/10"
+                                >
+                                    Cek Pengumuman
+                                </a>
 
                                 <a
                                     href="#alur-ppdb"
@@ -446,6 +453,13 @@ export default function PPDB({
                                 Pendaftaran Ditutup
                             </button>
                         )}
+
+                        <a
+                            href="/ppdb/pengumuman"
+                            className="mt-4 inline-flex min-h-[56px] w-full items-center justify-center rounded-[8px] border border-white/30 px-8 text-[13px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-white/10"
+                        >
+                            Cek Pengumuman
+                        </a>
 
                         <div className="mt-6 flex items-center justify-center gap-3 text-center text-[14px] font-medium text-blue-100">
                             <span className="text-[#f7c46a]">🔒</span>

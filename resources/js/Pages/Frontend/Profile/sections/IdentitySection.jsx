@@ -14,14 +14,14 @@ const identityIcons = {
 };
 
 const fallbackIdentityData = [
-    { label: "Nama Sekolah", value: "SMA Negeri 1 Mojokerto" },
+    { label: "Nama Sekolah", value: "SMA Negeri 1 Sumenep" },
     { label: "NPSN", value: "20500001" },
     { label: "Akreditasi", value: "A" },
     { label: "Status Sekolah", value: "Negeri" },
     { label: "Jenjang", value: "Sekolah Menengah Atas" },
     { label: "Kurikulum", value: "Kurikulum Merdeka" },
-    { label: "Alamat", value: "Jl. Pendidikan No. 21, Mojokerto, Jawa Timur 61314" },
-    { label: "Email", value: "info@sman1mojokerto.sch.id" },
+    { label: "Alamat", value: "Jl. Pendidikan No. 21, Sumenep, Jawa Timur 61314" },
+    { label: "Email", value: "info@sman1Sumenep.sch.id" },
     { label: "Telepon", value: "(0321) 321456" },
     { label: "Tahun Berdiri", value: "1998" },
 ];

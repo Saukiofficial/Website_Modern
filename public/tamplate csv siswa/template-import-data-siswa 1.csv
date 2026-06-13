@@ -1,0 +1,8 @@
+﻿student_number,nisn,name,gender,class_level,class_name,birth_place,birth_date,religion,address,phone,email,father_name,mother_name,is_active
+2026001,1234567890,Ahmad Fauzi,Laki-laki,11,A,Jakarta,1/15/2012,Islam,Jl. Pendidikan No. 1,81234567890,ahmad@example.com,Bapak Ahmad,Ibu Ahmad,1
+2026002,1234567891,Siti Aminah,Perempuan,10,B,Bandung,5/20/2011,Islam,Jl. Sekolah No. 2,81234567891,siti@example.com,Bapak Siti,Ibu Siti,1
+2026003,12312124141,Sauki Annaim,Laki-laki,12,B,Sumenep,10/2/2008,Islam,jl. Kalimas. No 22,81232916758,sauki@gmail.com,Bapak Hasyim,Ibu Ida,1
+2026004,12312124142,Abd. Basith,Laki-laki,12,A,Sumenep,10/2/2008,Islam,jl. Kalimas. No 22,81232916752,abd.basith@gmail.com,Bapak Bastih,Ibu Contoh,1
+2026005,12312124143,Rizal Abul Fata,Laki-laki,12,B,Sumenep,10/2/2008,Islam,jl. Kalimas. No 22,81232916754,Rizal@gmail.com,Bapak Bastih,Ibu contoh,1
+2026006,12312124144,Indra Kurniawan,Laki-laki,12,A,Sumenep,10/2/2008,Islam,jl. Kalimas. No 22,81232916757,lndra@gmail.com,Bapak contoh,Ibu contoh,1
+2026007,12312124145,Kholid,Laki-laki,12,B,Sumenep,10/2/2008,Islam,jl. Kalimas. No 22,81232916755,Kholid@gmail.com,Bapak Contoh,Ibu contoh,1

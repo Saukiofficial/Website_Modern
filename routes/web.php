@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\OsisElectionController as AdminOsisElectionController;
 use App\Http\Controllers\Frontend\OsisVotingController;
+use App\Http\Controllers\Frontend\AlumniController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -56,6 +57,9 @@ Route::get('/informasi/{slug}', [FrontendPostController::class, 'show'])
     ->name('informasi.show');
 
 Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
+
+Route::get('/alumni', [AlumniController::class, 'index'])
+    ->name('alumni');
 
 /*
 |--------------------------------------------------------------------------
@@ -441,6 +445,10 @@ Route::prefix('admin')
 
         Route::get('/osis-election/periods/{period}/export-results', [AdminOsisElectionController::class, 'exportResults'])
             ->name('osis-election.results.export');
+
+        Route::get('/osis-election/periods/{period}/print-results', [AdminOsisElectionController::class, 'printResults'])
+            ->name('osis-election.results.print');
         Route::get('/osis-election/periods/{period}/print-tokens', [AdminOsisElectionController::class, 'printTokens'])
             ->name('osis-election.voters.print-tokens');
+
     });

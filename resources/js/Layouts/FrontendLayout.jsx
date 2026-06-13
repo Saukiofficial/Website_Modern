@@ -41,6 +41,22 @@ const fallbackMenuGroups = [
                 label: "Form Bimbingan Konseling",
                 href: "/kesiswaan/bimbingan-konseling",
             },
+            {
+                label: "Pemilihan OSIS",
+                href: "/pemilihan-osis",
+            },
+        ],
+    },
+    {
+        label: "Alumni",
+        icon: "🎓",
+        href: "/alumni",
+        items: [
+            { label: "Data Alumni", href: "/alumni" },
+            { label: "Jejak Alumni", href: "/alumni" },
+            { label: "Alumni Bekerja", href: "/alumni?activity=Bekerja" },
+            { label: "Alumni Kuliah", href: "/alumni?activity=Kuliah" },
+            { label: "Alumni Wirausaha", href: "/alumni?activity=Wirausaha" },
         ],
     },
     {
@@ -84,12 +100,29 @@ const fallbackMainMenus = [
     { label: "Beranda", href: "/" },
     { label: "Profil", href: "/profil", dropdownKey: "Profil Sekolah" },
     { label: "Akademik", href: "/akademik", dropdownKey: "Akademik" },
+    { label: "Alumni", href: "/alumni", dropdownKey: "Alumni" },
     { label: "Kesiswaan", href: "/kesiswaan", dropdownKey: "Kesiswaan" },
     { label: "Informasi", href: "/informasi", dropdownKey: "Informasi" },
     { label: "Galeri", href: "/galeri", dropdownKey: "Galeri" },
     { label: "PPDB", href: "/ppdb", dropdownKey: "PPDB" },
-    { label: "Hubungi Kami", href: "/#kontak" },
 ];
+
+function getSchoolInitials(name = "") {
+    const words = String(name || "Sekolah")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+
+    if (words.length === 1) {
+        return words[0].slice(0, 2).toUpperCase();
+    }
+
+    return words
+        .slice(0, 2)
+        .map((word) => word.charAt(0))
+        .join("")
+        .toUpperCase();
+}
 
 function isActiveMenu(pathname, href) {
     if (href === "/") return pathname === "/";
@@ -104,6 +137,7 @@ function getMenuIcon(label) {
     if (lowerLabel.includes("profil")) return "🏫";
     if (lowerLabel.includes("akademik")) return "🎓";
     if (lowerLabel.includes("kesiswaan")) return "👥";
+    if (lowerLabel.includes("alumni")) return "🎓";
     if (lowerLabel.includes("informasi")) return "ⓘ";
     if (lowerLabel.includes("galeri")) return "🖼️";
     if (lowerLabel.includes("ppdb")) return "📝";
@@ -205,30 +239,33 @@ function GlobeIcon() {
 }
 
 function LogoBlock({ schoolSetting }) {
+    const schoolName = schoolSetting?.school_name || "SMA Negeri 1 Sumenep";
+    const schoolInitials = getSchoolInitials(schoolName);
+
     return (
         <Link href="/" className="flex min-w-0 items-center gap-4">
             <div className="flex h-[62px] w-[62px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#052b66] text-white ring-[4px] ring-blue-100 lg:h-[76px] lg:w-[76px]">
                 {schoolSetting?.logo_url ? (
                     <img
                         src={schoolSetting.logo_url}
-                        alt={schoolSetting.school_name || "Logo Sekolah"}
+                        alt={schoolName}
                         className="h-full w-full object-cover"
                     />
                 ) : (
                     <div className="flex h-[82%] w-[82%] items-center justify-center rounded-full border border-[#d59a25]/70 text-[18px] font-semibold text-[#f7c46a]">
-                        1
+                        {schoolInitials}
                     </div>
                 )}
             </div>
 
             <div className="min-w-0">
                 <h1 className="truncate font-serif text-[20px] font-semibold uppercase leading-tight tracking-[-0.03em] text-[#061b46] sm:text-[24px] lg:text-[28px]">
-                    {schoolSetting?.school_name || "SMA Negeri 1 Sumenep"}
+                    {schoolName}
                 </h1>
 
                 <p className="mt-1 truncate text-[12px] font-medium text-slate-600 sm:text-[13px] lg:text-[14px]">
                     {schoolSetting?.tagline ||
-                        "Excellence • Character • Leadership"}
+                        "Sekolah Berprestasi, Berkarakter, dan Berdaya Saing Global"}
                 </p>
             </div>
         </Link>
@@ -369,6 +406,189 @@ function FlashMessage({ flash }) {
                 {message}
             </div>
         </div>
+    );
+}
+
+function AccreditationBadge({ schoolSetting }) {
+    const accreditation =
+        schoolSetting?.accreditation ||
+        schoolSetting?.school_accreditation ||
+        "A";
+
+    const accreditationText =
+        schoolSetting?.accreditation_text ||
+        schoolSetting?.accreditation_label ||
+        "Akreditasi A";
+
+    const accreditationSubText =
+        schoolSetting?.accreditation_subtitle || "Unggul";
+
+    return (
+        <div className="flex flex-col items-center text-center">
+            <div className="relative flex h-[112px] w-[112px] items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-[5px] border-[#d59a25]" />
+                <div className="absolute inset-[9px] rounded-full border border-[#f7c46a]/70" />
+                <div className="absolute -left-1 bottom-5 h-11 w-6 rotate-[-20deg] rounded-full border-l-[5px] border-[#d59a25]" />
+                <div className="absolute -right-1 bottom-5 h-11 w-6 rotate-[20deg] rounded-full border-r-[5px] border-[#d59a25]" />
+
+                <div className="relative flex h-[74px] w-[74px] items-center justify-center rounded-full bg-[#d59a25] text-[42px] font-black leading-none text-[#052b66] shadow-xl shadow-black/20">
+                    {accreditation}
+                </div>
+            </div>
+
+            <p className="mt-4 text-[15px] font-semibold text-white">
+                {accreditationText}
+            </p>
+
+            <p className="mt-1 text-[13px] font-medium text-blue-100">
+                ({accreditationSubText})
+            </p>
+        </div>
+    );
+}
+
+function SocialIcon({ children, href = "#" }) {
+    return (
+        <a
+            href={href}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[14px] font-semibold text-white transition hover:bg-[#d59a25] hover:text-white"
+        >
+            {children}
+        </a>
+    );
+}
+
+function FooterColumn({ title, links = [] }) {
+    return (
+        <div>
+            <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
+                {title}
+            </p>
+
+            <div className="mt-5 grid gap-3">
+                {links.map((link) => (
+                    <Link
+                        key={`${link.label}-${link.href}`}
+                        href={link.href}
+                        className="text-[14px] font-medium text-blue-100 transition hover:text-[#f7c46a]"
+                    >
+                        {link.label}
+                    </Link>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function SiteFooter({ schoolSetting, mainMenus }) {
+    const schoolName = schoolSetting?.school_name || "SMA Negeri 1 Sumenep";
+    const tagline =
+        schoolSetting?.tagline ||
+        "Sekolah Berprestasi, Berkarakter, dan Berdaya Saing Global";
+    const schoolInitials = getSchoolInitials(schoolName);
+
+    const quickLinks = mainMenus
+        .filter((menu) => !["PPDB"].includes(menu.label))
+        .slice(0, 6)
+        .map((menu) => ({
+            label: menu.label,
+            href: menu.href,
+        }));
+
+    const informationLinks = [
+        { label: "Berita", href: "/informasi" },
+        { label: "Pengumuman", href: "/informasi" },
+        { label: "Galeri", href: "/galeri" },
+        { label: "PPDB", href: "/ppdb" },
+        { label: "Kontak", href: "/#kontak" },
+    ];
+
+    return (
+        <footer className="relative overflow-hidden bg-[#052b66] text-white">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(247,196,106,0.10),transparent_28%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.08),transparent_28%)]" />
+            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full border-[32px] border-white/5" />
+            <div className="absolute -bottom-28 left-1/3 h-64 w-64 rounded-full bg-[#d59a25]/10 blur-3xl" />
+
+            <div className="relative mx-auto grid max-w-[1280px] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.35fr_0.9fr_0.9fr_1.1fr_0.8fr] lg:px-10">
+                <div>
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#d59a25] bg-white/10 text-[17px] font-bold text-white">
+                            {schoolSetting?.logo_url ? (
+                                <img
+                                    src={schoolSetting.logo_url}
+                                    alt={schoolName}
+                                    className="h-full w-full object-cover"
+                                />
+                            ) : (
+                                schoolInitials
+                            )}
+                        </div>
+
+                        <div className="min-w-0">
+                            <p className="line-clamp-2 text-[18px] font-semibold uppercase leading-tight tracking-[0.06em] text-white">
+                                {schoolName}
+                            </p>
+
+                            <p className="mt-2 line-clamp-2 text-[13px] font-medium leading-6 text-blue-100">
+                                {tagline}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-7 flex gap-3">
+                        <SocialIcon>f</SocialIcon>
+                        <SocialIcon>◎</SocialIcon>
+                        <SocialIcon>▶</SocialIcon>
+                        <SocialIcon>♪</SocialIcon>
+                    </div>
+                </div>
+
+                <FooterColumn title="Tautan Cepat" links={quickLinks} />
+
+                <FooterColumn title="Informasi" links={informationLinks} />
+
+                <div>
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
+                        Kontak Kami
+                    </p>
+
+                    <div className="mt-5 grid gap-4 text-[14px] font-medium leading-6 text-blue-100">
+                        <p className="flex gap-3">
+                            <span className="text-[#f7c46a]">📍</span>
+                            <span>{schoolSetting?.address || "-"}</span>
+                        </p>
+
+                        <p className="flex gap-3">
+                            <span className="text-[#f7c46a]">☎</span>
+                            <span>{schoolSetting?.phone || "-"}</span>
+                        </p>
+
+                        <p className="flex gap-3">
+                            <span className="text-[#f7c46a]">✉</span>
+                            <span>{schoolSetting?.email || "-"}</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div className="lg:flex lg:justify-end">
+                    <AccreditationBadge schoolSetting={schoolSetting} />
+                </div>
+            </div>
+
+            <div className="relative border-t border-white/10">
+                <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-5 py-6 text-[13px] font-medium text-blue-100 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
+                    <p>
+                        © {new Date().getFullYear()} {schoolName}. All rights
+                        reserved.
+                    </p>
+
+                    <p>
+                        Created with <span className="text-red-400">♥</span> for
+                        Education
+                    </p>
+                </div>
+            </div>
+        </footer>
     );
 }
 
@@ -669,6 +889,8 @@ export default function FrontendLayout({ children }) {
             </header>
 
             <main className="w-full">{children}</main>
+
+            <SiteFooter schoolSetting={schoolSetting} mainMenus={mainMenus} />
         </div>
     );
 }

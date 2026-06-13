@@ -449,6 +449,14 @@ export default function Index({
                             >
                                 Export Hasil
                             </a>
+
+                            <a
+                                href={`/admin/osis-election/periods/${activePeriod.id}/print-results`}
+                                target="_blank"
+                                className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] bg-white px-6 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#061b46] transition hover:bg-blue-50"
+                            >
+                                Cetak Hasil
+                            </a>
                         </>
                     ) : null}
                 </div>
@@ -709,12 +717,22 @@ export default function Index({
                             </div>
 
                             {activePeriod ? (
-                                <a
-                                    href={`/admin/osis-election/periods/${activePeriod.id}/export-results`}
-                                    className="inline-flex min-h-[44px] items-center justify-center rounded-[14px] bg-[#061b46] px-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#0b3b85]"
-                                >
-                                    Export Hasil
-                                </a>
+                                <div className="flex flex-col gap-3 sm:flex-row">
+                                    <a
+                                        href={`/admin/osis-election/periods/${activePeriod.id}/export-results`}
+                                        className="inline-flex min-h-[44px] items-center justify-center rounded-[14px] bg-slate-50 px-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#061b46] ring-1 ring-slate-200 transition hover:bg-blue-50"
+                                    >
+                                        Export Hasil
+                                    </a>
+
+                                    <a
+                                        href={`/admin/osis-election/periods/${activePeriod.id}/print-results`}
+                                        target="_blank"
+                                        className="inline-flex min-h-[44px] items-center justify-center rounded-[14px] bg-[#061b46] px-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#0b3b85]"
+                                    >
+                                        Cetak Hasil
+                                    </a>
+                                </div>
                             ) : null}
                         </div>
 

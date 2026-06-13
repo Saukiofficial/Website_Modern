@@ -544,6 +544,64 @@ class OsisElectionController extends Controller
     ]);
 }
 
+public function printResults(OsisElectionPeriod $period)
+{
+    $totalCandidates = OsisCandidate::query()
+        ->where('period_id', $period->id)
+        ->count();
+
+    $totalVoters = OsisVoter::query()
+        ->where('period_id', $period->id)
+        ->count();
+
+    $totalVoted = OsisVoter::query()
+        ->where('period_id', $period->id)
+        ->where('has_voted', true)
+        ->count();
+
+    $totalNotVoted = max($totalVoters - $totalVoted, 0);
+
+    $totalVotes = OsisVote::query()
+        ->where('period_id', $period->id)
+        ->count();
+
+    $results = OsisCandidate::query()
+        ->withCount('votes')
+        ->where('period_id', $period->id)
+        ->orderByDesc('votes_count')
+        ->orderByRaw('CAST(candidate_number AS UNSIGNED) ASC')
+        ->get()
+        ->map(function (OsisCandidate $candidate) use ($totalVotes) {
+            return [
+                'id' => $candidate->id,
+                'candidate_number' => $candidate->candidate_number,
+                'name' => $candidate->name,
+                'class_label' => $candidate->class_label,
+                'votes_count' => $candidate->votes_count,
+                'percentage' => $totalVotes > 0
+                    ? round(($candidate->votes_count / $totalVotes) * 100, 2)
+                    : 0,
+            ];
+        });
+
+    $winner = $results->sortByDesc('votes_count')->first();
+
+    return view('admin.osis-election.print-results', [
+        'period' => $period,
+        'summary' => [
+            'total_candidates' => $totalCandidates,
+            'total_voters' => $totalVoters,
+            'total_voted' => $totalVoted,
+            'total_not_voted' => $totalNotVoted,
+            'total_votes' => $totalVotes,
+        ],
+        'results' => $results,
+        'winner' => $winner,
+        'printedAt' => now()->format('d/m/Y H:i'),
+        'printedDate' => now()->format('d F Y'),
+    ]);
+}
+
     private function generateUniqueVoterToken(int $periodId): string
     {
         do {

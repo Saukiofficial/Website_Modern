@@ -1,0 +1,4 @@
+﻿sep=;
+student_number;nisn;name;gender;graduation_year;class_name;birth_place;birth_date;phone;email;address;current_activity;institution;job_position;is_active
+2020001;1234567890;"Ahmad Fauzi";Laki-laki;2023;9A;Jakarta;2008-01-15;081234567890;ahmad@example.com;"Jl. Pendidikan No. 1";Kuliah;"Universitas Indonesia";"Teknik Informatika";1
+2020002;1234567891;"Siti Aminah";Perempuan;2022;9B;Bandung;2007-05-20;081234567891;siti@example.com;"Jl. Sekolah No. 2";Bekerja;"PT Contoh Indonesia";"Staff Administrasi";1

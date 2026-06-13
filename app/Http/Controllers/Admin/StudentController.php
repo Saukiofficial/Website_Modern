@@ -19,8 +19,7 @@ class StudentController extends Controller
         $classLevel = $request->query('class_level', 'all');
         $status = $request->query('status', 'all');
 
-        $query = Student::query()
-            ->latest('id');
+        $query = Student::query()->latest('id');
 
         if ($search) {
             $query->where(function ($builder) use ($search) {
@@ -130,7 +129,7 @@ class StudentController extends Controller
             'email' => $validated['email'] ?? null,
             'father_name' => $validated['father_name'] ?? null,
             'mother_name' => $validated['mother_name'] ?? null,
-            'is_active' => filter_var($validated['is_active'] ?? true, FILTER_VALIDATE_BOOLEAN),
+            'is_active' => $this->normalizeBoolean($validated['is_active'] ?? true),
             'voting_token' => $this->generateUniqueVotingToken(),
         ];
 
@@ -189,7 +188,7 @@ class StudentController extends Controller
             'email' => $validated['email'] ?? null,
             'father_name' => $validated['father_name'] ?? null,
             'mother_name' => $validated['mother_name'] ?? null,
-            'is_active' => filter_var($validated['is_active'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'is_active' => $this->normalizeBoolean($validated['is_active'] ?? false),
         ];
 
         if ($request->hasFile('photo')) {
@@ -310,10 +309,7 @@ class StudentController extends Controller
         return response()->streamDownload(function () {
             $handle = fopen('php://output', 'w');
 
-            // UTF-8 BOM agar karakter Indonesia aman dibuka di Excel
             fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
-
-            // Membuat Excel otomatis membaca separator titik koma
             fwrite($handle, "sep=;\n");
 
             fputcsv($handle, [
@@ -378,7 +374,7 @@ class StudentController extends Controller
 
     public function import(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $request->validate([
             'file' => ['required', 'file', 'mimes:csv,txt', 'max:4096'],
         ], [
             'file.required' => 'File import wajib diupload.',
@@ -387,9 +383,15 @@ class StudentController extends Controller
             'file.max' => 'Ukuran file maksimal 4MB.',
         ]);
 
-        $file = $validated['file'];
-        $path = $file->getRealPath();
+        $file = $request->file('file');
 
+        if (! $file) {
+            return redirect()
+                ->route('admin.students.index')
+                ->with('error', 'File import tidak ditemukan.');
+        }
+
+        $path = $file->getRealPath();
         $handle = fopen($path, 'r');
 
         if (! $handle) {
@@ -400,22 +402,34 @@ class StudentController extends Controller
 
         $firstLine = fgets($handle);
 
-        if ($firstLine !== false && str_starts_with(trim($firstLine), 'sep=')) {
-            $delimiter = str_replace('sep=', '', trim($firstLine));
+        $cleanFirstLine = $firstLine !== false
+            ? trim(str_replace("\xEF\xBB\xBF", '', $firstLine))
+            : '';
+
+        if ($cleanFirstLine !== '' && str_starts_with(strtolower($cleanFirstLine), 'sep=')) {
+            $delimiter = str_replace('sep=', '', strtolower($cleanFirstLine));
             $delimiter = $delimiter ?: ';';
+
             $header = fgetcsv($handle, 0, $delimiter);
         } else {
             rewind($handle);
 
-            $header = fgetcsv($handle, 0, ';');
+            $sample = fgets($handle);
+            rewind($handle);
 
-            if (! $header || count($header) < 3) {
-                rewind($handle);
-                $header = fgetcsv($handle, 0, ',');
+            $semicolonCount = substr_count((string) $sample, ';');
+            $commaCount = substr_count((string) $sample, ',');
+            $tabCount = substr_count((string) $sample, "\t");
+
+            if ($semicolonCount >= $commaCount && $semicolonCount >= $tabCount) {
+                $delimiter = ';';
+            } elseif ($commaCount >= $semicolonCount && $commaCount >= $tabCount) {
                 $delimiter = ',';
             } else {
-                $delimiter = ';';
+                $delimiter = "\t";
             }
+
+            $header = fgetcsv($handle, 0, $delimiter);
         }
 
         if (! $header) {
@@ -427,9 +441,24 @@ class StudentController extends Controller
         }
 
         $header = array_map(function ($item) {
-            return trim(str_replace("\xEF\xBB\xBF", '', $item));
+            $item = (string) $item;
+
+            $item = str_replace("\xEF\xBB\xBF", '', $item);
+            $item = str_replace(["\r", "\n", "\t"], '', $item);
+            $item = trim($item);
+            $item = strtolower($item);
+            $item = preg_replace('/\s+/', '_', $item);
+
+            return $item;
         }, $header);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Header wajib
+        |--------------------------------------------------------------------------
+        | is_active sengaja tidak dijadikan wajib.
+        | Kalau is_active rusak/hilang, siswa otomatis dianggap aktif.
+        */
         $requiredHeaders = [
             'student_number',
             'nisn',
@@ -445,7 +474,6 @@ class StudentController extends Controller
             'email',
             'father_name',
             'mother_name',
-            'is_active',
         ];
 
         $missingHeaders = array_diff($requiredHeaders, $header);
@@ -455,88 +483,117 @@ class StudentController extends Controller
 
             return redirect()
                 ->route('admin.students.index')
-                ->with('error', 'Format CSV tidak sesuai. Header yang kurang: ' . implode(', ', $missingHeaders));
+                ->with(
+                    'error',
+                    'Format CSV tidak sesuai. Header yang kurang: ' . implode(', ', $missingHeaders)
+                );
         }
 
         $created = 0;
         $updated = 0;
         $skipped = 0;
+        $failed = 0;
+        $failedRows = [];
 
         while (($row = fgetcsv($handle, 0, $delimiter)) !== false) {
-            if (count(array_filter($row)) === 0) {
+            try {
+                if (count(array_filter($row, fn ($value) => trim((string) $value) !== '')) === 0) {
+                    continue;
+                }
+
+                $row = array_pad($row, count($header), null);
+                $data = array_combine($header, array_slice($row, 0, count($header)));
+
+                if (! $data) {
+                    $skipped++;
+                    continue;
+                }
+
+                $studentNumber = trim((string) ($data['student_number'] ?? ''));
+                $nisn = trim((string) ($data['nisn'] ?? ''));
+                $name = trim((string) ($data['name'] ?? ''));
+
+                if ($name === '') {
+                    $skipped++;
+                    continue;
+                }
+
+                if ($studentNumber === '' && $nisn === '') {
+                    $skipped++;
+                    continue;
+                }
+
+                $email = trim((string) ($data['email'] ?? ''));
+
+                $payload = [
+                    'student_number' => $studentNumber ?: null,
+                    'nisn' => $nisn ?: null,
+                    'name' => $name,
+                    'gender' => trim((string) ($data['gender'] ?? '')) ?: null,
+                    'class_level' => trim((string) ($data['class_level'] ?? '')) ?: null,
+                    'class_name' => trim((string) ($data['class_name'] ?? '')) ?: null,
+                    'birth_place' => trim((string) ($data['birth_place'] ?? '')) ?: null,
+                    'birth_date' => $this->normalizeDate($data['birth_date'] ?? null),
+                    'religion' => trim((string) ($data['religion'] ?? '')) ?: null,
+                    'address' => trim((string) ($data['address'] ?? '')) ?: null,
+                    'phone' => trim((string) ($data['phone'] ?? '')) ?: null,
+                    'email' => $email ?: null,
+                    'father_name' => trim((string) ($data['father_name'] ?? '')) ?: null,
+                    'mother_name' => trim((string) ($data['mother_name'] ?? '')) ?: null,
+                    'is_active' => array_key_exists('is_active', $data)
+                        ? $this->normalizeBoolean($data['is_active'])
+                        : true,
+                ];
+
+                $student = Student::query()
+                    ->where(function ($query) use ($studentNumber, $nisn) {
+                        if ($studentNumber !== '') {
+                            $query->orWhere('student_number', $studentNumber);
+                        }
+
+                        if ($nisn !== '') {
+                            $query->orWhere('nisn', $nisn);
+                        }
+                    })
+                    ->first();
+
+                if ($student) {
+                    $student->update($payload);
+                    $updated++;
+                } else {
+                    $payload['voting_token'] = $this->generateUniqueVotingToken();
+
+                    Student::query()->create($payload);
+                    $created++;
+                }
+            } catch (\Throwable $exception) {
+                $failed++;
+                $failedRows[] = $name ?: $studentNumber ?: $nisn ?: 'Baris tidak diketahui';
+
                 continue;
-            }
-
-            $data = array_combine($header, array_pad($row, count($header), null));
-
-            if (! $data || empty($data['name'])) {
-                $skipped++;
-                continue;
-            }
-
-            $studentNumber = trim($data['student_number'] ?? '');
-            $nisn = trim($data['nisn'] ?? '');
-
-            if (! $studentNumber && ! $nisn) {
-                $skipped++;
-                continue;
-            }
-
-            $payload = [
-                'student_number' => $studentNumber ?: null,
-                'nisn' => $nisn ?: null,
-                'name' => trim($data['name'] ?? ''),
-                'gender' => trim($data['gender'] ?? '') ?: null,
-                'class_level' => trim($data['class_level'] ?? '') ?: null,
-                'class_name' => trim($data['class_name'] ?? '') ?: null,
-                'birth_place' => trim($data['birth_place'] ?? '') ?: null,
-                'birth_date' => $this->normalizeDate($data['birth_date'] ?? null),
-                'religion' => trim($data['religion'] ?? '') ?: null,
-                'address' => trim($data['address'] ?? '') ?: null,
-                'phone' => trim($data['phone'] ?? '') ?: null,
-                'email' => trim($data['email'] ?? '') ?: null,
-                'father_name' => trim($data['father_name'] ?? '') ?: null,
-                'mother_name' => trim($data['mother_name'] ?? '') ?: null,
-                'is_active' => $this->normalizeBoolean($data['is_active'] ?? true),
-            ];
-
-            $student = Student::query()
-                ->where(function ($query) use ($studentNumber, $nisn) {
-                    if ($studentNumber) {
-                        $query->orWhere('student_number', $studentNumber);
-                    }
-
-                    if ($nisn) {
-                        $query->orWhere('nisn', $nisn);
-                    }
-                })
-                ->first();
-
-            if ($student) {
-                $student->update($payload);
-                $updated++;
-            } else {
-                $payload['voting_token'] = $this->generateUniqueVotingToken();
-
-                Student::query()->create($payload);
-                $created++;
             }
         }
 
         fclose($handle);
 
+        $message = "Import selesai. Data baru: {$created}, diperbarui: {$updated}, dilewati: {$skipped}, gagal: {$failed}.";
+
+        if ($failed > 0) {
+            $message .= ' Data gagal: ' . implode(', ', array_slice($failedRows, 0, 5));
+
+            if (count($failedRows) > 5) {
+                $message .= ', dan lainnya.';
+            }
+        }
+
         return redirect()
             ->route('admin.students.index')
-            ->with(
-                'success',
-                "Import selesai. Data baru: {$created}, diperbarui: {$updated}, dilewati: {$skipped}."
-            );
+            ->with('success', $message);
     }
 
     private function filteredStudentQuery(string $search = '', string $classLevel = 'all', string $status = 'all')
     {
-        $query = Student::query()
-            ->latest('id');
+        $query = Student::query()->latest('id');
 
         if ($search) {
             $query->where(function ($builder) use ($search) {
@@ -570,15 +627,19 @@ class StudentController extends Controller
         return $token;
     }
 
-    private function normalizeDate(?string $date): ?string
+    private function normalizeDate($date): ?string
     {
         if (! $date) {
             return null;
         }
 
-        $date = trim($date);
+        $date = trim((string) $date);
 
         try {
+            if ($date === '') {
+                return null;
+            }
+
             if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
                 return $date;
             }
@@ -587,6 +648,12 @@ class StudentController extends Controller
                 [$day, $month, $year] = explode('/', $date);
 
                 return "{$year}-{$month}-{$day}";
+            }
+
+            if (is_numeric($date)) {
+                $unixDate = ((int) $date - 25569) * 86400;
+
+                return gmdate('Y-m-d', $unixDate);
             }
 
             return \Carbon\Carbon::parse($date)->format('Y-m-d');
@@ -602,6 +669,10 @@ class StudentController extends Controller
         }
 
         $value = strtolower(trim((string) $value));
+
+        if ($value === '') {
+            return true;
+        }
 
         return in_array($value, ['1', 'true', 'aktif', 'active', 'ya', 'yes'], true);
     }

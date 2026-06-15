@@ -95,8 +95,8 @@ function getIcon(category) {
 
 function GalleryCard({ item }) {
     return (
-        <article className="group overflow-hidden rounded-[16px] bg-white shadow-xl shadow-slate-200/70">
-            <div className="relative h-[290px] overflow-hidden bg-slate-100 sm:h-[320px]">
+        <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-lg shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <div className="relative h-[185px] overflow-hidden bg-slate-100 sm:h-[200px] lg:h-[210px]">
                 <img
                     src={
                         item.image_url ||
@@ -104,42 +104,52 @@ function GalleryCard({ item }) {
                     }
                     alt={item.title}
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    onError={(event) => {
+                        event.currentTarget.src =
+                            "https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1300&q=85";
+                    }}
                 />
 
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,43,102,0.10)_0%,rgba(5,43,102,0.20)_42%,rgba(5,43,102,0.94)_100%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,43,102,0.02)_0%,rgba(5,43,102,0.18)_100%)]" />
 
-                <div className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-[10px] bg-[#052b66]/90 text-[24px] text-white shadow-lg shadow-blue-950/20 backdrop-blur-sm">
+                <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#052b66]/95 text-[20px] text-white shadow-lg shadow-blue-950/20 backdrop-blur-sm">
                     {getIcon(item.category)}
                 </div>
 
                 {item.is_featured ? (
-                    <div className="absolute right-5 top-5 rounded-full bg-[#f7c46a] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#061b46] shadow-lg">
+                    <div className="absolute right-4 top-4 rounded-full bg-[#f7c46a] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#061b46] shadow-lg">
                         Featured
                     </div>
                 ) : null}
+            </div>
 
-                <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                    <p className="text-[13px] font-medium text-blue-100">
-                        {item.event_date || item.category || "Galeri Sekolah"}
-                    </p>
+            <div className="flex flex-1 flex-col p-5">
+                <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full bg-blue-50 px-3 py-1 text-[11px] font-semibold text-[#052b66]">
+                        {item.category || "Galeri"}
+                    </span>
 
-                    <h3 className="mt-2 font-serif text-[30px] font-semibold leading-tight tracking-[-0.035em] text-white">
-                        {item.title}
-                    </h3>
-
-                    <p className="mt-3 line-clamp-2 text-[13px] font-medium leading-6 text-blue-50">
-                        {item.description ||
-                            "Dokumentasi kegiatan dan lingkungan sekolah."}
-                    </p>
-
-                    <button
-                        type="button"
-                        className="mt-4 inline-flex items-center gap-2 border-b border-[#d5a542] pb-1 text-[14px] font-semibold text-white transition group-hover:text-[#f7c46a]"
-                    >
-                        Lihat Galeri
-                        <span>→</span>
-                    </button>
+                    <span className="text-[12px] font-medium text-slate-500">
+                        {item.event_date || "Galeri Sekolah"}
+                    </span>
                 </div>
+
+                <h3 className="mt-4 line-clamp-2 break-words font-serif text-[24px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46]">
+                    {item.title}
+                </h3>
+
+                <p className="mt-3 line-clamp-2 break-words text-[13px] font-medium leading-6 text-slate-600">
+                    {item.description ||
+                        "Dokumentasi kegiatan dan lingkungan sekolah."}
+                </p>
+
+                <button
+                    type="button"
+                    className="mt-auto inline-flex w-fit items-center gap-2 border-b border-[#d5a542] pt-5 pb-1 text-[13px] font-semibold text-[#052b66] transition group-hover:text-[#d5a542]"
+                >
+                    Lihat Galeri
+                    <span>→</span>
+                </button>
             </div>
         </article>
     );
@@ -171,15 +181,13 @@ export default function Gallery({ galleries = [], categories = [] }) {
     const filteredGalleries = useMemo(() => {
         if (activeCategory === "Semua") return galleryItems;
 
-        return galleryItems.filter(
-            (item) => item.category === activeCategory
-        );
+        return galleryItems.filter((item) => item.category === activeCategory);
     }, [activeCategory, galleryItems]);
 
     return (
         <FrontendLayout>
             <section className="relative w-full overflow-hidden bg-[#052b66]">
-                <div className="relative min-h-[440px] w-full overflow-hidden lg:min-h-[500px]">
+                <div className="relative min-h-[340px] w-full overflow-hidden sm:min-h-[390px] lg:min-h-[430px]">
                     <img
                         src="/frontend/images/gallery-hero.jpg"
                         alt="Galeri Sekolah"
@@ -190,10 +198,10 @@ export default function Gallery({ galleries = [], categories = [] }) {
                         }}
                     />
 
-                    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,29,74,0.99)_0%,rgba(3,42,101,0.94)_40%,rgba(3,42,101,0.68)_62%,rgba(4,62,145,0.16)_100%)]" />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,29,74,0.98)_0%,rgba(3,42,101,0.88)_50%,rgba(4,62,145,0.58)_100%)] lg:bg-[linear-gradient(90deg,rgba(3,29,74,0.99)_0%,rgba(3,42,101,0.94)_40%,rgba(3,42,101,0.68)_62%,rgba(4,62,145,0.16)_100%)]" />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,24,58,0.08)_0%,rgba(3,24,58,0.02)_48%,rgba(3,24,58,0.30)_100%)]" />
 
-                    <div className="relative z-10 flex min-h-[440px] flex-col justify-center px-4 py-12 sm:px-6 lg:min-h-[500px] lg:px-10 xl:px-14 2xl:px-16">
+                    <div className="relative z-10 flex min-h-[340px] flex-col justify-center px-4 py-10 sm:min-h-[390px] sm:px-6 lg:min-h-[430px] lg:px-10 xl:px-14 2xl:px-16">
                         <div className="flex flex-wrap items-center gap-3 text-[13px] font-medium text-blue-100">
                             <a href="/" className="hover:text-white">
                                 Beranda
@@ -202,17 +210,17 @@ export default function Gallery({ galleries = [], categories = [] }) {
                             <span className="text-white">Galeri</span>
                         </div>
 
-                        <p className="mt-9 text-[13px] font-semibold uppercase tracking-[0.22em] text-[#d5a542]">
+                        <p className="mt-8 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d5a542] sm:mt-9 sm:text-[13px] sm:tracking-[0.22em]">
                             Galeri Sekolah
                         </p>
 
-                        <h1 className="mt-5 max-w-[880px] font-serif text-[48px] font-semibold leading-[1.08] tracking-[-0.045em] text-white sm:text-[62px] lg:text-[74px]">
+                        <h1 className="mt-4 max-w-[880px] break-words font-serif text-[34px] font-semibold leading-[1.08] tracking-[-0.045em] text-white sm:text-[52px] lg:text-[62px]">
                             Dokumentasi Kegiatan dan
-                            <br />
+                            <br className="hidden sm:block" />
                             Lingkungan Sekolah
                         </h1>
 
-                        <p className="mt-7 max-w-[720px] text-[16px] font-medium leading-8 text-blue-50 sm:text-[18px]">
+                        <p className="mt-6 max-w-[720px] break-words text-[15px] font-medium leading-7 text-blue-50 sm:mt-7 sm:text-[18px] sm:leading-8">
                             Kumpulan dokumentasi kegiatan akademik, kesiswaan,
                             prestasi, dan suasana lingkungan sekolah.
                         </p>
@@ -220,19 +228,19 @@ export default function Gallery({ galleries = [], categories = [] }) {
                 </div>
             </section>
 
-            <section className="w-full bg-[#f4f8fc] px-4 py-12 sm:px-6 lg:px-10 lg:py-16 xl:px-14 2xl:px-16">
+            <section className="w-full bg-[#f4f8fc] px-4 py-10 sm:px-6 sm:py-12 lg:px-10 lg:py-16 xl:px-14 2xl:px-16">
                 <div className="mb-8 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-                    <div>
-                        <p className="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#d5a542]">
+                    <div className="min-w-0">
+                        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d5a542] sm:text-[13px] sm:tracking-[0.22em]">
                             Dokumentasi
                         </p>
 
-                        <h2 className="mt-4 font-serif text-[40px] font-semibold leading-tight tracking-[-0.04em] text-[#061b46] sm:text-[48px]">
+                        <h2 className="mt-4 break-words font-serif text-[36px] font-semibold leading-tight tracking-[-0.04em] text-[#061b46] sm:text-[48px]">
                             Galeri Foto Sekolah
                         </h2>
                     </div>
 
-                    <div className="flex gap-3 overflow-x-auto pb-2 xl:pb-0">
+                    <div className="flex max-w-full gap-3 overflow-x-auto pb-2 xl:pb-0">
                         {categoryItems.map((category) => {
                             const isActive = activeCategory === category;
 
@@ -257,9 +265,12 @@ export default function Gallery({ galleries = [], categories = [] }) {
                 </div>
 
                 {filteredGalleries.length > 0 ? (
-                    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                         {filteredGalleries.map((item) => (
-                            <GalleryCard key={item.id || item.title} item={item} />
+                            <GalleryCard
+                                key={item.id || item.title}
+                                item={item}
+                            />
                         ))}
                     </div>
                 ) : (
@@ -282,12 +293,12 @@ export default function Gallery({ galleries = [], categories = [] }) {
                             🖼️
                         </div>
 
-                        <div>
-                            <h3 className="font-serif text-[24px] font-semibold leading-tight text-[#061b46]">
+                        <div className="min-w-0">
+                            <h3 className="break-words font-serif text-[24px] font-semibold leading-tight text-[#061b46]">
                                 Punya dokumentasi kegiatan sekolah?
                             </h3>
 
-                            <p className="mt-2 text-[14px] font-medium leading-7 text-slate-600">
+                            <p className="mt-2 break-words text-[14px] font-medium leading-7 text-slate-600">
                                 Kirimkan foto kegiatan sekolah Anda untuk
                                 ditampilkan di galeri resmi SMA Negeri 1
                                 Sumenep.

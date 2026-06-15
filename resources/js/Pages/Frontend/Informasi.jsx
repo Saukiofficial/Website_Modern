@@ -84,8 +84,8 @@ function NewsCard({ item }) {
     const href = item.slug && item.slug !== "#" ? `/informasi/${item.slug}` : "#";
 
     return (
-        <article className="overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-2xl">
-            <a href={href} className="block h-[210px] overflow-hidden bg-slate-100">
+        <article className="overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-lg shadow-slate-200/70 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <a href={href} className="block h-[155px] overflow-hidden bg-slate-100 sm:h-[170px] lg:h-[180px]">
                 <img
                     src={
                         item.thumbnail_url ||
@@ -96,30 +96,30 @@ function NewsCard({ item }) {
                 />
             </a>
 
-            <div className="p-6">
-                <div className="flex items-center justify-between gap-4">
-                    <span className="rounded-full bg-blue-50 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#0d58cf]">
+            <div className="p-4 sm:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="rounded-full bg-blue-50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-[#0d58cf]">
                         {item.category || "Informasi"}
                     </span>
 
-                    <div className="flex items-center gap-2 text-[12px] font-medium text-slate-500">
+                    <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
                         <span>📅</span>
                         <span>{item.published_at || "-"}</span>
                     </div>
                 </div>
 
-                <h3 className="mt-5 line-clamp-2 font-serif text-[26px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46]">
+                <h3 className="mt-4 line-clamp-2 font-serif text-[21px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[23px]">
                     {item.title}
                 </h3>
 
-                <p className="mt-4 line-clamp-3 text-[14px] font-medium leading-7 text-slate-600">
+                <p className="mt-3 line-clamp-2 text-[13px] font-medium leading-6 text-slate-600">
                     {item.excerpt ||
                         "Informasi resmi sekolah yang dapat diakses oleh siswa, orang tua, dan masyarakat."}
                 </p>
 
                 <a
                     href={href}
-                    className="mt-6 inline-flex items-center gap-3 text-[14px] font-semibold text-[#052b66] transition hover:text-[#d5a542]"
+                    className="mt-4 inline-flex items-center gap-2 text-[13px] font-semibold text-[#052b66] transition hover:text-[#d5a542]"
                 >
                     Baca Selengkapnya
                     <span>→</span>
@@ -191,7 +191,7 @@ export default function Informasi({ posts = [], featuredPosts = [] }) {
     return (
         <FrontendLayout>
             <section className="relative w-full overflow-hidden bg-[#052b66]">
-                <div className="relative min-h-[450px] w-full overflow-hidden lg:min-h-[500px]">
+                <div className="relative min-h-[350px] w-full overflow-hidden sm:min-h-[400px] lg:min-h-[430px]">
                     <img
                         src="/frontend/images/informasi-hero.jpg"
                         alt="Informasi Sekolah"
@@ -205,7 +205,7 @@ export default function Informasi({ posts = [], featuredPosts = [] }) {
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(3,29,74,0.99)_0%,rgba(3,42,101,0.94)_42%,rgba(3,42,101,0.68)_64%,rgba(4,62,145,0.15)_100%)]" />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,24,58,0.08)_0%,rgba(3,24,58,0.02)_48%,rgba(3,24,58,0.26)_100%)]" />
 
-                    <div className="relative z-10 flex min-h-[450px] flex-col justify-center px-4 py-12 sm:px-6 lg:min-h-[500px] lg:px-10 xl:px-14 2xl:px-16">
+                    <div className="relative z-10 flex min-h-[350px] flex-col justify-center px-4 py-10 sm:min-h-[400px] sm:px-6 lg:min-h-[430px] lg:px-10 xl:px-14 2xl:px-16">
                         <div className="flex flex-wrap items-center gap-3 text-[13px] font-medium text-blue-100">
                             <a href="/" className="hover:text-white">
                                 Beranda
@@ -218,7 +218,7 @@ export default function Informasi({ posts = [], featuredPosts = [] }) {
                             Informasi Sekolah
                         </p>
 
-                        <h1 className="mt-5 max-w-[780px] font-serif text-[48px] font-semibold leading-[1.08] tracking-[-0.045em] text-white sm:text-[62px] lg:text-[74px]">
+                        <h1 className="mt-4 max-w-[780px] font-serif text-[34px] font-semibold leading-[1.08] tracking-[-0.045em] text-white sm:text-[52px] lg:text-[62px]">
                             Berita, Pengumuman,
                             <br />
                             dan Artikel Sekolah
@@ -258,7 +258,7 @@ export default function Informasi({ posts = [], featuredPosts = [] }) {
                             </a>
                         </div>
 
-                        <div className="grid gap-6 md:grid-cols-3">
+                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                             {news.map((item) => (
                                 <NewsCard key={item.id || item.title} item={item} />
                             ))}

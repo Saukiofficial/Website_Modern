@@ -20,18 +20,18 @@ function getSchoolInitials(name = "") {
 
 function SummaryCard({ label, value, icon }) {
     return (
-        <div className="rounded-[24px] border border-slate-100 bg-white p-6 shadow-[0_20px_50px_rgba(15,42,92,0.08)]">
-            <div className="flex items-center gap-5">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#062f6f] text-[28px] text-white shadow-lg shadow-blue-200">
+        <div className="rounded-[20px] border border-slate-100 bg-white p-5 shadow-[0_16px_42px_rgba(15,42,92,0.08)] sm:rounded-[24px] sm:p-6">
+            <div className="flex items-center gap-4 sm:gap-5">
+                <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-[#062f6f] text-[24px] text-white shadow-lg shadow-blue-200 sm:h-16 sm:w-16 sm:text-[28px]">
                     {icon}
                 </div>
 
-                <div>
-                    <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                <div className="min-w-0">
+                    <p className="break-words text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400 sm:text-[12px] sm:tracking-[0.18em]">
                         {label}
                     </p>
 
-                    <h3 className="mt-2 text-[38px] font-semibold leading-none tracking-[-0.06em] text-[#062f6f]">
+                    <h3 className="mt-2 text-[30px] font-semibold leading-none tracking-[-0.06em] text-[#062f6f] sm:text-[38px]">
                         {value}
                     </h3>
 
@@ -60,82 +60,82 @@ function AlumniCard({ item, schoolInitials }) {
     const initial = item.name?.charAt(0)?.toUpperCase() || "A";
 
     return (
-        <article className="group overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_22px_55px_rgba(15,42,92,0.10)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(15,42,92,0.14)]">
-            <div className="relative h-[210px] overflow-hidden bg-[linear-gradient(135deg,#052b66_0%,#0a3f93_100%)]">
+        <article className="group overflow-hidden rounded-[20px] border border-slate-200 bg-white shadow-[0_16px_42px_rgba(15,42,92,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_55px_rgba(15,42,92,0.12)] sm:rounded-[22px]">
+            <div className="relative h-[128px] overflow-hidden bg-[linear-gradient(135deg,#052b66_0%,#0a3f93_100%)] sm:h-[145px] lg:h-[150px]">
                 <div className="absolute inset-0 opacity-60">
-                    <div className="absolute -right-16 top-6 flex h-44 w-44 items-center justify-center rounded-full border-[8px] border-white/10 text-[72px] font-bold text-white/30">
+                    <div className="absolute -right-12 top-3 flex h-32 w-32 items-center justify-center rounded-full border-[7px] border-white/10 text-[50px] font-bold text-white/30 sm:h-36 sm:w-36 sm:text-[58px]">
                         {schoolInitials}
                     </div>
 
-                    <div className="absolute bottom-0 left-0 h-32 w-full bg-[radial-gradient(circle_at_bottom_left,rgba(213,154,37,0.22),transparent_45%)]" />
+                    <div className="absolute bottom-0 left-0 h-24 w-full bg-[radial-gradient(circle_at_bottom_left,rgba(213,154,37,0.22),transparent_45%)]" />
                 </div>
 
                 {item.photo_url ? (
                     <img
                         src={item.photo_url}
                         alt={item.name}
-                        className="absolute bottom-0 left-10 h-[205px] w-[180px] object-cover object-top transition duration-500 group-hover:scale-105"
+                        className="absolute bottom-0 left-5 h-[126px] w-[96px] object-cover object-top transition duration-500 group-hover:scale-105 sm:left-6 sm:h-[142px] sm:w-[112px] lg:h-[148px] lg:w-[118px]"
                     />
                 ) : (
-                    <div className="absolute bottom-8 left-10 flex h-32 w-32 items-center justify-center rounded-full bg-white/10 text-[70px] font-semibold text-white ring-1 ring-white/20">
+                    <div className="absolute bottom-5 left-5 flex h-20 w-20 items-center justify-center rounded-full bg-white/10 text-[42px] font-semibold text-white ring-1 ring-white/20 sm:left-6 sm:h-24 sm:w-24 sm:text-[52px]">
                         {initial}
                     </div>
                 )}
 
-                <div className="absolute left-5 top-5 rounded-full bg-[#f7c46a] px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.06em] text-[#062f6f] shadow-lg">
+                <div className="absolute left-3 top-3 rounded-full bg-[#f7c46a] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-[#062f6f] shadow-lg sm:left-4 sm:top-4 sm:text-[11px]">
                     Alumni {item.graduation_year || "-"}
                 </div>
 
-                <div className="absolute bottom-[-24px] right-6 flex h-16 w-16 items-center justify-center rounded-full border-[5px] border-white bg-[#062f6f] text-[25px] text-white shadow-xl">
+                <div className="absolute bottom-[-19px] right-4 flex h-12 w-12 items-center justify-center rounded-full border-[4px] border-white bg-[#062f6f] text-[20px] text-white shadow-xl sm:right-5 sm:h-14 sm:w-14 sm:text-[22px]">
                     <ActivityIcon activity={item.current_activity} />
                 </div>
 
-                <div className="absolute right-20 top-16 text-[74px] font-semibold text-white/95">
+                <div className="absolute right-16 top-12 text-[46px] font-semibold text-white/90 sm:right-20 sm:top-14 sm:text-[58px]">
                     {initial}
                 </div>
             </div>
 
-            <div className="p-6 pt-8">
-                <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#d59a25]">
+            <div className="p-4 pt-7 sm:p-5 sm:pt-8">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#d59a25] sm:text-[12px] sm:tracking-[0.16em]">
                     {item.current_activity || "Alumni"}
                 </p>
 
-                <h3 className="mt-2 text-[25px] font-semibold leading-tight tracking-[-0.05em] text-[#062f6f]">
+                <h3 className="mt-2 line-clamp-2 text-[20px] font-semibold leading-tight tracking-[-0.04em] text-[#062f6f] sm:text-[22px]">
                     {item.name}
                 </h3>
 
-                <p className="mt-1 text-[14px] font-medium text-slate-500">
+                <p className="mt-1 text-[13px] font-medium text-slate-500 sm:text-[14px]">
                     Kelas terakhir: {item.class_name || "-"}
                 </p>
 
-                <div className="mt-5 rounded-[20px] bg-[#f6f8fc] p-5">
+                <div className="mt-4 rounded-[16px] bg-[#f6f8fc] p-4 sm:rounded-[18px]">
                     <div className="flex gap-3">
-                        <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#062f6f] shadow-sm">
+                        <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-[#062f6f] shadow-sm">
                             🏢
                         </div>
 
-                        <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:text-[11px]">
                                 Instansi / Kampus / Perusahaan
                             </p>
 
-                            <p className="mt-1 text-[14px] font-semibold leading-6 text-[#062f6f]">
+                            <p className="mt-1 line-clamp-2 text-[13px] font-semibold leading-6 text-[#062f6f] sm:text-[14px]">
                                 {item.institution || "-"}
                             </p>
                         </div>
                     </div>
 
-                    <div className="mt-4 flex gap-3">
-                        <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-[#062f6f] shadow-sm">
+                    <div className="mt-3 flex gap-3">
+                        <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white text-[#062f6f] shadow-sm">
                             👤
                         </div>
 
-                        <div>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+                        <div className="min-w-0">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400 sm:text-[11px]">
                                 Posisi / Jurusan
                             </p>
 
-                            <p className="mt-1 text-[14px] font-semibold leading-6 text-[#062f6f]">
+                            <p className="mt-1 line-clamp-2 text-[13px] font-semibold leading-6 text-[#062f6f] sm:text-[14px]">
                                 {item.job_position || "-"}
                             </p>
                         </div>
@@ -240,31 +240,31 @@ export default function Index({
                     }}
                 />
 
-                <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,35,84,0.98)_0%,rgba(5,43,102,0.94)_42%,rgba(5,43,102,0.72)_72%,rgba(5,43,102,0.78)_100%)]" />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,35,84,0.98)_0%,rgba(5,43,102,0.94)_48%,rgba(5,43,102,0.86)_100%)] lg:bg-[linear-gradient(90deg,rgba(4,35,84,0.98)_0%,rgba(5,43,102,0.94)_42%,rgba(5,43,102,0.72)_72%,rgba(5,43,102,0.78)_100%)]" />
 
                 <div className="absolute -right-[220px] bottom-[-260px] hidden h-[620px] w-[620px] rounded-full border-[18px] border-[#d59a25]/70 lg:block" />
                 <div className="absolute -right-[60px] top-[110px] hidden h-[280px] w-[280px] rounded-full bg-[#d59a25]/10 blur-3xl lg:block" />
 
-                <div className="relative z-10 mx-auto grid min-h-[420px] max-w-[1280px] items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_420px] lg:px-10">
-                    <div>
-                        <p className="text-[13px] font-semibold uppercase tracking-[0.22em] text-[#f7c46a]">
+                <div className="relative z-10 mx-auto grid min-h-[360px] max-w-[1280px] items-center gap-8 px-5 py-12 sm:min-h-[390px] sm:px-8 sm:py-14 lg:min-h-[420px] lg:grid-cols-[1fr_360px] lg:px-10">
+                    <div className="min-w-0">
+                        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#f7c46a] sm:text-[13px] sm:tracking-[0.22em]">
                             Jejak Alumni
                         </p>
 
-                        <h1 className="mt-5 text-[48px] font-semibold leading-tight tracking-[-0.06em] text-white sm:text-[64px] lg:text-[72px]">
+                        <h1 className="mt-4 break-words text-[38px] font-semibold leading-tight tracking-[-0.06em] text-white sm:mt-5 sm:text-[58px] lg:text-[68px]">
                             Alumni Sekolah
                         </h1>
 
-                        <p className="mt-6 max-w-2xl text-[17px] font-medium leading-9 text-blue-100">
+                        <p className="mt-5 max-w-2xl text-[15px] font-medium leading-8 text-blue-100 sm:mt-6 sm:text-[17px] sm:leading-9">
                             Mengenal jejak lulusan sekolah yang terus
                             berkembang, berkarya, dan membawa nama baik
                             almamater di berbagai bidang.
                         </p>
 
-                        <div className="mt-8 flex flex-wrap gap-4">
+                        <div className="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-4">
                             <a
                                 href="#data-alumni"
-                                className="inline-flex min-h-[56px] items-center justify-center gap-3 rounded-[14px] bg-[#d59a25] px-8 text-[13px] font-semibold uppercase tracking-[0.08em] text-white shadow-lg shadow-black/20 transition hover:bg-[#f7c46a]"
+                                className="inline-flex min-h-[52px] items-center justify-center gap-3 rounded-[14px] bg-[#d59a25] px-6 text-[12px] font-semibold uppercase tracking-[0.07em] text-white shadow-lg shadow-black/20 transition hover:bg-[#f7c46a] sm:min-h-[56px] sm:px-8 sm:text-[13px]"
                             >
                                 Lihat Alumni
                                 <span>→</span>
@@ -272,7 +272,7 @@ export default function Index({
 
                             <a
                                 href="/ppdb"
-                                className="inline-flex min-h-[56px] items-center justify-center rounded-[14px] border border-white/35 bg-white/5 px-8 text-[13px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-white/15"
+                                className="inline-flex min-h-[52px] items-center justify-center rounded-[14px] border border-white/35 bg-white/5 px-6 text-[12px] font-semibold uppercase tracking-[0.07em] text-white transition hover:bg-white/15 sm:min-h-[56px] sm:px-8 sm:text-[13px]"
                             >
                                 Daftar PPDB
                             </a>
@@ -280,28 +280,28 @@ export default function Index({
                     </div>
 
                     <div className="hidden lg:flex">
-                        <div className="relative flex h-[300px] w-full items-center justify-center">
+                        <div className="relative flex h-[260px] w-full items-center justify-center">
                             <div className="absolute inset-0 rounded-full bg-[#d59a25]/10 blur-3xl" />
 
-                            <div className="relative flex h-[250px] w-[250px] items-center justify-center rounded-full border-[6px] border-[#d59a25] bg-[#052b66]/80 text-center shadow-2xl backdrop-blur">
+                            <div className="relative flex h-[210px] w-[210px] items-center justify-center rounded-full border-[6px] border-[#d59a25] bg-[#052b66]/80 text-center shadow-2xl backdrop-blur">
                                 {schoolLogo ? (
                                     <img
                                         src={schoolLogo}
                                         alt={schoolName}
-                                        className="h-28 w-28 rounded-full object-cover"
+                                        className="h-24 w-24 rounded-full object-cover"
                                     />
                                 ) : (
-                                    <div className="text-[64px] font-semibold text-white">
+                                    <div className="text-[56px] font-semibold text-white">
                                         {schoolInitials}
                                     </div>
                                 )}
 
-                                <div className="absolute -bottom-14 left-1/2 w-[320px] -translate-x-1/2 text-center">
-                                    <p className="text-[24px] font-semibold uppercase tracking-[0.14em] text-[#f7c46a]">
+                                <div className="absolute -bottom-12 left-1/2 w-[280px] -translate-x-1/2 text-center">
+                                    <p className="text-[20px] font-semibold uppercase tracking-[0.14em] text-[#f7c46a]">
                                         Proud Alumni
                                     </p>
 
-                                    <p className="mt-1 text-[24px] font-semibold uppercase leading-tight text-white">
+                                    <p className="mt-1 text-[20px] font-semibold uppercase leading-tight text-white">
                                         {schoolName}
                                     </p>
                                 </div>
@@ -311,8 +311,8 @@ export default function Index({
                 </div>
             </section>
 
-            <section className="bg-[#f6f9fd] px-5 py-8 sm:px-8 lg:px-10">
-                <div className="mx-auto grid max-w-[1120px] gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <section className="bg-[#f6f9fd] px-5 py-7 sm:px-8 sm:py-8 lg:px-10">
+                <div className="mx-auto grid max-w-[1120px] gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     <SummaryCard
                         label="Total Alumni"
                         value={summary.total || 0}
@@ -341,7 +341,7 @@ export default function Index({
 
             <section
                 id="data-alumni"
-                className="relative overflow-hidden bg-[#f6f9fd] px-5 pb-20 pt-4 sm:px-8 lg:px-10"
+                className="relative overflow-hidden bg-[#f6f9fd] px-5 pb-16 pt-4 sm:px-8 lg:px-10"
             >
                 <div className="pointer-events-none absolute right-20 top-24 hidden opacity-20 xl:block">
                     <svg
@@ -393,24 +393,24 @@ export default function Index({
                 </div>
 
                 <div className="mx-auto max-w-[1120px]">
-                    <div className="mb-8">
+                    <div className="mb-7 sm:mb-8">
                         <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
                             Direktori Alumni
                         </p>
 
-                        <h2 className="mt-3 text-[38px] font-semibold tracking-[-0.05em] text-[#062f6f] sm:text-[48px]">
+                        <h2 className="mt-3 break-words text-[32px] font-semibold tracking-[-0.05em] text-[#062f6f] sm:text-[48px]">
                             Data Alumni Aktif
                         </h2>
 
-                        <p className="mt-4 max-w-2xl text-[15px] font-medium leading-8 text-slate-600">
+                        <p className="mt-4 max-w-2xl text-[14px] font-medium leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
                             Gunakan filter untuk mencari alumni berdasarkan
                             nama, tahun lulus, aktivitas, instansi, atau
                             jurusan.
                         </p>
                     </div>
 
-                    <div className="mb-8 rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_18px_50px_rgba(15,42,92,0.08)]">
-                        <div className="grid gap-4 lg:grid-cols-[1fr_180px_190px_110px]">
+                    <div className="mb-7 rounded-[22px] border border-slate-100 bg-white p-4 shadow-[0_18px_50px_rgba(15,42,92,0.08)] sm:mb-8 sm:rounded-[24px] sm:p-5">
+                        <div className="grid gap-3 lg:grid-cols-[1fr_180px_190px_110px] lg:gap-4">
                             <div className="relative">
                                 <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-slate-400">
                                     🔍
@@ -429,7 +429,7 @@ export default function Index({
                                         }
                                     }}
                                     placeholder="Cari nama, tahun lulus, aktivitas, instansi..."
-                                    className="h-[56px] w-full rounded-[16px] border border-slate-200 bg-white pl-12 pr-4 text-[14px] font-medium outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+                                    className="h-[52px] w-full rounded-[16px] border border-slate-200 bg-white pl-12 pr-4 text-[14px] font-medium outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100 sm:h-[56px]"
                                 />
                             </div>
 
@@ -441,7 +441,7 @@ export default function Index({
                                         event.target.value
                                     )
                                 }
-                                className="h-[56px] rounded-[16px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-[#062f6f] outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+                                className="h-[52px] rounded-[16px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-[#062f6f] outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100 sm:h-[56px]"
                             >
                                 <option value="all">Semua Tahun</option>
                                 {graduationYears.map((year) => (
@@ -456,7 +456,7 @@ export default function Index({
                                 onChange={(event) =>
                                     updateFilter("activity", event.target.value)
                                 }
-                                className="h-[56px] rounded-[16px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-[#062f6f] outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+                                className="h-[52px] rounded-[16px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-[#062f6f] outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100 sm:h-[56px]"
                             >
                                 <option value="all">Semua Aktivitas</option>
                                 <option value="Kuliah">Kuliah</option>
@@ -468,7 +468,7 @@ export default function Index({
                             <button
                                 type="button"
                                 onClick={submitFilter}
-                                className="inline-flex h-[56px] items-center justify-center gap-2 rounded-[16px] bg-[#062f6f] px-5 text-[13px] font-semibold uppercase tracking-[0.08em] text-white shadow-lg shadow-blue-200 transition hover:bg-[#0a3f93]"
+                                className="inline-flex h-[52px] items-center justify-center gap-2 rounded-[16px] bg-[#062f6f] px-5 text-[13px] font-semibold uppercase tracking-[0.08em] text-white shadow-lg shadow-blue-200 transition hover:bg-[#0a3f93] sm:h-[56px]"
                             >
                                 <span>⚗</span>
                                 Filter
@@ -478,7 +478,7 @@ export default function Index({
 
                     {rows.length > 0 ? (
                         <>
-                            <div className="grid gap-6 lg:grid-cols-2">
+                            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                                 {rows.map((item) => (
                                     <AlumniCard
                                         key={item.id}
@@ -491,10 +491,10 @@ export default function Index({
                             <Pagination links={alumni.links || []} />
                         </>
                     ) : (
-                        <div className="rounded-[30px] bg-white p-12 text-center shadow-[0_22px_55px_rgba(15,42,92,0.08)]">
-                            <div className="text-[62px]">🎓</div>
+                        <div className="rounded-[24px] bg-white p-8 text-center shadow-[0_22px_55px_rgba(15,42,92,0.08)] sm:rounded-[30px] sm:p-12">
+                            <div className="text-[54px] sm:text-[62px]">🎓</div>
 
-                            <h3 className="mt-4 text-[28px] font-semibold tracking-[-0.05em] text-[#062f6f]">
+                            <h3 className="mt-4 text-[24px] font-semibold tracking-[-0.05em] text-[#062f6f] sm:text-[28px]">
                                 Belum Ada Data Alumni
                             </h3>
 
@@ -506,119 +506,6 @@ export default function Index({
                     )}
                 </div>
             </section>
-
-            <footer className="bg-[#052b66] px-5 py-10 text-white sm:px-8 lg:px-10">
-                <div className="mx-auto grid max-w-[1120px] gap-10 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
-                    <div>
-                        <div className="flex items-center gap-4">
-                            <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#d59a25] bg-white/10 font-bold">
-                                {schoolLogo ? (
-                                    <img
-                                        src={schoolLogo}
-                                        alt={schoolName}
-                                        className="h-full w-full object-cover"
-                                    />
-                                ) : (
-                                    schoolInitials
-                                )}
-                            </div>
-
-                            <div>
-                                <p className="text-[18px] font-semibold uppercase tracking-[0.05em]">
-                                    {schoolName}
-                                </p>
-
-                                <p className="mt-1 text-[13px] font-medium leading-6 text-blue-100">
-                                    {schoolTagline}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 flex gap-3">
-                            {["f", "◎", "▶", "♪"].map((item) => (
-                                <span
-                                    key={item}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[14px] font-semibold text-white"
-                                >
-                                    {item}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
-                            Tautan Cepat
-                        </p>
-
-                        <div className="mt-5 grid gap-3 text-[14px] font-medium text-blue-100">
-                            <a href="/" className="hover:text-[#f7c46a]">
-                                Beranda
-                            </a>
-                            <a href="/profil" className="hover:text-[#f7c46a]">
-                                Profil Sekolah
-                            </a>
-                            <a href="/akademik" className="hover:text-[#f7c46a]">
-                                Akademik
-                            </a>
-                            <a href="/kesiswaan" className="hover:text-[#f7c46a]">
-                                Kesiswaan
-                            </a>
-                            <a href="/alumni" className="hover:text-[#f7c46a]">
-                                Alumni
-                            </a>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
-                            Informasi
-                        </p>
-
-                        <div className="mt-5 grid gap-3 text-[14px] font-medium text-blue-100">
-                            <a href="/informasi" className="hover:text-[#f7c46a]">
-                                Berita
-                            </a>
-                            <a href="/informasi" className="hover:text-[#f7c46a]">
-                                Pengumuman
-                            </a>
-                            <a href="/galeri" className="hover:text-[#f7c46a]">
-                                Galeri
-                            </a>
-                            <a href="/ppdb" className="hover:text-[#f7c46a]">
-                                PPDB
-                            </a>
-                            <a href="/#kontak" className="hover:text-[#f7c46a]">
-                                Kontak
-                            </a>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
-                            Kontak Kami
-                        </p>
-
-                        <div className="mt-5 grid gap-4 text-[14px] font-medium leading-6 text-blue-100">
-                            <p>📍 {schoolSetting.address || "-"}</p>
-                            <p>☎ {schoolSetting.phone || "-"}</p>
-                            <p>✉ {schoolSetting.email || "-"}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="mx-auto mt-10 flex max-w-[1120px] flex-col gap-3 border-t border-white/10 pt-6 text-[13px] font-medium text-blue-100 sm:flex-row sm:items-center sm:justify-between">
-                    <p>
-                        © {new Date().getFullYear()} {schoolName}. All rights
-                        reserved.
-                    </p>
-
-                    <p>
-                        Created with <span className="text-red-400">♥</span> for
-                        Education
-                    </p>
-                </div>
-            </footer>
         </FrontendLayout>
     );
 }

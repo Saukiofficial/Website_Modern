@@ -331,28 +331,28 @@ export default function OsisSection({ osisMembers = [] }) {
 
     return (
         <div className="space-y-6">
-            <div className="grid gap-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-xl shadow-slate-200/60 lg:grid-cols-4">
+            <div className="grid gap-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-xl shadow-slate-200/60 sm:grid-cols-2 lg:grid-cols-4">
                 {osisStats.map((item, index) => (
                     <div
                         key={item.label}
-                        className={`flex items-center gap-5 p-6 lg:p-7 ${
+                        className={`flex items-center gap-4 p-5 sm:gap-5 sm:p-6 lg:p-7 ${
                             index !== osisStats.length - 1
-                                ? "border-b border-slate-200 lg:border-b-0 lg:border-r"
+                                ? "border-b border-slate-200 sm:border-b-0 sm:border-r lg:border-b-0 lg:border-r"
                                 : ""
-                        }`}
+                        } ${index === 1 ? "sm:border-r-0" : ""}`}
                     >
                         <div
-                            className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${item.iconWrap}`}
+                            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl sm:h-14 sm:w-14 ${item.iconWrap}`}
                         >
-                            <Icon type={item.icon} className="h-7 w-7" />
+                            <Icon type={item.icon} className="h-6 w-6 sm:h-7 sm:w-7" />
                         </div>
 
-                        <div>
-                            <h3 className="text-[32px] font-semibold leading-none text-[#163678]">
+                        <div className="min-w-0">
+                            <h3 className="text-[28px] font-semibold leading-none text-[#163678] sm:text-[32px]">
                                 {item.value}
                             </h3>
 
-                            <p className="mt-2 text-[12.5px] font-medium text-slate-600">
+                            <p className="mt-2 text-[12px] font-medium text-slate-600 sm:text-[12.5px]">
                                 {item.label}
                             </p>
                         </div>
@@ -360,28 +360,28 @@ export default function OsisSection({ osisMembers = [] }) {
                 ))}
             </div>
 
-            <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+            <div className="grid gap-6 lg:grid-cols-1 xl:grid-cols-[1.1fr_0.9fr]">
                 <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                        <div>
+                        <div className="min-w-0">
                             <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0d58cf]">
                                 Struktur Inti
                             </p>
 
-                            <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
+                            <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[28px] lg:text-[36px]">
                                 Pengurus Inti OSIS
                             </h2>
                         </div>
 
                         <a
                             href="#"
-                            className="inline-flex h-11 items-center justify-center rounded-xl bg-blue-50 px-5 text-[13px] font-medium text-[#0d58cf] transition hover:bg-blue-100"
+                            className="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 px-5 text-[13px] font-medium text-[#0d58cf] transition hover:bg-blue-100"
                         >
                             Lihat Struktur Lengkap
                         </a>
                     </div>
 
-                    <div className="mt-6 grid gap-5 md:grid-cols-2">
+                    <div className="mt-6 grid gap-5 sm:grid-cols-2">
                         {leaders.map((leader) => (
                             <LeaderCard key={leader.id || leader.name} leader={leader} />
                         ))}
@@ -393,7 +393,7 @@ export default function OsisSection({ osisMembers = [] }) {
                         Program Kerja
                     </p>
 
-                    <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[34px]">
+                    <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[28px] lg:text-[34px]">
                         Agenda OSIS
                     </h2>
 
@@ -428,23 +428,23 @@ export default function OsisSection({ osisMembers = [] }) {
 
             <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#0d58cf]">
                             Anggota Pengurus
                         </p>
 
-                        <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
+                        <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[28px] lg:text-[36px]">
                             Sekretaris & Bendahara
                         </h2>
                     </div>
 
-                    <div className="flex gap-3 overflow-x-auto">
+                    <div className="flex gap-3 overflow-x-auto pb-2 sm:pb-0">
                         {["Semua", "Inti", "Bidang", "Koordinator"].map(
                             (item, index) => (
                                 <button
                                     key={item}
                                     type="button"
-                                    className={`h-11 shrink-0 rounded-xl px-5 text-[13px] font-medium transition ${
+                                    className={`h-11 shrink-0 rounded-xl px-4 text-[12px] font-medium transition sm:px-5 sm:text-[13px] ${
                                         index === 0
                                             ? "bg-[#0d58cf] text-white shadow-lg shadow-blue-200"
                                             : "bg-slate-100 text-[#163678] hover:bg-blue-50"
@@ -457,20 +457,20 @@ export default function OsisSection({ osisMembers = [] }) {
                     </div>
                 </div>
 
-                <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {members.length > 0 ? (
                         members.map((member) => (
                             <MemberCard key={member.id || member.name} member={member} />
                         ))
                     ) : (
-                        <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 xl:col-span-4">
+                        <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 lg:col-span-3 xl:col-span-4">
                             Data anggota OSIS belum tersedia.
                         </div>
                     )}
                 </div>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {divisions.map((division) => (
                     <div
                         key={division.title}
@@ -505,40 +505,38 @@ export default function OsisSection({ osisMembers = [] }) {
 
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,35,83,0.98)_0%,rgba(5,48,115,0.96)_44%,rgba(7,74,170,0.62)_70%,rgba(7,74,170,0.10)_100%)]" />
 
-                    <div className="relative z-10 grid min-h-[250px] items-center gap-6 px-6 py-7 sm:px-8 lg:grid-cols-[92px_1fr_auto] lg:px-10">
-                        <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-white text-[#f7b733] shadow-lg">
-                            <Icon type="organization" className="h-10 w-10" />
+                    <div className="relative z-10 grid min-h-[250px] items-center gap-5 px-5 py-6 sm:gap-6 sm:px-8 sm:py-7 lg:grid-cols-[92px_1fr] lg:px-10">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-white text-[#f7b733] shadow-lg sm:h-20 sm:w-20">
+                            <Icon type="organization" className="h-8 w-8 sm:h-10 sm:w-10" />
                         </div>
 
                         <div>
-                            <h2 className="text-[26px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[34px]">
+                            <h2 className="text-[22px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[28px] lg:text-[34px]">
                                 Jadilah Pemimpin Muda Sekolah!
                             </h2>
 
-                            <p className="mt-2 max-w-[680px] text-[14px] font-medium leading-7 text-blue-100 sm:text-[15px]">
+                            <p className="mt-2 max-w-[680px] text-[13px] font-medium leading-6 text-blue-100 sm:text-[14px] sm:leading-7 lg:text-[15px]">
                                 OSIS menjadi ruang belajar untuk mengasah
                                 kepemimpinan, tanggung jawab, kreativitas, dan
                                 kepedulian terhadap lingkungan sekolah.
                             </p>
 
-                            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                            <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row">
                                 <a
                                     href="#"
-                                    className="inline-flex min-h-[50px] items-center justify-center rounded-[12px] bg-[#f7b733] px-7 text-[13px] font-medium text-[#061b46] transition hover:bg-yellow-300"
+                                    className="inline-flex min-h-[48px] items-center justify-center rounded-[12px] bg-[#f7b733] px-6 text-[13px] font-medium text-[#061b46] transition hover:bg-yellow-300 sm:min-h-[50px] sm:px-7"
                                 >
                                     Lihat Program OSIS →
                                 </a>
 
                                 <a
                                     href="#"
-                                    className="inline-flex min-h-[50px] items-center justify-center rounded-[12px] border border-white/30 bg-white/10 px-7 text-[13px] font-medium text-white backdrop-blur-sm transition hover:bg-white/15"
+                                    className="inline-flex min-h-[48px] items-center justify-center rounded-[12px] border border-white/30 bg-white/10 px-6 text-[13px] font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[50px] sm:px-7"
                                 >
                                     Hubungi Pembina OSIS
                                 </a>
                             </div>
                         </div>
-
-                        <div className="hidden lg:block" />
                     </div>
                 </div>
             </div>

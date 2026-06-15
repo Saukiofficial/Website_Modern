@@ -79,28 +79,28 @@ const fallbackUnits = [
 function LeaderCard({ item, principal = false }) {
     return (
         <div
-            className={`relative overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-lg shadow-slate-200/60 ${
-                principal ? "mx-auto max-w-[520px]" : ""
+            className={`relative min-w-0 overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-lg shadow-slate-200/60 ${
+                principal ? "mx-auto w-full max-w-[520px]" : ""
             }`}
         >
             <div className="flex min-h-[44px] items-center justify-center bg-gradient-to-r from-[#052b66] to-[#063f8d] px-4">
-                <p className="text-center text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
+                <p className="break-words text-center text-[11px] font-semibold uppercase tracking-[0.14em] text-white sm:text-[12px] sm:tracking-[0.18em]">
                     {item.role}
                 </p>
             </div>
 
             <div
-                className={`grid gap-4 p-4 ${
+                className={`grid min-w-0 grid-cols-1 gap-4 p-4 ${
                     principal
                         ? "sm:grid-cols-[130px_1fr] sm:items-center"
-                        : "sm:grid-cols-[112px_1fr] sm:items-start"
+                        : "sm:grid-cols-[112px_1fr] sm:items-start md:grid-cols-1 xl:grid-cols-[112px_1fr]"
                 }`}
             >
                 <img
                     src={item.image}
                     alt={item.name}
-                    className={`w-full rounded-[12px] object-cover ${
-                        principal ? "h-[150px]" : "h-[118px]"
+                    className={`w-full rounded-[12px] object-cover object-center ${
+                        principal ? "h-[210px] sm:h-[150px]" : "h-[210px] sm:h-[150px] md:h-[220px] xl:h-[118px]"
                     }`}
                     onError={(event) => {
                         if (item.fallback) {
@@ -109,12 +109,12 @@ function LeaderCard({ item, principal = false }) {
                     }}
                 />
 
-                <div>
-                    <h3 className="font-serif text-[19px] font-semibold leading-tight text-[#061b46]">
+                <div className="min-w-0">
+                    <h3 className="break-words font-serif text-[18px] font-semibold leading-tight text-[#061b46] sm:text-[19px]">
                         {item.name}
                     </h3>
 
-                    <p className="mt-3 text-[13px] font-medium leading-7 text-slate-600">
+                    <p className="mt-3 break-words text-[13px] font-medium leading-7 text-slate-600">
                         {item.description}
                     </p>
                 </div>
@@ -125,16 +125,16 @@ function LeaderCard({ item, principal = false }) {
 
 function UnitCard({ item }) {
     return (
-        <div className="rounded-[18px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-            <div className="text-[42px] leading-none text-[#052b66]">
+        <div className="min-w-0 rounded-[18px] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <div className="text-[36px] leading-none text-[#052b66] sm:text-[42px]">
                 {item.icon}
             </div>
 
-            <h3 className="mt-4 text-[17px] font-semibold leading-tight text-[#061b46]">
+            <h3 className="mt-4 break-words text-[17px] font-semibold leading-tight text-[#061b46]">
                 {item.title}
             </h3>
 
-            <p className="mt-3 text-[12.5px] font-medium leading-6 text-slate-600">
+            <p className="mt-3 break-words text-[12.5px] font-medium leading-6 text-slate-600">
                 {item.description}
             </p>
         </div>
@@ -162,29 +162,29 @@ export default function StructureSection({ profileData }) {
     );
 
     return (
-        <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/70 sm:p-8 lg:p-10">
-            <div className="relative overflow-hidden">
+        <div className="w-full min-w-0 rounded-[22px] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/70 sm:rounded-[28px] sm:p-8 lg:p-10">
+            <div className="relative min-w-0 overflow-hidden">
                 <div className="absolute right-0 top-0 hidden opacity-20 lg:block">
                     <div className="text-[190px] leading-none">🏫</div>
                 </div>
 
-                <div className="relative">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0d58cf]">
+                <div className="relative min-w-0">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d58cf] sm:tracking-[0.24em]">
                         Susunan Pengelola Sekolah
                     </p>
 
-                    <h2 className="mt-4 font-serif text-[34px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
+                    <h2 className="mt-4 break-words font-serif text-[30px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
                         Susunan Pengelola Sekolah
                     </h2>
 
-                    <p className="mt-5 max-w-[760px] text-[15px] font-medium leading-8 text-slate-600">
+                    <p className="mt-5 max-w-[760px] break-words text-[14px] font-medium leading-7 text-slate-600 sm:text-[15px] sm:leading-8">
                         Struktur organisasi sekolah yang mendukung tata kelola
                         pendidikan, layanan akademik, kesiswaan, sarana
                         prasarana, dan administrasi sekolah.
                     </p>
                 </div>
 
-                <div className="relative mt-10">
+                <div className="relative mt-8 sm:mt-10">
                     {principal ? (
                         <LeaderCard item={principal} principal />
                     ) : null}
@@ -212,7 +212,7 @@ export default function StructureSection({ profileData }) {
                         </div>
                     </div>
 
-                    <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                    <div className="mt-5 grid min-w-0 grid-cols-1 gap-4 sm:mt-6 md:grid-cols-2 xl:grid-cols-4 xl:gap-5">
                         {viceLeaders.map((leader) => (
                             <LeaderCard key={leader.role} item={leader} />
                         ))}
@@ -241,7 +241,7 @@ export default function StructureSection({ profileData }) {
                         </div>
                     </div>
 
-                    <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                    <div className="mt-5 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
                         {units.map((unit) => (
                             <UnitCard key={unit.title} item={unit} />
                         ))}

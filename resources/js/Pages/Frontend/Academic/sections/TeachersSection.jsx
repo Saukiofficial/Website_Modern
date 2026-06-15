@@ -329,7 +329,7 @@ export default function TeachersSection({ teachers = [] }) {
 
     return (
         <div className="space-y-6">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {teacherStats.map((item) => (
                     <div
                         key={item.label}
@@ -357,8 +357,8 @@ export default function TeachersSection({ teachers = [] }) {
             </div>
 
             <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
-                <div className="grid gap-0 lg:grid-cols-[250px_1fr]">
-                    <div className="h-[280px] overflow-hidden bg-blue-50 lg:h-full">
+                <div className="grid gap-0 md:grid-cols-[240px_1fr] lg:grid-cols-[250px_1fr]">
+                    <div className="h-[240px] overflow-hidden bg-blue-50 sm:h-[280px] md:h-full">
                         <img
                             src={principalTeacher.image}
                             alt={principalTeacher.name}
@@ -375,7 +375,7 @@ export default function TeachersSection({ teachers = [] }) {
                             Kepala Sekolah
                         </p>
 
-                        <h2 className="mt-3 text-[26px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[32px]">
+                        <h2 className="mt-3 text-[24px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[28px] lg:text-[32px]">
                             {principalTeacher.name}
                         </h2>
 
@@ -390,19 +390,19 @@ export default function TeachersSection({ teachers = [] }) {
                                 "Kami percaya bahwa pendidikan yang berkualitas lahir dari dedikasi guru yang luar biasa. Dengan semangat kolaborasi dan inovasi, kami berkomitmen membentuk generasi yang cerdas, berkarakter, dan siap menghadapi tantangan global."}
                         </p>
 
-                        <div className="mt-6 flex flex-wrap items-center gap-4 text-[12px] font-medium text-slate-500">
-                            <span className="inline-flex items-center gap-2">
+                        <div className="mt-6 flex flex-col gap-3 text-[12px] font-medium text-slate-500 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+                            <span className="inline-flex min-w-0 items-center gap-2 break-all">
                                 <Icon
                                     type="mail"
-                                    className="h-4 w-4 text-[#0d58cf]"
+                                    className="h-4 w-4 shrink-0 text-[#0d58cf]"
                                 />
                                 {principalTeacher.email || "akademik@sman1cerdas.sch.id"}
                             </span>
 
-                            <span className="inline-flex items-center gap-2">
+                            <span className="inline-flex min-w-0 items-center gap-2 break-all">
                                 <Icon
                                     type="book"
-                                    className="h-4 w-4 text-[#0d58cf]"
+                                    className="h-4 w-4 shrink-0 text-[#0d58cf]"
                                 />
                                 {principalTeacher.education}
                             </span>
@@ -412,8 +412,8 @@ export default function TeachersSection({ teachers = [] }) {
             </div>
 
             <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-lg shadow-slate-200/60">
-                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                    <div className="flex gap-3 overflow-x-auto pb-2 xl:pb-0">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex gap-2 overflow-x-auto pb-2 lg:gap-3 lg:pb-0">
                         {filters.map((filter) => {
                             const isActive = activeFilter === filter;
 
@@ -422,7 +422,7 @@ export default function TeachersSection({ teachers = [] }) {
                                     key={filter}
                                     type="button"
                                     onClick={() => setActiveFilter(filter)}
-                                    className={`h-11 shrink-0 rounded-[12px] px-5 text-[12px] font-medium transition ${
+                                    className={`h-11 shrink-0 rounded-[12px] px-4 text-[11px] font-medium transition sm:px-5 sm:text-[12px] ${
                                         isActive
                                             ? "bg-[#0d58cf] text-white shadow-lg shadow-blue-200"
                                             : "bg-slate-100 text-[#163678] hover:bg-blue-50"
@@ -434,7 +434,7 @@ export default function TeachersSection({ teachers = [] }) {
                         })}
                     </div>
 
-                    <div className="flex h-11 w-full items-center gap-3 rounded-[12px] border border-slate-200 bg-white px-4 xl:max-w-[360px]">
+                    <div className="flex h-11 w-full items-center gap-3 rounded-[12px] border border-slate-200 bg-white px-4 lg:max-w-[360px]">
                         <input
                             type="text"
                             value={search}
@@ -450,7 +450,7 @@ export default function TeachersSection({ teachers = [] }) {
                 </div>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filteredTeachers.length > 0 ? (
                     filteredTeachers.map((teacher) => (
                         <TeacherCard
@@ -459,7 +459,7 @@ export default function TeachersSection({ teachers = [] }) {
                         />
                     ))
                 ) : (
-                    <div className="rounded-[18px] border border-dashed border-slate-200 bg-white p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 xl:col-span-4">
+                    <div className="rounded-[18px] border border-dashed border-slate-200 bg-white p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 lg:col-span-3 xl:col-span-4">
                         Data guru tidak ditemukan.
                     </div>
                 )}
@@ -505,7 +505,7 @@ export default function TeachersSection({ teachers = [] }) {
             </div>
 
             <div className="overflow-hidden rounded-[24px] bg-[#052b66] shadow-2xl shadow-blue-200">
-                <div className="relative min-h-[150px] overflow-hidden">
+                <div className="relative min-h-[190px] overflow-hidden sm:min-h-[150px]">
                     <img
                         src="/frontend/images/teachers-banner.jpg"
                         alt="Guru Profesional"

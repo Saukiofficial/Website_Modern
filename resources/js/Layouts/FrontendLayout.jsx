@@ -41,10 +41,7 @@ const fallbackMenuGroups = [
                 label: "Form Bimbingan Konseling",
                 href: "/kesiswaan/bimbingan-konseling",
             },
-            {
-                label: "Pemilihan OSIS",
-                href: "/pemilihan-osis",
-            },
+            { label: "Pemilihan OSIS", href: "/pemilihan-osis" },
         ],
     },
     {
@@ -243,8 +240,11 @@ function LogoBlock({ schoolSetting }) {
     const schoolInitials = getSchoolInitials(schoolName);
 
     return (
-        <Link href="/" className="flex min-w-0 items-center gap-4">
-            <div className="flex h-[62px] w-[62px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#052b66] text-white ring-[4px] ring-blue-100 lg:h-[76px] lg:w-[76px]">
+        <Link
+            href="/"
+            className="flex min-w-0 max-w-[calc(100vw-120px)] items-center gap-2 sm:max-w-[calc(100vw-150px)] lg:max-w-[360px] xl:max-w-[330px] 2xl:max-w-[520px] 2xl:gap-4"
+        >
+            <div className="flex h-[48px] w-[48px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#052b66] text-white ring-[3px] ring-blue-100 sm:h-[54px] sm:w-[54px] lg:h-[52px] lg:w-[52px] xl:h-[50px] xl:w-[50px] 2xl:h-[70px] 2xl:w-[70px]">
                 {schoolSetting?.logo_url ? (
                     <img
                         src={schoolSetting.logo_url}
@@ -252,18 +252,18 @@ function LogoBlock({ schoolSetting }) {
                         className="h-full w-full object-cover"
                     />
                 ) : (
-                    <div className="flex h-[82%] w-[82%] items-center justify-center rounded-full border border-[#d59a25]/70 text-[18px] font-semibold text-[#f7c46a]">
+                    <div className="flex h-[82%] w-[82%] items-center justify-center rounded-full border border-[#d59a25]/70 text-[14px] font-semibold text-[#f7c46a] 2xl:text-[18px]">
                         {schoolInitials}
                     </div>
                 )}
             </div>
 
             <div className="min-w-0">
-                <h1 className="truncate font-serif text-[20px] font-semibold uppercase leading-tight tracking-[-0.03em] text-[#061b46] sm:text-[24px] lg:text-[28px]">
+                <h1 className="truncate font-serif text-[17px] font-semibold uppercase leading-tight tracking-[-0.03em] text-[#061b46] sm:text-[20px] lg:text-[19px] xl:text-[18px] 2xl:text-[26px]">
                     {schoolName}
                 </h1>
 
-                <p className="mt-1 truncate text-[12px] font-medium text-slate-600 sm:text-[13px] lg:text-[14px]">
+                <p className="mt-1 truncate text-[11px] font-medium text-slate-600 sm:text-[12px] lg:text-[11px] xl:text-[10.5px] 2xl:text-[14px]">
                     {schoolSetting?.tagline ||
                         "Sekolah Berprestasi, Berkarakter, dan Berdaya Saing Global"}
                 </p>
@@ -287,7 +287,7 @@ function MegaMenu({
         <div
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            className="absolute left-1/2 top-full z-50 hidden w-[min(1180px,calc(100vw-56px))] -translate-x-1/2 pt-4 xl:block"
+            className="absolute left-1/2 top-full z-[9999] hidden w-[min(1180px,calc(100vw-56px))] -translate-x-1/2 pt-4 xl:block"
         >
             <div className="grid grid-cols-[1fr_300px] overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-2xl shadow-slate-300/70">
                 <div className="grid grid-cols-3">
@@ -399,7 +399,7 @@ function FlashMessage({ flash }) {
     };
 
     return (
-        <div className="fixed right-4 top-[110px] z-[90] max-w-[360px] sm:right-6">
+        <div className="fixed right-4 top-[110px] z-[9999] max-w-[360px] sm:right-6">
             <div
                 className={`rounded-[16px] border px-5 py-4 text-[13px] font-bold shadow-xl shadow-slate-300/50 ${style[type]}`}
             >
@@ -424,23 +424,24 @@ function AccreditationBadge({ schoolSetting }) {
         schoolSetting?.accreditation_subtitle || "Unggul";
 
     return (
-        <div className="flex flex-col items-center text-center">
-            <div className="relative flex h-[112px] w-[112px] items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-[5px] border-[#d59a25]" />
-                <div className="absolute inset-[9px] rounded-full border border-[#f7c46a]/70" />
-                <div className="absolute -left-1 bottom-5 h-11 w-6 rotate-[-20deg] rounded-full border-l-[5px] border-[#d59a25]" />
-                <div className="absolute -right-1 bottom-5 h-11 w-6 rotate-[20deg] rounded-full border-r-[5px] border-[#d59a25]" />
+        <div className="flex w-full flex-col items-center text-center">
+            <div className="relative flex h-[78px] w-[78px] items-center justify-center sm:h-[88px] sm:w-[88px] xl:h-[112px] xl:w-[112px]">
+                <div className="absolute inset-0 rounded-full border-[4px] border-[#d59a25] xl:border-[5px]" />
+                <div className="absolute inset-[7px] rounded-full border border-[#f7c46a]/70 xl:inset-[9px]" />
 
-                <div className="relative flex h-[74px] w-[74px] items-center justify-center rounded-full bg-[#d59a25] text-[42px] font-black leading-none text-[#052b66] shadow-xl shadow-black/20">
+                <div className="absolute -left-1 bottom-3 h-8 w-4 rotate-[-20deg] rounded-full border-l-[4px] border-[#d59a25] xl:bottom-5 xl:h-11 xl:w-6 xl:border-l-[5px]" />
+                <div className="absolute -right-1 bottom-3 h-8 w-4 rotate-[20deg] rounded-full border-r-[4px] border-[#d59a25] xl:bottom-5 xl:h-11 xl:w-6 xl:border-r-[5px]" />
+
+                <div className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#d59a25] text-[30px] font-black leading-none text-[#052b66] shadow-xl shadow-black/20 sm:h-[58px] sm:w-[58px] sm:text-[34px] xl:h-[74px] xl:w-[74px] xl:text-[42px]">
                     {accreditation}
                 </div>
             </div>
 
-            <p className="mt-4 text-[15px] font-semibold text-white">
+            <p className="mt-3 text-[12px] font-semibold leading-5 text-white sm:text-[13px] xl:text-[15px]">
                 {accreditationText}
             </p>
 
-            <p className="mt-1 text-[13px] font-medium text-blue-100">
+            <p className="mt-1 text-[11px] font-medium text-blue-100 sm:text-[12px] xl:text-[13px]">
                 ({accreditationSubText})
             </p>
         </div>
@@ -451,7 +452,7 @@ function SocialIcon({ children, href = "#" }) {
     return (
         <a
             href={href}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[14px] font-semibold text-white transition hover:bg-[#d59a25] hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-[13px] font-semibold text-white transition hover:bg-[#d59a25] hover:text-white xl:h-10 xl:w-10 xl:text-[14px]"
         >
             {children}
         </a>
@@ -460,17 +461,17 @@ function SocialIcon({ children, href = "#" }) {
 
 function FooterColumn({ title, links = [] }) {
     return (
-        <div>
-            <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
+        <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white sm:text-[11px] xl:text-[12px] xl:tracking-[0.18em]">
                 {title}
             </p>
 
-            <div className="mt-5 grid gap-3">
+            <div className="mt-4 grid gap-2 xl:mt-5 xl:gap-3">
                 {links.map((link) => (
                     <Link
                         key={`${link.label}-${link.href}`}
                         href={link.href}
-                        className="text-[14px] font-medium text-blue-100 transition hover:text-[#f7c46a]"
+                        className="break-words text-[12.5px] font-medium leading-6 text-blue-100 transition hover:text-[#f7c46a] xl:text-[14px]"
                     >
                         {link.label}
                     </Link>
@@ -504,15 +505,15 @@ function SiteFooter({ schoolSetting, mainMenus }) {
     ];
 
     return (
-        <footer className="relative overflow-hidden bg-[#052b66] text-white">
+        <footer className="relative w-full overflow-hidden bg-[#052b66] text-white">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(247,196,106,0.10),transparent_28%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.08),transparent_28%)]" />
-            <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full border-[32px] border-white/5" />
+            <div className="absolute -right-28 -top-28 h-64 w-64 rounded-full border-[26px] border-white/5 xl:h-72 xl:w-72 xl:border-[32px]" />
             <div className="absolute -bottom-28 left-1/3 h-64 w-64 rounded-full bg-[#d59a25]/10 blur-3xl" />
 
-            <div className="relative mx-auto grid max-w-[1280px] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.35fr_0.9fr_0.9fr_1.1fr_0.8fr] lg:px-10">
-                <div>
-                    <div className="flex items-center gap-4">
-                        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#d59a25] bg-white/10 text-[17px] font-bold text-white">
+            <div className="relative mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-8 px-5 py-10 sm:grid-cols-2 sm:gap-9 sm:px-8 md:grid-cols-[1.25fr_0.7fr_0.7fr_1.05fr_0.8fr] md:gap-5 md:px-6 md:py-12 lg:gap-7 lg:px-10 xl:grid-cols-[1.35fr_0.9fr_0.9fr_1.1fr_0.8fr] xl:gap-10 xl:px-14">
+                <div className="min-w-0 sm:col-span-2 md:col-span-1">
+                    <div className="flex min-w-0 flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:text-left md:flex-col md:items-start xl:flex-row">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#d59a25] bg-white/10 text-[15px] font-bold text-white xl:h-16 xl:w-16 xl:text-[17px]">
                             {schoolSetting?.logo_url ? (
                                 <img
                                     src={schoolSetting.logo_url}
@@ -525,17 +526,17 @@ function SiteFooter({ schoolSetting, mainMenus }) {
                         </div>
 
                         <div className="min-w-0">
-                            <p className="line-clamp-2 text-[18px] font-semibold uppercase leading-tight tracking-[0.06em] text-white">
+                            <p className="break-words text-[14px] font-semibold uppercase leading-tight tracking-[0.04em] text-white xl:text-[18px] xl:tracking-[0.06em]">
                                 {schoolName}
                             </p>
 
-                            <p className="mt-2 line-clamp-2 text-[13px] font-medium leading-6 text-blue-100">
+                            <p className="mt-2 text-[12px] font-medium leading-6 text-blue-100 xl:text-[13px]">
                                 {tagline}
                             </p>
                         </div>
                     </div>
 
-                    <div className="mt-7 flex gap-3">
+                    <div className="mt-6 flex justify-center gap-3 sm:justify-start md:flex-wrap xl:mt-7">
                         <SocialIcon>f</SocialIcon>
                         <SocialIcon>◎</SocialIcon>
                         <SocialIcon>▶</SocialIcon>
@@ -547,37 +548,45 @@ function SiteFooter({ schoolSetting, mainMenus }) {
 
                 <FooterColumn title="Informasi" links={informationLinks} />
 
-                <div>
-                    <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-white">
+                <div className="min-w-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white sm:text-[11px] xl:text-[12px] xl:tracking-[0.18em]">
                         Kontak Kami
                     </p>
 
-                    <div className="mt-5 grid gap-4 text-[14px] font-medium leading-6 text-blue-100">
-                        <p className="flex gap-3">
-                            <span className="text-[#f7c46a]">📍</span>
-                            <span>{schoolSetting?.address || "-"}</span>
+                    <div className="mt-4 grid gap-3 text-[12.5px] font-medium leading-6 text-blue-100 xl:mt-5 xl:gap-4 xl:text-[14px]">
+                        <p className="flex min-w-0 gap-2 xl:gap-3">
+                            <span className="shrink-0 text-[#f7c46a]">📍</span>
+                            <span className="min-w-0 break-words">
+                                {schoolSetting?.address || "-"}
+                            </span>
                         </p>
 
-                        <p className="flex gap-3">
-                            <span className="text-[#f7c46a]">☎</span>
-                            <span>{schoolSetting?.phone || "-"}</span>
+                        <p className="flex min-w-0 gap-2 xl:gap-3">
+                            <span className="shrink-0 text-[#f7c46a]">☎</span>
+                            <span className="min-w-0 break-words">
+                                {schoolSetting?.phone || "-"}
+                            </span>
                         </p>
 
-                        <p className="flex gap-3">
-                            <span className="text-[#f7c46a]">✉</span>
-                            <span>{schoolSetting?.email || "-"}</span>
+                        <p className="flex min-w-0 gap-2 xl:gap-3">
+                            <span className="shrink-0 text-[#f7c46a]">✉</span>
+                            <span className="min-w-0 break-all">
+                                {schoolSetting?.email || "-"}
+                            </span>
                         </p>
                     </div>
                 </div>
 
-                <div className="lg:flex lg:justify-end">
-                    <AccreditationBadge schoolSetting={schoolSetting} />
+                <div className="min-w-0 sm:col-span-2 md:col-span-1">
+                    <div className="w-full rounded-[22px] border border-white/10 bg-white/5 p-5 md:border-0 md:bg-transparent md:p-0">
+                        <AccreditationBadge schoolSetting={schoolSetting} />
+                    </div>
                 </div>
             </div>
 
             <div className="relative border-t border-white/10">
-                <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-5 py-6 text-[13px] font-medium text-blue-100 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
-                    <p>
+                <div className="mx-auto flex max-w-[1280px] flex-col items-center justify-center gap-2 px-5 py-5 text-center text-[12.5px] font-medium leading-6 text-blue-100 sm:px-8 md:flex-row md:justify-between md:px-6 md:text-left lg:px-10 xl:px-14">
+                    <p className="break-words">
                         © {new Date().getFullYear()} {schoolName}. All rights
                         reserved.
                     </p>
@@ -630,20 +639,20 @@ export default function FrontendLayout({ children }) {
     };
 
     return (
-        <div className="min-h-screen w-full bg-white text-slate-900">
+        <div className="min-h-screen w-full overflow-x-hidden bg-white text-slate-900">
             <FlashMessage flash={flash} />
 
-            <header className="sticky top-0 z-50 w-full bg-white">
-                <div className="hidden bg-[#052b66] text-white lg:block">
-                    <div className="flex h-[46px] items-center justify-between px-6 text-[13px] font-medium xl:px-14 2xl:px-16">
-                        <div className="flex items-center gap-6">
+            <header className="sticky top-0 z-[9999] w-full bg-white shadow-sm">
+                <div className="relative z-[9999] hidden bg-[#052b66] text-white lg:block">
+                    <div className="flex h-[34px] items-center justify-between px-5 text-[11px] font-medium xl:px-8 2xl:px-16">
+                        <div className="flex min-w-0 items-center gap-3">
                             {schoolSetting?.address ? (
                                 <>
-                                    <span className="flex items-center gap-2">
-                                        <span className="text-[#d59a25]">
+                                    <span className="flex min-w-0 items-center gap-2">
+                                        <span className="shrink-0 text-[#d59a25]">
                                             📍
                                         </span>
-                                        <span className="line-clamp-1 max-w-[420px]">
+                                        <span className="line-clamp-1 max-w-[300px] xl:max-w-[340px] 2xl:max-w-[360px]">
                                             {schoolSetting.address}
                                         </span>
                                     </span>
@@ -656,7 +665,7 @@ export default function FrontendLayout({ children }) {
                                 <>
                                     <a
                                         href={`tel:${schoolSetting.phone}`}
-                                        className="flex items-center gap-2 transition hover:text-[#f7c46a]"
+                                        className="flex shrink-0 items-center gap-2 transition hover:text-[#f7c46a]"
                                     >
                                         <span className="text-[#d59a25]">
                                             ☎
@@ -671,15 +680,19 @@ export default function FrontendLayout({ children }) {
                             {schoolSetting?.email ? (
                                 <a
                                     href={`mailto:${schoolSetting.email}`}
-                                    className="flex items-center gap-2 transition hover:text-[#f7c46a]"
+                                    className="flex min-w-0 items-center gap-2 transition hover:text-[#f7c46a]"
                                 >
-                                    <span className="text-[#d59a25]">✉</span>
-                                    {schoolSetting.email}
+                                    <span className="shrink-0 text-[#d59a25]">
+                                        ✉
+                                    </span>
+                                    <span className="truncate">
+                                        {schoolSetting.email}
+                                    </span>
                                 </a>
                             ) : null}
                         </div>
 
-                        <div className="flex items-center gap-5">
+                        <div className="flex shrink-0 items-center gap-3">
                             <span className="flex items-center gap-2">
                                 <span className="h-3 w-3 rounded-full bg-[#f7c46a]" />
                                 PPDB 2026 Dibuka
@@ -709,13 +722,13 @@ export default function FrontendLayout({ children }) {
                 </div>
 
                 <div
-                    className="relative border-b border-slate-200 bg-white"
+                    className="relative z-[9998] border-b border-slate-200 bg-white"
                     onMouseLeave={closeMega}
                 >
-                    <div className="flex h-[94px] items-center justify-between gap-4 px-4 sm:px-6 lg:h-[120px] lg:px-6 xl:px-14 2xl:px-16">
+                    <div className="flex h-[74px] items-center justify-between gap-3 px-4 sm:px-6 lg:h-[78px] lg:px-5 xl:h-[82px] xl:px-8 2xl:h-[96px] 2xl:px-16">
                         <LogoBlock schoolSetting={schoolSetting} />
 
-                        <nav className="hidden items-center gap-6 xl:flex">
+                        <nav className="hidden min-w-0 items-center gap-3 xl:flex 2xl:gap-5">
                             {mainMenus.map((menu) => {
                                 const active = isActiveMenu(
                                     pathname,
@@ -729,7 +742,7 @@ export default function FrontendLayout({ children }) {
                                         onMouseEnter={() =>
                                             openMega(menu.dropdownKey)
                                         }
-                                        className={`relative inline-flex h-[120px] items-center gap-2 text-[14px] font-semibold transition ${
+                                        className={`relative inline-flex h-[82px] items-center gap-1 text-[11.5px] font-semibold transition 2xl:h-[96px] 2xl:gap-2 2xl:text-[14px] ${
                                             active
                                                 ? "text-[#061b46]"
                                                 : "text-[#061b46] hover:text-[#d59a25]"
@@ -738,13 +751,13 @@ export default function FrontendLayout({ children }) {
                                         <span>{menu.label}</span>
 
                                         {menu.dropdownKey ? (
-                                            <span className="text-[13px]">
+                                            <span className="text-[11px] 2xl:text-[13px]">
                                                 ⌄
                                             </span>
                                         ) : null}
 
                                         <span
-                                            className={`absolute bottom-[31px] left-0 h-[3px] rounded-full bg-[#d59a25] transition-all ${
+                                            className={`absolute bottom-[18px] left-0 h-[2.5px] rounded-full bg-[#d59a25] transition-all 2xl:bottom-[24px] 2xl:h-[3px] ${
                                                 active
                                                     ? "w-full"
                                                     : "w-0 hover:w-full"
@@ -755,20 +768,20 @@ export default function FrontendLayout({ children }) {
                             })}
                         </nav>
 
-                        <div className="hidden items-center gap-4 xl:flex">
+                        <div className="hidden shrink-0 items-center gap-1.5 xl:flex 2xl:gap-3">
                             <button
                                 type="button"
                                 onMouseEnter={closeMega}
-                                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[#061b46] transition hover:bg-blue-50"
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#061b46] transition hover:bg-blue-50 2xl:h-11 2xl:w-11"
                                 aria-label="Cari"
                             >
-                                <SearchIcon />
+                                <SearchIcon className="h-5 w-5 2xl:h-6 2xl:w-6" />
                             </button>
 
                             <button
                                 type="button"
                                 onMouseEnter={closeMega}
-                                className="inline-flex h-11 items-center gap-2 rounded-full px-2 text-[14px] font-semibold text-[#061b46] transition hover:bg-blue-50"
+                                className="inline-flex h-9 items-center gap-1 rounded-full px-1 text-[11.5px] font-semibold text-[#061b46] transition hover:bg-blue-50 2xl:h-11 2xl:gap-2 2xl:px-2 2xl:text-[14px]"
                             >
                                 <GlobeIcon />
                                 EN
@@ -777,26 +790,27 @@ export default function FrontendLayout({ children }) {
                             <Link
                                 href="/ppdb"
                                 onMouseEnter={closeMega}
-                                className="inline-flex min-h-[50px] items-center justify-center gap-3 rounded-[12px] bg-[#d59a25] px-6 text-[13px] font-semibold uppercase tracking-[0.04em] text-white shadow-lg shadow-orange-200 transition hover:bg-[#f7c46a]"
+                                className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-[10px] bg-[#d59a25] px-4 text-[11px] font-semibold uppercase tracking-[0.03em] text-white shadow-lg shadow-orange-200 transition hover:bg-[#f7c46a] 2xl:min-h-[50px] 2xl:gap-3 2xl:rounded-[12px] 2xl:px-6 2xl:text-[13px]"
                             >
-                                Daftar PPDB 2026
+                                Daftar PPDB
+                                <span className="hidden 2xl:inline">2026</span>
                                 <span>→</span>
                             </Link>
                         </div>
 
-                        <div className="flex items-center gap-2 xl:hidden">
+                        <div className="flex shrink-0 items-center gap-2 xl:hidden">
                             <button
                                 type="button"
-                                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[#061b46] transition hover:bg-blue-50"
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[#061b46] transition hover:bg-blue-50 sm:h-11 sm:w-11"
                                 aria-label="Cari"
                             >
-                                <SearchIcon />
+                                <SearchIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                             </button>
 
                             <button
                                 type="button"
                                 onClick={() => setIsOpen((value) => !value)}
-                                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[#061b46] transition hover:bg-blue-50"
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-[#061b46] transition hover:bg-blue-50 sm:h-11 sm:w-11"
                                 aria-label="Menu"
                             >
                                 {isOpen ? (
@@ -842,7 +856,7 @@ export default function FrontendLayout({ children }) {
                 </div>
 
                 {isOpen ? (
-                    <div className="border-b border-slate-200 bg-white px-4 py-4 shadow-xl xl:hidden">
+                    <div className="relative z-[9997] border-b border-slate-200 bg-white px-4 py-4 shadow-xl xl:hidden">
                         <div className="mb-4 rounded-[16px] bg-[#052b66] p-4 text-white">
                             <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#f7c46a]">
                                 Menu Aktif
@@ -853,7 +867,7 @@ export default function FrontendLayout({ children }) {
                             </h3>
                         </div>
 
-                        <nav className="grid gap-2">
+                        <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                             {mainMenus.map((menu) => {
                                 const active = isActiveMenu(
                                     pathname,
@@ -879,7 +893,7 @@ export default function FrontendLayout({ children }) {
                             <Link
                                 href="/ppdb"
                                 onClick={() => setIsOpen(false)}
-                                className="mt-3 inline-flex min-h-[50px] items-center justify-center rounded-[12px] bg-[#d59a25] px-6 text-[13px] font-semibold uppercase tracking-[0.04em] text-white"
+                                className="mt-3 inline-flex min-h-[50px] items-center justify-center rounded-[12px] bg-[#d59a25] px-6 text-[13px] font-semibold uppercase tracking-[0.04em] text-white sm:col-span-2 lg:col-span-3"
                             >
                                 Daftar PPDB 2026 →
                             </Link>
@@ -888,7 +902,9 @@ export default function FrontendLayout({ children }) {
                 ) : null}
             </header>
 
-            <main className="w-full">{children}</main>
+            <main className="relative z-0 w-full overflow-x-hidden">
+                {children}
+            </main>
 
             <SiteFooter schoolSetting={schoolSetting} mainMenus={mainMenus} />
         </div>

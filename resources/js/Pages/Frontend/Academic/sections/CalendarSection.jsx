@@ -262,16 +262,16 @@ function ResourceButton({ item }) {
             <button
                 type="button"
                 disabled
-                className="flex cursor-not-allowed items-center justify-between rounded-[18px] border border-slate-200 bg-slate-50 px-5 py-4 opacity-70"
+                className="flex w-full min-w-0 cursor-not-allowed items-center justify-between gap-3 rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-4 opacity-70 sm:px-5"
                 title="Dokumen belum tersedia dari admin."
             >
-                <div className="flex items-center gap-4">
+                <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#1f5bd3] shadow-sm">
                         <Icon type="file" className="h-5 w-5" />
                     </div>
 
                     <div className="text-left">
-                        <p className="text-[13px] font-semibold text-[#061b46]">
+                        <p className="break-words text-[13px] font-semibold leading-5 text-[#061b46]">
                             {item.title}
                         </p>
 
@@ -290,15 +290,15 @@ function ResourceButton({ item }) {
         <a
             href={url}
             download
-            className="flex items-center justify-between rounded-[18px] border border-slate-200 bg-slate-50 px-5 py-4 transition hover:border-blue-200 hover:bg-blue-50"
+            className="flex min-w-0 items-center justify-between gap-3 rounded-[18px] border border-slate-200 bg-slate-50 px-4 py-4 transition hover:border-blue-200 hover:bg-blue-50 sm:px-5"
         >
-            <div className="flex items-center gap-4">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#1f5bd3] shadow-sm">
                     <Icon type="file" className="h-5 w-5" />
                 </div>
 
                 <div>
-                    <p className="text-[13px] font-semibold text-[#061b46]">
+                    <p className="break-words text-[13px] font-semibold leading-5 text-[#061b46]">
                         {item.title}
                     </p>
 
@@ -430,14 +430,14 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
     };
 
     return (
-        <div className="space-y-6">
-            <div className="grid gap-6 xl:grid-cols-[1fr_300px]">
-                <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6">
+        <div className="w-full min-w-0 overflow-hidden space-y-5 sm:space-y-6">
+            <div className="grid w-full min-w-0 grid-cols-1 gap-5 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-start">
+                <div className="min-w-0 overflow-hidden rounded-[20px] border border-slate-200 bg-white p-3 shadow-xl shadow-slate-200/60 sm:rounded-[26px] sm:p-5 lg:p-6">
                     <p className="text-[14px] font-semibold uppercase text-[#1f5bd3]">
                         Academic Calendar
                     </p>
 
-                    <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    <div className="mt-5 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                         <div>
                             <label className="mb-2 block text-[12px] font-bold text-slate-500">
                                 Semester
@@ -448,7 +448,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                 onChange={(event) =>
                                     setSemester(event.target.value)
                                 }
-                                className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-700 outline-none focus:border-[#1f5bd3] focus:ring-[#1f5bd3]"
+                                className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-700 outline-none focus:border-[#1f5bd3] focus:ring-[#1f5bd3] sm:px-4"
                             >
                                 <option>Semester 1</option>
                                 <option>Semester 2</option>
@@ -465,7 +465,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                 onChange={(event) =>
                                     setCategory(event.target.value)
                                 }
-                                className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-700 outline-none focus:border-[#1f5bd3] focus:ring-[#1f5bd3]"
+                                className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-700 outline-none focus:border-[#1f5bd3] focus:ring-[#1f5bd3] sm:px-4"
                             >
                                 {categoryOptions.map((item) => (
                                     <option key={item}>{item}</option>
@@ -483,7 +483,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                 onChange={(event) =>
                                     setMonth(event.target.value)
                                 }
-                                className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-[13px] font-bold text-slate-700 outline-none focus:border-[#1f5bd3] focus:ring-[#1f5bd3]"
+                                className="h-12 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-[13px] font-semibold text-slate-700 outline-none focus:border-[#1f5bd3] focus:ring-[#1f5bd3] sm:px-4"
                             >
                                 {monthOptions.map((item) => (
                                     <option key={item}>{item}</option>
@@ -496,7 +496,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                 Search
                             </label>
 
-                            <div className="flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4">
+                            <div className="flex h-12 min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 sm:px-4">
                                 <input
                                     type="text"
                                     value={search}
@@ -515,27 +515,27 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                         </div>
                     </div>
 
-                    <div className="mt-8 grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+                    <div className="mt-6 grid min-w-0 grid-cols-1 gap-4 sm:mt-8 xl:grid-cols-[1.05fr_0.95fr] xl:gap-5">
                         <div>
-                            <h3 className="text-[22px] font-semibold uppercase text-[#163678]">
+                            <h3 className="text-[20px] font-semibold uppercase text-[#163678] sm:text-[22px]">
                                 {activeMonth}
                             </h3>
 
-                            <div className="mt-4 overflow-hidden rounded-[20px] border border-slate-200">
+                            <div className="mt-4 min-w-0 overflow-hidden rounded-[18px] border border-slate-200 sm:rounded-[20px]">
                                 {filteredItems.length > 0 ? (
                                     filteredItems.map((item, index) => (
                                         <div
                                             key={item.id || item.title}
-                                            className={`grid gap-4 px-4 py-5 sm:grid-cols-[88px_1fr] ${
+                                            className={`flex flex-col gap-3 px-4 py-4 sm:grid sm:grid-cols-[88px_1fr] sm:gap-4 sm:px-4 sm:py-5 ${
                                                 index !==
                                                 filteredItems.length - 1
                                                     ? "border-b border-slate-100"
                                                     : ""
                                             }`}
                                         >
-                                            <div>
-                                                <div className="rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
-                                                    <p className="text-[32px] font-semibold leading-none text-[#1f5bd3]">
+                                            <div className="flex">
+                                                <div className="inline-flex min-w-[68px] rounded-[16px] border border-slate-200 bg-white px-3 py-3 text-center shadow-sm sm:min-w-[72px] sm:px-4">
+                                                    <p className="text-[24px] font-semibold leading-none text-[#1f5bd3] sm:text-[32px]">
                                                         {item.date}
                                                     </p>
 
@@ -545,7 +545,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                                 </div>
                                             </div>
 
-                                            <div>
+                                            <div className="min-w-0">
                                                 <span
                                                     className={`inline-flex rounded-full px-3 py-1 text-[11px] font-semibold ${getTypeBadge(
                                                         item.type
@@ -554,11 +554,11 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                                     {item.type}
                                                 </span>
 
-                                                <h4 className="mt-3 text-[18px] font-semibold leading-snug text-[#163678]">
+                                                <h4 className="mt-3 break-words text-[16px] font-semibold leading-snug text-[#163678] sm:text-[18px]">
                                                     {item.title}
                                                 </h4>
 
-                                                <p className="mt-2 text-[13px] font-medium leading-6 text-slate-500">
+                                                <p className="mt-2 break-words text-[12.5px] font-medium leading-6 text-slate-500 sm:text-[13px]">
                                                     {item.description}
                                                 </p>
 
@@ -585,37 +585,41 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                             </div>
                         </div>
 
-                        <div className="rounded-[20px] border border-slate-200 p-5">
+                        <div className="min-w-0 overflow-hidden rounded-[18px] border border-slate-200 p-3 sm:rounded-[20px] sm:p-5">
                             <div className="flex items-center justify-between">
                                 <button
                                     type="button"
                                     onClick={goToPreviousMonth}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40 sm:h-10 sm:w-10"
                                     disabled={
                                         monthOptions.indexOf(activeMonth) <= 0
                                     }
                                 >
-                                    ‹
+                                    <div className="flex h-9 w-9 items-center justify-center text-[20px] sm:h-10 sm:w-10 sm:text-[24px]">
+                                        ‹
+                                    </div>
                                 </button>
 
-                                <h3 className="text-[24px] font-semibold uppercase text-[#163678]">
+                                <h3 className="min-w-0 px-2 text-center text-[15px] font-semibold uppercase leading-tight text-[#163678] sm:text-[24px]">
                                     {activeMonth}
                                 </h3>
 
                                 <button
                                     type="button"
                                     onClick={goToNextMonth}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="flex h-9 w-9 items-center justify-center rounded-full text-[#163678] hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-40 sm:h-10 sm:w-10"
                                     disabled={
                                         monthOptions.indexOf(activeMonth) ===
                                         monthOptions.length - 1
                                     }
                                 >
-                                    ›
+                                    <div className="flex h-9 w-9 items-center justify-center text-[20px] sm:h-10 sm:w-10 sm:text-[24px]">
+                                        ›
+                                    </div>
                                 </button>
                             </div>
 
-                            <div className="mt-6 grid grid-cols-7 gap-2 text-center text-[12px] font-semibold uppercase">
+                            <div className="mt-4 grid min-w-0 grid-cols-7 gap-0.5 text-center text-[9px] font-semibold uppercase sm:mt-6 sm:gap-2 sm:text-[12px]">
                                 {[
                                     "MON",
                                     "TUE",
@@ -638,10 +642,10 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                 ))}
                             </div>
 
-                            <div className="mt-4 grid grid-cols-7 gap-2">
+                            <div className="mt-2 grid min-w-0 grid-cols-7 gap-0.5 sm:mt-4 sm:gap-2">
                                 {miniCalendarDays.map((day, index) => {
                                     let dayClass =
-                                        "flex h-11 items-center justify-center rounded-full text-[14px] font-bold";
+                                        "flex aspect-square h-auto w-full min-w-0 items-center justify-center rounded-full text-[10px] font-semibold sm:text-[13px] xl:text-[14px]";
 
                                     if (day.muted) {
                                         dayClass += " text-slate-300";
@@ -674,8 +678,8 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                     </div>
                 </div>
 
-                <div className="space-y-6">
-                    <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60">
+                <div className="min-w-0 space-y-6">
+                    <div className="min-w-0 rounded-[20px] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60 sm:rounded-[26px] sm:p-5">
                         <h3 className="text-[18px] font-semibold uppercase text-[#163678]">
                             Upcoming Events
                         </h3>
@@ -684,11 +688,11 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                             {dynamicUpcomingEvents.map((item) => (
                                 <div
                                     key={`${item.title}-${item.subtitle}`}
-                                    className="flex gap-4 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0"
+                                    className="flex min-w-0 items-start gap-3 border-b border-slate-100 pb-4 last:border-b-0 last:pb-0"
                                 >
-                                    <div className="rounded-[16px] border border-slate-200 bg-white px-4 py-3 text-center shadow-sm">
+                                    <div className="shrink-0 rounded-[16px] border border-slate-200 bg-white px-3 py-3 text-center shadow-sm">
                                         <p
-                                            className={`text-[28px] font-semibold leading-none ${getEventColor(
+                                            className={`text-[22px] font-semibold leading-none ${getEventColor(
                                                 item.color
                                             )}`}
                                         >
@@ -700,12 +704,12 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                         </p>
                                     </div>
 
-                                    <div>
-                                        <h4 className="text-[15px] font-semibold leading-snug text-[#163678]">
+                                    <div className="min-w-0">
+                                        <h4 className="text-[14px] font-semibold leading-snug text-[#163678] sm:text-[15px]">
                                             {item.title}
                                         </h4>
 
-                                        <p className="mt-1 text-[12px] font-medium text-slate-500">
+                                        <p className="mt-1 break-words text-[12px] font-medium text-slate-500">
                                             {item.subtitle}
                                         </p>
                                     </div>
@@ -716,9 +720,9 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
 
                     <div
                         id="academic-office"
-                        className="scroll-mt-28 rounded-[26px] bg-[#052b66] p-5 text-white shadow-xl shadow-blue-200"
+                        className="scroll-mt-28 rounded-[20px] bg-[#052b66] p-4 text-white shadow-xl shadow-blue-200 sm:rounded-[26px] sm:p-5"
                     >
-                        <div className="flex items-center gap-4">
+                        <div className="flex min-w-0 items-start gap-3 sm:gap-4">
                             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-[#f7b733]">
                                 <Icon type="building" className="h-8 w-8" />
                             </div>
@@ -729,7 +733,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                 </h3>
 
                                 <div className="mt-5 space-y-3 text-[13px] font-medium text-blue-100">
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-3 break-words">
                                         <Icon
                                             type="calendar"
                                             className="h-4 w-4"
@@ -779,22 +783,22 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
 
             <div
                 id="semester-roadmap"
-                className="scroll-mt-28 rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6"
+                className="scroll-mt-28 overflow-hidden rounded-[22px] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60 sm:rounded-[26px] sm:p-6"
             >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                    <div>
+                    <div className="min-w-0">
                         <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#1f5bd3]">
                             Semester Roadmap
                         </p>
 
-                        <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
+                        <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[28px] lg:text-[36px]">
                             {semester === "Semester 1"
                                 ? "Semester Ganjil"
                                 : "Semester Genap"}
                         </h2>
                     </div>
 
-                    <div className="flex rounded-[16px] bg-slate-100 p-1">
+                    <div className="flex w-full rounded-[16px] bg-slate-100 p-1 sm:w-auto">
                         {["Semester 1", "Semester 2"].map((item) => {
                             const active = semester === item;
 
@@ -803,7 +807,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                                     key={item}
                                     type="button"
                                     onClick={() => setSemester(item)}
-                                    className={`h-11 rounded-[13px] px-5 text-[13px] font-semibold transition ${
+                                    className={`h-11 flex-1 rounded-[13px] px-4 text-[12px] font-semibold transition sm:flex-none sm:px-5 sm:text-[13px] ${
                                         active
                                             ? "bg-white text-[#1f5bd3] shadow-sm"
                                             : "text-slate-500"
@@ -816,11 +820,11 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                     </div>
                 </div>
 
-                <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
                     {activeRoadmap.map((item, index) => (
                         <div
                             key={`${item.month}-${index}`}
-                            className="relative rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm"
+                            className="relative min-w-0 rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[22px] sm:p-5"
                         >
                             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-[#1f5bd3]">
                                 <Icon type={item.icon} className="h-7 w-7" />
@@ -838,16 +842,16 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                 </div>
             </div>
 
-            <div className="grid gap-6 xl:grid-cols-[1fr_0.78fr]">
+            <div className="grid w-full min-w-0 grid-cols-1 gap-5 sm:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.78fr)]">
                 <div
                     id="academic-resources"
-                    className="scroll-mt-28 rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6"
+                    className="scroll-mt-28 overflow-hidden rounded-[22px] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60 sm:rounded-[26px] sm:p-6"
                 >
                     <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#1f5bd3]">
                         Academic Resources
                     </p>
 
-                    <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
+                    <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[28px] lg:text-[36px]">
                         Download Dokumen Akademik
                     </h2>
 
@@ -856,7 +860,7 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                         sekolah.
                     </p>
 
-                    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                    <div className="mt-6 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
                         {resourceItems.map((item) => (
                             <ResourceButton
                                 key={item.id || item.title}
@@ -866,12 +870,12 @@ export default function CalendarSection({ calendars = [], resources = [] }) {
                     </div>
                 </div>
 
-                <div className="rounded-[26px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-6">
+                <div className="min-w-0 overflow-hidden rounded-[22px] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60 sm:rounded-[26px] sm:p-6">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#1f5bd3]">
                         FAQ
                     </p>
 
-                    <h2 className="mt-2 text-[28px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[36px]">
+                    <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.04em] text-[#061b46] sm:text-[28px] lg:text-[36px]">
                         Pertanyaan Umum
                     </h2>
 

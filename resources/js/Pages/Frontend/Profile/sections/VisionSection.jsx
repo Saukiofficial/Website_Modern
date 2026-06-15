@@ -104,20 +104,20 @@ const fallbackActionSteps = [
 
 function MissionCard({ item, index }) {
     return (
-        <article className="relative rounded-[22px] border border-slate-200 bg-white p-5 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-6">
-            <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 text-[42px]">
+        <article className="relative min-w-0 rounded-[20px] border border-slate-200 bg-white p-5 text-center shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:rounded-[22px] sm:p-6">
+            <div className="relative mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-[34px] sm:h-20 sm:w-20 sm:text-[42px]">
                 {item.icon || "🎓"}
 
-                <div className="absolute -bottom-3 left-1/2 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full bg-[#052b66] text-[11px] font-semibold text-white">
+                <div className="absolute -bottom-3 left-1/2 flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full bg-[#052b66] text-[10px] font-semibold text-white sm:h-8 sm:w-8 sm:text-[11px]">
                     {String(index + 1).padStart(2, "0")}
                 </div>
             </div>
 
-            <h3 className="mt-9 text-[17px] font-semibold leading-tight text-[#061b46]">
+            <h3 className="mt-8 break-words text-[16px] font-semibold leading-tight text-[#061b46] sm:mt-9 sm:text-[17px]">
                 {item.title}
             </h3>
 
-            <p className="mt-4 text-[12.5px] font-medium leading-6 text-slate-600">
+            <p className="mt-3 break-words text-[12.5px] font-medium leading-6 text-slate-600 sm:mt-4">
                 {item.description}
             </p>
         </article>
@@ -126,16 +126,16 @@ function MissionCard({ item, index }) {
 
 function CoreValueCard({ item }) {
     return (
-        <article className="rounded-[18px] border border-slate-200 bg-white p-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-            <div className="text-[42px] leading-none text-[#d5a542]">
+        <article className="min-w-0 rounded-[18px] border border-slate-200 bg-white p-5 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <div className="text-[38px] leading-none text-[#d5a542] sm:text-[42px]">
                 {item.icon || "☆"}
             </div>
 
-            <h3 className="mt-5 text-[17px] font-semibold text-[#061b46]">
+            <h3 className="mt-4 break-words text-[16px] font-semibold text-[#061b46] sm:mt-5 sm:text-[17px]">
                 {item.title}
             </h3>
 
-            <p className="mt-3 text-[12.5px] font-medium leading-6 text-slate-600">
+            <p className="mt-3 break-words text-[12.5px] font-medium leading-6 text-slate-600">
                 {item.description}
             </p>
         </article>
@@ -145,7 +145,7 @@ function CoreValueCard({ item }) {
 function ActionStepCard({ item }) {
     return (
         <div
-            className={`flex min-h-[170px] flex-col items-center justify-center rounded-full border p-6 text-center shadow-lg ${
+            className={`flex min-h-[150px] min-w-0 flex-col items-center justify-center rounded-[22px] border p-5 text-center shadow-lg sm:min-h-[170px] sm:rounded-full sm:p-6 ${
                 item.active
                     ? "border-[#052b66] bg-[#052b66] text-white"
                     : item.gold
@@ -153,14 +153,14 @@ function ActionStepCard({ item }) {
                     : "border-slate-200 bg-white text-[#061b46]"
             }`}
         >
-            <div className="text-[34px]">{item.icon || "👁️"}</div>
+            <div className="text-[30px] sm:text-[34px]">{item.icon || "👁️"}</div>
 
-            <h3 className="mt-3 text-[15px] font-semibold uppercase">
+            <h3 className="mt-3 break-words text-[13px] font-semibold uppercase sm:text-[15px]">
                 {item.title}
             </h3>
 
             <p
-                className={`mt-2 text-[11.5px] font-medium leading-5 ${
+                className={`mt-2 break-words text-[11px] font-medium leading-5 sm:text-[11.5px] ${
                     item.active || item.gold
                         ? "text-white/90"
                         : "text-slate-600"
@@ -200,10 +200,10 @@ export default function VisionSection({ profileData }) {
             : fallbackActionSteps;
 
     return (
-        <div className="space-y-10">
-            <section className="overflow-hidden rounded-[28px] bg-white shadow-xl shadow-slate-200/70">
-                <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-                    <div className="relative min-h-[320px] overflow-hidden bg-[#052b66] sm:min-h-[420px] lg:min-h-[520px]">
+        <div className="w-full min-w-0 space-y-6 sm:space-y-10">
+            <section className="min-w-0 overflow-hidden rounded-[22px] bg-white shadow-xl shadow-slate-200/70 sm:rounded-[28px]">
+                <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]">
+                    <div className="relative min-h-[300px] overflow-hidden bg-[#052b66] sm:min-h-[420px] lg:min-h-[520px]">
                         <img
                             src={visionHeroImage}
                             alt="Visi dan Misi Sekolah"
@@ -216,58 +216,62 @@ export default function VisionSection({ profileData }) {
 
                         <div className="absolute inset-0 bg-gradient-to-t from-[#052b66]/80 via-[#052b66]/30 to-transparent" />
 
-                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white sm:p-8">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#f7c46a]">
+                        <div className="absolute bottom-0 left-0 right-0 p-5 text-white sm:p-8">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#f7c46a] sm:text-[11px] sm:tracking-[0.24em]">
                                 Visi Misi Sekolah
                             </p>
 
-                            <h3 className="mt-3 max-w-[560px] font-serif text-[28px] font-semibold leading-tight tracking-[-0.035em] sm:text-[38px]">
+                            <h3 className="mt-3 max-w-[560px] break-words font-serif text-[26px] font-semibold leading-tight tracking-[-0.035em] sm:text-[38px]">
                                 Arah Pendidikan untuk Masa Depan Siswa
                             </h3>
                         </div>
                     </div>
 
-                    <div className="relative overflow-hidden p-6 sm:p-8 lg:p-10">
+                    <div className="relative min-w-0 overflow-hidden p-5 sm:p-8 lg:p-10">
                         <div className="absolute -right-10 -top-10 hidden h-44 w-44 rounded-full bg-blue-50 lg:block" />
                         <div className="absolute -bottom-12 -left-12 hidden h-52 w-52 rounded-full bg-[#f7c46a]/10 lg:block" />
 
-                        <div className="relative">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0d58cf]">
+                        <div className="relative min-w-0">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d58cf] sm:tracking-[0.24em]">
                                 Our Vision
                             </p>
 
-                            <h2 className="mt-4 font-serif text-[34px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
+                            <h2 className="mt-4 break-words font-serif text-[30px] font-semibold leading-tight tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
                                 {school.vision ||
                                     "Menjadi sekolah unggul yang menghasilkan pemimpin masa depan berkarakter, berprestasi, dan berwawasan global."}
                             </h2>
 
-                            <div className="mt-6 h-[2px] w-20 rounded-full bg-[#d5a542]" />
+                            <div className="mt-5 h-[2px] w-20 rounded-full bg-[#d5a542] sm:mt-6" />
 
-                            <p className="mt-7 max-w-[680px] text-[15px] font-medium leading-8 text-slate-600">
+                            <p className="mt-6 max-w-[680px] break-words text-[14px] font-medium leading-7 text-slate-600 sm:mt-7 sm:text-[15px] sm:leading-8">
                                 Kami berkomitmen menciptakan lingkungan
                                 pendidikan yang inspiratif, inovatif, dan
                                 inklusif untuk mencetak generasi unggul yang
                                 siap menghadapi tantangan dunia.
                             </p>
 
-                            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
-                                    <div className="text-[34px]">🎯</div>
+                            <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2">
+                                <div className="min-w-0 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+                                    <div className="text-[32px] sm:text-[34px]">
+                                        🎯
+                                    </div>
                                     <h3 className="mt-4 text-[16px] font-semibold text-[#061b46]">
                                         Fokus Tujuan
                                     </h3>
-                                    <p className="mt-2 text-[12.5px] font-medium leading-6 text-slate-600">
+                                    <p className="mt-2 break-words text-[12.5px] font-medium leading-6 text-slate-600">
                                         Menyelaraskan program sekolah dengan
                                         kebutuhan peserta didik.
                                     </p>
                                 </div>
 
-                                <div className="rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
-                                    <div className="text-[34px]">🌐</div>
+                                <div className="min-w-0 rounded-[20px] border border-slate-200 bg-white p-5 shadow-sm">
+                                    <div className="text-[32px] sm:text-[34px]">
+                                        🌐
+                                    </div>
                                     <h3 className="mt-4 text-[16px] font-semibold text-[#061b46]">
                                         Wawasan Global
                                     </h3>
-                                    <p className="mt-2 text-[12.5px] font-medium leading-6 text-slate-600">
+                                    <p className="mt-2 break-words text-[12.5px] font-medium leading-6 text-slate-600">
                                         Membentuk siswa yang siap bersaing dan
                                         berkontribusi luas.
                                     </p>
@@ -278,30 +282,30 @@ export default function VisionSection({ profileData }) {
                 </div>
             </section>
 
-            <section className="rounded-[28px] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8 lg:p-10">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0d58cf]">
+            <section className="min-w-0 rounded-[22px] bg-white p-5 shadow-xl shadow-slate-200/70 sm:rounded-[28px] sm:p-8 lg:p-10">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d58cf] sm:tracking-[0.24em]">
                     Our Mission
                 </p>
 
-                <h2 className="mt-4 font-serif text-[34px] font-semibold tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
+                <h2 className="mt-4 break-words font-serif text-[30px] font-semibold tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
                     Misi Kami
                 </h2>
 
                 <div className="mt-5 h-[2px] w-20 rounded-full bg-[#d5a542]" />
 
                 {Array.isArray(school.missions) && school.missions.length > 0 ? (
-                    <div className="mt-8 rounded-[22px] border border-blue-100 bg-blue-50 p-5 sm:p-6">
-                        <div className="grid gap-4 md:grid-cols-2">
+                    <div className="mt-6 rounded-[22px] border border-blue-100 bg-blue-50 p-4 sm:mt-8 sm:p-6">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {school.missions.map((mission, index) => (
                                 <div
                                     key={`${mission}-${index}`}
-                                    className="flex gap-4 rounded-[18px] bg-white p-4 shadow-sm"
+                                    className="flex min-w-0 gap-3 rounded-[18px] bg-white p-4 shadow-sm sm:gap-4"
                                 >
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#052b66] text-[12px] font-semibold text-white">
                                         {String(index + 1).padStart(2, "0")}
                                     </div>
 
-                                    <p className="text-[13.5px] font-medium leading-7 text-slate-700">
+                                    <p className="break-words text-[13px] font-medium leading-7 text-slate-700 sm:text-[13.5px]">
                                         {mission}
                                     </p>
                                 </div>
@@ -310,7 +314,7 @@ export default function VisionSection({ profileData }) {
                     </div>
                 ) : null}
 
-                <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+                <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-5">
                     {missionItems.map((item, index) => (
                         <MissionCard
                             key={`${item.title}-${index}`}
@@ -321,16 +325,16 @@ export default function VisionSection({ profileData }) {
                 </div>
             </section>
 
-            <section className="rounded-[28px] bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8 lg:p-10">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0d58cf]">
+            <section className="min-w-0 rounded-[22px] bg-white p-5 shadow-xl shadow-slate-200/70 sm:rounded-[28px] sm:p-8 lg:p-10">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d58cf] sm:tracking-[0.24em]">
                     Our Core Values
                 </p>
 
-                <h2 className="mt-4 font-serif text-[34px] font-semibold tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
+                <h2 className="mt-4 break-words font-serif text-[30px] font-semibold tracking-[-0.035em] text-[#061b46] sm:text-[44px]">
                     Nilai-Nilai Utama Kami
                 </h2>
 
-                <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+                <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-7 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
                     {coreValues.map((item, index) => (
                         <CoreValueCard
                             key={`${item.title}-${index}`}
@@ -340,20 +344,20 @@ export default function VisionSection({ profileData }) {
                 </div>
             </section>
 
-            <section className="rounded-[28px] bg-[#f4f8fc] px-2 py-4">
+            <section className="min-w-0 rounded-[22px] bg-[#f4f8fc] px-4 py-6 sm:rounded-[28px] sm:px-2 sm:py-8">
                 <div className="text-center">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#0d58cf]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d58cf] sm:tracking-[0.24em]">
                         Visi Menjadi Tindakan Nyata
                     </p>
 
-                    <h2 className="mt-3 font-serif text-[30px] font-semibold tracking-[-0.035em] text-[#061b46] sm:text-[40px]">
+                    <h2 className="mt-3 break-words font-serif text-[28px] font-semibold tracking-[-0.035em] text-[#061b46] sm:text-[40px]">
                         Dari Visi Menuju Prestasi
                     </h2>
                 </div>
 
-                <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-5 xl:items-center">
+                <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 xl:grid-cols-5 xl:items-center">
                     {actionSteps.map((item, index) => (
-                        <div key={`${item.title}-${index}`} className="relative">
+                        <div key={`${item.title}-${index}`} className="relative min-w-0">
                             <ActionStepCard item={item} />
 
                             {index !== actionSteps.length - 1 ? (
@@ -366,9 +370,9 @@ export default function VisionSection({ profileData }) {
                 </div>
             </section>
 
-            <section className="overflow-hidden rounded-[28px] bg-[#052b66] shadow-2xl shadow-blue-200">
-                <div className="grid lg:grid-cols-[1.05fr_0.95fr]">
-                    <div className="min-h-[280px]">
+            <section className="min-w-0 overflow-hidden rounded-[22px] bg-[#052b66] shadow-2xl shadow-blue-200 sm:rounded-[28px]">
+                <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]">
+                    <div className="min-h-[240px] sm:min-h-[280px]">
                         <img
                             src={visionBannerImage}
                             alt="Learning Today Leading Tomorrow"
@@ -380,13 +384,13 @@ export default function VisionSection({ profileData }) {
                         />
                     </div>
 
-                    <div className="relative p-7 text-white sm:p-9 lg:p-10">
+                    <div className="relative min-w-0 p-5 text-white sm:p-9 lg:p-10">
                         <div className="absolute right-8 top-8 hidden text-[130px] leading-none text-white/5 lg:block">
                             🛡️
                         </div>
 
-                        <div className="relative">
-                            <h2 className="font-serif text-[34px] font-semibold leading-tight tracking-[-0.035em] sm:text-[44px]">
+                        <div className="relative min-w-0">
+                            <h2 className="break-words font-serif text-[30px] font-semibold leading-tight tracking-[-0.035em] sm:text-[44px]">
                                 <span className="text-[#f7c46a]">
                                     Learning
                                 </span>{" "}
@@ -395,7 +399,7 @@ export default function VisionSection({ profileData }) {
                                 Leading Tomorrow
                             </h2>
 
-                            <p className="mt-5 max-w-[560px] text-[15px] font-medium leading-8 text-blue-100">
+                            <p className="mt-5 max-w-[560px] break-words text-[14px] font-medium leading-7 text-blue-100 sm:text-[15px] sm:leading-8">
                                 Kami percaya setiap siswa memiliki potensi luar
                                 biasa untuk menjadi pemimpin masa depan yang
                                 membawa perubahan positif bagi dunia.
@@ -403,7 +407,7 @@ export default function VisionSection({ profileData }) {
 
                             <a
                                 href="/ppdb"
-                                className="mt-7 inline-flex min-h-[50px] items-center justify-center gap-3 rounded-[12px] bg-[#d5a542] px-7 text-[13px] font-semibold text-[#061b46] transition hover:bg-[#f7c46a]"
+                                className="mt-6 inline-flex min-h-[50px] w-full items-center justify-center gap-3 rounded-[12px] bg-[#d5a542] px-6 text-center text-[13px] font-semibold text-[#061b46] transition hover:bg-[#f7c46a] sm:mt-7 sm:w-auto sm:px-7"
                             >
                                 Bergabung Bersama Kami
                                 <span>→</span>

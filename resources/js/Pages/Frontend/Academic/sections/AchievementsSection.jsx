@@ -386,28 +386,28 @@ export default function AchievementsSection({ achievements = [] }) {
 
     return (
         <div className="space-y-6">
-            <div className="grid gap-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-xl shadow-slate-200/60 lg:grid-cols-4">
+            <div className="grid gap-0 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-xl shadow-slate-200/60 sm:grid-cols-2 lg:grid-cols-4">
                 {achievementStats.map((item, index) => (
                     <div
                         key={item.label}
-                        className={`flex items-center gap-5 p-6 lg:p-7 ${
+                        className={`flex items-center gap-4 p-5 sm:gap-5 sm:p-6 lg:p-7 ${
                             index !== achievementStats.length - 1
-                                ? "border-b border-slate-200 lg:border-b-0 lg:border-r"
+                                ? "border-b border-slate-200 sm:border-b-0 sm:border-r lg:border-b-0 lg:border-r"
                                 : ""
-                        }`}
+                        } ${index === 1 ? "sm:border-r-0" : ""}`}
                     >
                         <div
-                            className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${item.iconWrap}`}
+                            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl sm:h-14 sm:w-14 ${item.iconWrap}`}
                         >
-                            <Icon type={item.icon} className="h-7 w-7" />
+                            <Icon type={item.icon} className="h-6 w-6 sm:h-7 sm:w-7" />
                         </div>
 
-                        <div>
-                            <h3 className="text-[32px] font-semibold leading-none text-[#163678]">
+                        <div className="min-w-0">
+                            <h3 className="text-[28px] font-semibold leading-none text-[#163678] sm:text-[32px]">
                                 {item.value}
                             </h3>
 
-                            <p className="mt-2 text-[12.5px] font-medium text-slate-600">
+                            <p className="mt-2 text-[12px] font-medium text-slate-600 sm:text-[12.5px]">
                                 {item.label}
                             </p>
                         </div>
@@ -422,8 +422,8 @@ export default function AchievementsSection({ achievements = [] }) {
             </div>
 
             <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-xl shadow-slate-200/60">
-                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                    <div className="flex gap-3 overflow-x-auto pb-2 xl:pb-0">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0 lg:gap-3">
                         {achievementCategories.map((category) => {
                             const isActive = activeCategory === category;
 
@@ -434,7 +434,7 @@ export default function AchievementsSection({ achievements = [] }) {
                                     onClick={() =>
                                         setActiveCategory(category)
                                     }
-                                    className={`h-11 shrink-0 rounded-[12px] px-5 text-[12px] font-medium transition ${
+                                    className={`h-11 shrink-0 rounded-[12px] px-4 text-[11px] font-medium transition sm:px-5 sm:text-[12px] lg:text-[12px] ${
                                         isActive
                                             ? "bg-[#0d58cf] text-white shadow-lg shadow-blue-200"
                                             : "bg-slate-100 text-[#163678] hover:bg-blue-50"
@@ -446,13 +446,13 @@ export default function AchievementsSection({ achievements = [] }) {
                         })}
                     </div>
 
-                    <div className="flex h-11 w-full items-center gap-3 rounded-[12px] border border-slate-200 bg-white px-4 xl:max-w-[330px]">
+                    <div className="flex h-11 w-full items-center gap-3 rounded-[12px] border border-slate-200 bg-white px-4 lg:max-w-[330px]">
                         <input
                             type="text"
                             value={search}
                             onChange={(event) => setSearch(event.target.value)}
                             placeholder="Cari prestasi siswa..."
-                            className="h-full w-full border-0 bg-transparent text-[13px] font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:ring-0"
+                            className="h-full w-full border-0 bg-transparent text-[12px] font-medium text-slate-700 outline-none placeholder:text-slate-400 focus:ring-0 sm:text-[13px]"
                         />
 
                         <Icon
@@ -462,7 +462,7 @@ export default function AchievementsSection({ achievements = [] }) {
                     </div>
                 </div>
 
-                <div className="mt-5 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {filteredAchievements.length > 0 ? (
                         filteredAchievements.map((item) => (
                             <AchievementCard
@@ -471,7 +471,7 @@ export default function AchievementsSection({ achievements = [] }) {
                             />
                         ))
                     ) : (
-                        <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 xl:col-span-3">
+                        <div className="rounded-[18px] border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-[13px] font-semibold text-slate-500 sm:col-span-2 lg:col-span-3">
                             Data prestasi tidak ditemukan.
                         </div>
                     )}
@@ -502,40 +502,38 @@ export default function AchievementsSection({ achievements = [] }) {
 
                     <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,35,83,0.98)_0%,rgba(5,48,115,0.96)_44%,rgba(7,74,170,0.62)_70%,rgba(7,74,170,0.10)_100%)]" />
 
-                    <div className="relative z-10 grid min-h-[240px] items-center gap-6 px-6 py-7 sm:px-8 lg:grid-cols-[92px_1fr_auto] lg:px-10">
-                        <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-white text-[#f7b733] shadow-lg">
-                            <Icon type="trophy" className="h-10 w-10" />
+                    <div className="relative z-10 grid min-h-[240px] items-center gap-5 px-5 py-6 sm:gap-6 sm:px-8 sm:py-7 lg:grid-cols-[92px_1fr] lg:px-10">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-white text-[#f7b733] shadow-lg sm:h-20 sm:w-20">
+                            <Icon type="trophy" className="h-8 w-8 sm:h-10 sm:w-10" />
                         </div>
 
                         <div>
-                            <h2 className="text-[26px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[34px]">
+                            <h2 className="text-[22px] font-semibold leading-tight tracking-[-0.04em] text-white sm:text-[28px] lg:text-[34px]">
                                 Prestasi Adalah Hasil dari Proses Terbaik
                             </h2>
 
-                            <p className="mt-2 max-w-[680px] text-[14px] font-medium leading-7 text-blue-100 sm:text-[15px]">
+                            <p className="mt-2 max-w-[680px] text-[13px] font-medium leading-6 text-blue-100 sm:text-[14px] sm:leading-7 lg:text-[15px]">
                                 Sekolah terus mendukung siswa untuk berkembang,
                                 berkompetisi, dan meraih capaian terbaik dalam
                                 bidang akademik maupun non-akademik.
                             </p>
 
-                            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                            <div className="mt-4 flex flex-col gap-3 sm:mt-5 sm:flex-row">
                                 <a
                                     href="#"
-                                    className="inline-flex min-h-[50px] items-center justify-center rounded-[12px] bg-[#f7b733] px-7 text-[13px] font-medium text-[#061b46] transition hover:bg-yellow-300"
+                                    className="inline-flex min-h-[48px] items-center justify-center rounded-[12px] bg-[#f7b733] px-6 text-[13px] font-medium text-[#061b46] transition hover:bg-yellow-300 sm:min-h-[50px] sm:px-7"
                                 >
                                     Kirim Prestasi Siswa →
                                 </a>
 
                                 <a
                                     href="#"
-                                    className="inline-flex min-h-[50px] items-center justify-center rounded-[12px] border border-white/30 bg-white/10 px-7 text-[13px] font-medium text-white backdrop-blur-sm transition hover:bg-white/15"
+                                    className="inline-flex min-h-[48px] items-center justify-center rounded-[12px] border border-white/30 bg-white/10 px-6 text-[13px] font-medium text-white backdrop-blur-sm transition hover:bg-white/15 sm:min-h-[50px] sm:px-7"
                                 >
                                     Hubungi Akademik
                                 </a>
                             </div>
                         </div>
-
-                        <div className="hidden lg:block" />
                     </div>
                 </div>
             </div>

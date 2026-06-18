@@ -147,9 +147,9 @@ class DashboardController extends Controller
 
         $ppdbTrend = $this->dailyTrend($ppdbRegistrationModel, 7);
         $studentClassChart = [
-            ['label' => 'Kelas 7', 'value' => $studentsClass7],
-            ['label' => 'Kelas 8', 'value' => $studentsClass8],
-            ['label' => 'Kelas 9', 'value' => $studentsClass9],
+            ['label' => 'Kelas 10', 'value' => $studentsClass7],
+            ['label' => 'Kelas 11', 'value' => $studentsClass8],
+            ['label' => 'Kelas 12', 'value' => $studentsClass9],
         ];
 
         $alumniActivityChart = [

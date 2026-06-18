@@ -1,5 +1,5 @@
 import { Head, Link, useForm } from "@inertiajs/react";
-import AdminLayout from "../Layouts/AdminLayout";
+import ExtracurricularAdminLayout from "../../Layouts/ExtracurricularAdminLayout";
 
 function StatusBadge({ status }) {
     const styles = {
@@ -67,14 +67,14 @@ export default function Show({ registration }) {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        put(`/admin/student-registrations/${registration.id}`, {
+        put(`/admin/ekstrakurikuler/registrations/${registration.id}`, {
             preserveScroll: true,
         });
     };
 
     return (
-        <AdminLayout title="Detail Pendaftaran">
-            <Head title="Detail Pendaftaran" />
+        <ExtracurricularAdminLayout title="Detail Pendaftaran Ekstrakurikuler">
+            <Head title="Detail Pendaftaran Ekstrakurikuler" />
 
             <div className="mb-6 flex flex-col gap-4 rounded-[28px] bg-gradient-to-br from-[#061b46] to-[#0b3b85] p-6 text-white shadow-2xl shadow-blue-200 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
                 <div>
@@ -94,14 +94,14 @@ export default function Show({ registration }) {
 
                 <div className="flex flex-col gap-3 sm:flex-row">
                     <Link
-                        href="/admin/student-registrations"
+                        href="/admin/ekstrakurikuler/registrations"
                         className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-white/15 bg-white/10 px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-white transition hover:bg-white/20"
                     >
                         Kembali
                     </Link>
 
                     <Link
-                        href={`/admin/student-registrations/${registration.id}`}
+                        href={`/admin/ekstrakurikuler/registrations/${registration.id}`}
                         method="delete"
                         as="button"
                         preserveScroll
@@ -239,6 +239,48 @@ export default function Show({ registration }) {
 
                         <div className="mt-5">
                             <label className="mb-2 block text-[13px] font-extrabold text-[#061b46]">
+                                Jabatan / Pekstrakurikuleri Diterima
+                            </label>
+
+                            <input
+                                type="text"
+                                value={data.approved_role}
+                                onChange={(event) =>
+                                    setData("approved_role", event.target.value)
+                                }
+                                placeholder="Contoh: Ketua Ekstrakurikuler, Sekretaris, Seksi Humas"
+                                className="h-[54px] w-full rounded-[16px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#0b73e8] focus:ring-4 focus:ring-blue-100"
+                            />
+
+                            {errors.approved_role ? (
+                                <p className="mt-2 text-[12px] font-bold text-red-600">
+                                    {errors.approved_role}
+                                </p>
+                            ) : null}
+                        </div>
+
+                        <label className="mt-5 flex min-h-[54px] cursor-pointer items-center justify-between gap-4 rounded-[16px] border border-slate-200 bg-white px-4 py-3">
+                            <div>
+                                <span className="text-[13px] font-extrabold text-[#061b46]">
+                                    Tampilkan ke Frontend
+                                </span>
+                                <p className="mt-1 text-[11.5px] font-semibold text-slate-500">
+                                    Aktifkan jika siswa diterima dan ingin ditampilkan sebagai pengurus Ekstrakurikuler.
+                                </p>
+                            </div>
+
+                            <input
+                                type="checkbox"
+                                checked={Boolean(data.publish_to_frontend)}
+                                onChange={(event) =>
+                                    setData("publish_to_frontend", event.target.checked)
+                                }
+                                className="h-5 w-5 rounded border-slate-300 text-[#0b73e8] focus:ring-[#0b73e8]"
+                            />
+                        </label>
+
+                        <div className="mt-5">
+                            <label className="mb-2 block text-[13px] font-extrabold text-[#061b46]">
                                 Catatan Admin
                             </label>
 
@@ -259,41 +301,6 @@ export default function Show({ registration }) {
                             ) : null}
                         </div>
 
-                        <div className="mt-5">
-                            <label className="mb-2 block text-[13px] font-extrabold text-[#061b46]">
-                                Jabatan / Posisi Jika Diterima
-                            </label>
-                            <input
-                                type="text"
-                                value={data.approved_role}
-                                onChange={(event) => setData("approved_role", event.target.value)}
-                                placeholder="Contoh: Ketua OSIS, Sekretaris, Anggota Futsal"
-                                className="h-[52px] w-full rounded-[14px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-                            />
-                            {errors.approved_role ? (
-                                <p className="mt-2 text-[12px] font-bold text-red-600">
-                                    {errors.approved_role}
-                                </p>
-                            ) : null}
-                        </div>
-
-                        <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-[16px] border border-slate-200 bg-white p-4">
-                            <input
-                                type="checkbox"
-                                checked={data.publish_to_frontend}
-                                onChange={(event) => setData("publish_to_frontend", event.target.checked)}
-                                className="mt-1 h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                            />
-                            <span>
-                                <span className="block text-[13px] font-extrabold text-[#061b46]">
-                                    Tampilkan di frontend
-                                </span>
-                                <span className="mt-1 block text-[12px] font-semibold leading-6 text-slate-500">
-                                    Aktifkan jika siswa diterima dan ingin ditampilkan sebagai anggota ekstrakurikuler atau pengurus OSIS.
-                                </span>
-                            </span>
-                        </label>
-
                         <button
                             type="submit"
                             disabled={processing}
@@ -304,6 +311,6 @@ export default function Show({ registration }) {
                     </form>
                 </aside>
             </div>
-        </AdminLayout>
+        </ExtracurricularAdminLayout>
     );
 }

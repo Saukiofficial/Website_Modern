@@ -15,72 +15,30 @@ class StudentController extends Controller
 {
     public function index(Request $request): Response
     {
-        $search = $request->query('search', '');
-        $classLevel = $request->query('class_level', 'all');
+        $search = trim((string) $request->query('search', ''));
+        $className = trim((string) $request->query('class_name', 'all'));
         $status = $request->query('status', 'all');
 
-        $query = Student::query()->latest('id');
-
-        if ($search) {
-            $query->where(function ($builder) use ($search) {
-                $builder
-                    ->where('name', 'like', "%{$search}%")
-                    ->orWhere('nisn', 'like', "%{$search}%")
-                    ->orWhere('student_number', 'like', "%{$search}%")
-                    ->orWhere('class_name', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        if ($classLevel !== 'all') {
-            $query->where('class_level', $classLevel);
-        }
-
-        if ($status !== 'all') {
-            $query->where('is_active', $status === 'active');
-        }
-
-        $students = $query
+        $students = $this->filteredStudentQuery($search, $className, $status)
             ->paginate(10)
             ->withQueryString()
-            ->through(fn (Student $student) => [
-                'id' => $student->id,
-                'student_number' => $student->student_number,
-                'nisn' => $student->nisn,
-                'name' => $student->name,
-                'gender' => $student->gender,
-                'class_level' => $student->class_level,
-                'class_name' => $student->class_name,
-                'class_label' => $student->class_label,
-                'birth_place' => $student->birth_place,
-                'birth_date' => $student->birth_date?->format('Y-m-d'),
-                'religion' => $student->religion,
-                'address' => $student->address,
-                'phone' => $student->phone,
-                'email' => $student->email,
-                'father_name' => $student->father_name,
-                'mother_name' => $student->mother_name,
-                'photo_url' => $student->photo_url,
-                'voting_token' => $student->voting_token,
-                'is_active' => $student->is_active,
-                'created_at' => $student->created_at?->format('d M Y'),
-            ]);
+            ->through(fn (Student $student) => $this->studentPayload($student));
 
         return Inertia::render('Admin/Students/Index', [
             'students' => $students,
             'filters' => [
                 'search' => $search,
-                'class_level' => $classLevel,
+                'class_name' => $className,
                 'status' => $status,
             ],
+            'classOptions' => $this->classOptions(),
             'summary' => [
                 'total' => Student::query()->count(),
                 'active' => Student::query()->where('is_active', true)->count(),
                 'inactive' => Student::query()->where('is_active', false)->count(),
-                'class_7' => Student::query()->where('class_level', '7')->count(),
-                'class_8' => Student::query()->where('class_level', '8')->count(),
-                'class_9' => Student::query()->where('class_level', '9')->count(),
+                'class_10' => Student::query()->where('class_level', '10')->count(),
+                'class_11' => Student::query()->where('class_level', '11')->count(),
+                'class_12' => Student::query()->where('class_level', '12')->count(),
             ],
         ]);
     }
@@ -114,24 +72,8 @@ class StudentController extends Controller
             'photo.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
-        $payload = [
-            'student_number' => $validated['student_number'] ?? null,
-            'nisn' => $validated['nisn'] ?? null,
-            'name' => $validated['name'],
-            'gender' => $validated['gender'] ?? null,
-            'class_level' => $validated['class_level'] ?? null,
-            'class_name' => $validated['class_name'] ?? null,
-            'birth_place' => $validated['birth_place'] ?? null,
-            'birth_date' => $validated['birth_date'] ?? null,
-            'religion' => $validated['religion'] ?? null,
-            'address' => $validated['address'] ?? null,
-            'phone' => $validated['phone'] ?? null,
-            'email' => $validated['email'] ?? null,
-            'father_name' => $validated['father_name'] ?? null,
-            'mother_name' => $validated['mother_name'] ?? null,
-            'is_active' => $this->normalizeBoolean($validated['is_active'] ?? true),
-            'voting_token' => $this->generateUniqueVotingToken(),
-        ];
+        $payload = $this->studentFormPayload($validated);
+        $payload['voting_token'] = $this->generateUniqueVotingToken();
 
         if ($request->hasFile('photo')) {
             $payload['photo'] = $request->file('photo')->store('students', 'public');
@@ -173,23 +115,7 @@ class StudentController extends Controller
             'photo.max' => 'Ukuran foto maksimal 2MB.',
         ]);
 
-        $payload = [
-            'student_number' => $validated['student_number'] ?? null,
-            'nisn' => $validated['nisn'] ?? null,
-            'name' => $validated['name'],
-            'gender' => $validated['gender'] ?? null,
-            'class_level' => $validated['class_level'] ?? null,
-            'class_name' => $validated['class_name'] ?? null,
-            'birth_place' => $validated['birth_place'] ?? null,
-            'birth_date' => $validated['birth_date'] ?? null,
-            'religion' => $validated['religion'] ?? null,
-            'address' => $validated['address'] ?? null,
-            'phone' => $validated['phone'] ?? null,
-            'email' => $validated['email'] ?? null,
-            'father_name' => $validated['father_name'] ?? null,
-            'mother_name' => $validated['mother_name'] ?? null,
-            'is_active' => $this->normalizeBoolean($validated['is_active'] ?? false),
-        ];
+        $payload = $this->studentFormPayload($validated);
 
         if ($request->hasFile('photo')) {
             $this->deletePublicFile($student->photo);
@@ -228,15 +154,15 @@ class StudentController extends Controller
 
     public function export(Request $request)
     {
-        $search = $request->query('search', '');
-        $classLevel = $request->query('class_level', 'all');
+        $search = trim((string) $request->query('search', ''));
+        $className = trim((string) $request->query('class_name', 'all'));
         $status = $request->query('status', 'all');
 
-        $query = $this->filteredStudentQuery($search, $classLevel, $status);
+        $query = $this->filteredStudentQuery($search, $className, $status);
 
         $fileName = 'data-siswa-' . now()->format('Y-m-d-His') . '.csv';
 
-        return response()->streamDownload(function () use ($query, $search, $classLevel, $status) {
+        return response()->streamDownload(function () use ($query, $search, $className, $status) {
             $handle = fopen('php://output', 'w');
 
             fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
@@ -244,7 +170,7 @@ class StudentController extends Controller
 
             fputcsv($handle, ['DATA SISWA'], ';');
             fputcsv($handle, ['Tanggal Export', now()->format('d/m/Y H:i')], ';');
-            fputcsv($handle, ['Filter Kelas', $classLevel === 'all' ? 'Semua Kelas' : 'Kelas ' . $classLevel], ';');
+            fputcsv($handle, ['Filter Kelas', $className === 'all' ? 'Semua Kelas' : $this->normalizeClassLabel($className)], ';');
             fputcsv($handle, ['Status', $status === 'all' ? 'Semua Status' : ($status === 'active' ? 'Aktif' : 'Nonaktif')], ';');
             fputcsv($handle, ['Pencarian', $search ?: '-'], ';');
             fputcsv($handle, ['Total Data', (clone $query)->count()], ';');
@@ -258,6 +184,7 @@ class StudentController extends Controller
                 'Jenis Kelamin',
                 'Kelas',
                 'Rombel',
+                'Kelas Lengkap',
                 'Tempat Lahir',
                 'Tanggal Lahir',
                 'Agama',
@@ -282,6 +209,7 @@ class StudentController extends Controller
                         $student->gender ?: '-',
                         $student->class_level ?: '-',
                         $student->class_name ?: '-',
+                        $student->class_label ?: '-',
                         $student->birth_place ?: '-',
                         $student->birth_date?->format('d/m/Y') ?: '-',
                         $student->religion ?: '-',
@@ -330,41 +258,97 @@ class StudentController extends Controller
                 'is_active',
             ], ';');
 
-            fputcsv($handle, [
-                '2026001',
-                '1234567890',
-                'Ahmad Fauzi',
-                'Laki-laki',
-                '7',
-                '7A',
-                'Jakarta',
-                '2012-01-15',
-                'Islam',
-                'Jl. Pendidikan No. 1',
-                '081234567890',
-                'ahmad@example.com',
-                'Bapak Ahmad',
-                'Ibu Ahmad',
-                '1',
-            ], ';');
+            $examples = [
+                [
+                    '2026001',
+                    '1234567890',
+                    'Ahmad Fauzi',
+                    'Laki-laki',
+                    '10',
+                    'A',
+                    'Jakarta',
+                    '2010-01-15',
+                    'Islam',
+                    'Jl. Pendidikan No. 1',
+                    '081234567890',
+                    'ahmad@example.com',
+                    'Bapak Ahmad',
+                    'Ibu Ahmad',
+                    '1',
+                ],
+                [
+                    '2026002',
+                    '1234567891',
+                    'Siti Aminah',
+                    'Perempuan',
+                    '10',
+                    'B',
+                    'Bandung',
+                    '2010-05-20',
+                    'Islam',
+                    'Jl. Sekolah No. 2',
+                    '081234567891',
+                    'siti@example.com',
+                    'Bapak Siti',
+                    'Ibu Siti',
+                    '1',
+                ],
+                [
+                    '2026003',
+                    '1234567892',
+                    'Budi Santoso',
+                    'Laki-laki',
+                    '10',
+                    'C',
+                    'Surabaya',
+                    '2010-08-12',
+                    'Islam',
+                    'Jl. Merdeka No. 3',
+                    '081234567892',
+                    'budi@example.com',
+                    'Bapak Budi',
+                    'Ibu Budi',
+                    '1',
+                ],
+                [
+                    '2026004',
+                    '1234567893',
+                    'Dewi Lestari',
+                    'Perempuan',
+                    '11',
+                    'A',
+                    'Malang',
+                    '2009-03-10',
+                    'Islam',
+                    'Jl. Pelajar No. 4',
+                    '081234567893',
+                    'dewi@example.com',
+                    'Bapak Dewi',
+                    'Ibu Dewi',
+                    '1',
+                ],
+                [
+                    '2026005',
+                    '1234567894',
+                    'Rizky Pratama',
+                    'Laki-laki',
+                    '12',
+                    'B',
+                    'Sidoarjo',
+                    '2008-11-22',
+                    'Islam',
+                    'Jl. Siswa No. 5',
+                    '081234567894',
+                    'rizky@example.com',
+                    'Bapak Rizky',
+                    'Ibu Rizky',
+                    '1',
+                ],
+            ];
 
-            fputcsv($handle, [
-                '2026002',
-                '1234567891',
-                'Siti Aminah',
-                'Perempuan',
-                '8',
-                '8B',
-                'Bandung',
-                '2011-05-20',
-                'Islam',
-                'Jl. Sekolah No. 2',
-                '081234567891',
-                'siti@example.com',
-                'Bapak Siti',
-                'Ibu Siti',
-                '1',
-            ], ';');
+            foreach ($examples as $example) {
+                fputcsv($handle, $example, ';');
+            }
 
             fclose($handle);
         }, $fileName, [
@@ -452,13 +436,6 @@ class StudentController extends Controller
             return $item;
         }, $header);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Header wajib
-        |--------------------------------------------------------------------------
-        | is_active sengaja tidak dijadikan wajib.
-        | Kalau is_active rusak/hilang, siswa otomatis dianggap aktif.
-        */
         $requiredHeaders = [
             'student_number',
             'nisn',
@@ -530,8 +507,8 @@ class StudentController extends Controller
                     'nisn' => $nisn ?: null,
                     'name' => $name,
                     'gender' => trim((string) ($data['gender'] ?? '')) ?: null,
-                    'class_level' => trim((string) ($data['class_level'] ?? '')) ?: null,
-                    'class_name' => trim((string) ($data['class_name'] ?? '')) ?: null,
+                    'class_level' => $this->normalizeClassLevel($data['class_level'] ?? null),
+                    'class_name' => $this->normalizeClassName($data['class_name'] ?? null),
                     'birth_place' => trim((string) ($data['birth_place'] ?? '')) ?: null,
                     'birth_date' => $this->normalizeDate($data['birth_date'] ?? null),
                     'religion' => trim((string) ($data['religion'] ?? '')) ?: null,
@@ -591,24 +568,37 @@ class StudentController extends Controller
             ->with('success', $message);
     }
 
-    private function filteredStudentQuery(string $search = '', string $classLevel = 'all', string $status = 'all')
+    private function filteredStudentQuery(string $search = '', string $className = 'all', string $status = 'all')
     {
         $query = Student::query()->latest('id');
 
         if ($search) {
-            $query->where(function ($builder) use ($search) {
+            $searchWithoutSpace = preg_replace('/\s+/', '', $search);
+
+            $query->where(function ($builder) use ($search, $searchWithoutSpace) {
                 $builder
                     ->where('name', 'like', "%{$search}%")
                     ->orWhere('nisn', 'like', "%{$search}%")
                     ->orWhere('student_number', 'like', "%{$search}%")
+                    ->orWhere('class_level', 'like', "%{$search}%")
                     ->orWhere('class_name', 'like', "%{$search}%")
+                    ->orWhereRaw("CONCAT(class_level, ' ', class_name) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("REPLACE(CONCAT(class_level, class_name), ' ', '') LIKE ?", ["%{$searchWithoutSpace}%"])
                     ->orWhere('phone', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        if ($classLevel !== 'all') {
-            $query->where('class_level', $classLevel);
+        if ($className !== '' && $className !== 'all') {
+            $parts = $this->parseClassFilter($className);
+
+            if ($parts['level'] !== null) {
+                $query->where('class_level', $parts['level']);
+            }
+
+            if ($parts['name'] !== null) {
+                $query->where('class_name', $parts['name']);
+            }
         }
 
         if ($status !== 'all') {
@@ -616,6 +606,124 @@ class StudentController extends Controller
         }
 
         return $query;
+    }
+
+    private function parseClassFilter(string $className): array
+    {
+        $value = trim($className);
+
+        if ($value === '' || $value === 'all') {
+            return [
+                'level' => null,
+                'name' => null,
+            ];
+        }
+
+        $value = strtoupper(preg_replace('/\s+/', ' ', $value));
+
+        if (preg_match('/^(\d+)\s*([A-Z]+)$/', $value, $matches)) {
+            return [
+                'level' => $matches[1],
+                'name' => $matches[2],
+            ];
+        }
+
+        if (preg_match('/^(\d+)$/', $value, $matches)) {
+            return [
+                'level' => $matches[1],
+                'name' => null,
+            ];
+        }
+
+        return [
+            'level' => null,
+            'name' => $value,
+        ];
+    }
+
+    private function classOptions(): array
+    {
+        return [
+            '10 A', '10 B', '10 C', '10 D', '10 E', '10 F',
+            '11 A', '11 B', '11 C', '11 D', '11 E', '11 F',
+            '12 A', '12 B', '12 C', '12 D', '12 E', '12 F',
+        ];
+    }
+
+    private function studentPayload(Student $student): array
+    {
+        return [
+            'id' => $student->id,
+            'student_number' => $student->student_number,
+            'nisn' => $student->nisn,
+            'name' => $student->name,
+            'gender' => $student->gender,
+            'class_level' => $student->class_level,
+            'class_name' => $student->class_name,
+            'class_label' => $student->class_label,
+            'birth_place' => $student->birth_place,
+            'birth_date' => $student->birth_date?->format('Y-m-d'),
+            'religion' => $student->religion,
+            'address' => $student->address,
+            'phone' => $student->phone,
+            'email' => $student->email,
+            'father_name' => $student->father_name,
+            'mother_name' => $student->mother_name,
+            'photo_url' => $student->photo_url,
+            'voting_token' => $student->voting_token,
+            'is_active' => $student->is_active,
+            'created_at' => $student->created_at?->format('d M Y'),
+        ];
+    }
+
+    private function studentFormPayload(array $validated): array
+    {
+        return [
+            'student_number' => $validated['student_number'] ?? null,
+            'nisn' => $validated['nisn'] ?? null,
+            'name' => $validated['name'],
+            'gender' => $validated['gender'] ?? null,
+            'class_level' => $this->normalizeClassLevel($validated['class_level'] ?? null),
+            'class_name' => $this->normalizeClassName($validated['class_name'] ?? null),
+            'birth_place' => $validated['birth_place'] ?? null,
+            'birth_date' => $validated['birth_date'] ?? null,
+            'religion' => $validated['religion'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'phone' => $validated['phone'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'father_name' => $validated['father_name'] ?? null,
+            'mother_name' => $validated['mother_name'] ?? null,
+            'is_active' => $this->normalizeBoolean($validated['is_active'] ?? true),
+        ];
+    }
+
+    private function normalizeClassLevel($value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value !== '' ? $value : null;
+    }
+
+    private function normalizeClassName($value): ?string
+    {
+        $value = strtoupper(trim((string) $value));
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('/^\d+\s*([A-Z]+)$/', $value, $matches)) {
+            return $matches[1];
+        }
+
+        return $value;
+    }
+
+    private function normalizeClassLabel(string $value): string
+    {
+        $parts = $this->parseClassFilter($value);
+
+        return trim(($parts['level'] ?? '') . ' ' . ($parts['name'] ?? '')) ?: $value;
     }
 
     private function generateUniqueVotingToken(): string

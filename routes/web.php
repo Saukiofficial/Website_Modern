@@ -5,42 +5,70 @@ use App\Http\Controllers\Admin\AcademicController as AdminAcademicController;
 use App\Http\Controllers\Admin\AcademicExtracurricularController;
 use App\Http\Controllers\Admin\AcademicOsisMemberController;
 use App\Http\Controllers\Admin\AcademicTeacherController;
+use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ExtracurricularPanelRegistrationController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\HomeSectionController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\OsisElectionController as AdminOsisElectionController;
+use App\Http\Controllers\Admin\OsisPanelRegistrationController;
+use App\Http\Controllers\Admin\PanelDashboardController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\PpdbContentController;
+use App\Http\Controllers\Admin\PpdbPanelRegistrationController;
 use App\Http\Controllers\Admin\PpdbRegistrationController as AdminPpdbRegistrationController;
 use App\Http\Controllers\Admin\PpdbSettingController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ProfileStructureController;
 use App\Http\Controllers\Admin\SchoolSettingController;
+use App\Http\Controllers\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\Admin\StudentProgramController;
 use App\Http\Controllers\Admin\StudentProgramRegistrationController as AdminStudentProgramRegistrationController;
 use App\Http\Controllers\Frontend\AcademicController;
+use App\Http\Controllers\Frontend\AlumniController;
 use App\Http\Controllers\Frontend\GalleryController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\KesiswaanController;
+use App\Http\Controllers\Frontend\OsisVotingController;
 use App\Http\Controllers\Frontend\PostController as FrontendPostController;
 use App\Http\Controllers\Frontend\PPDBController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\StudentProgramRegistrationController;
-use App\Http\Controllers\Admin\StudentController as AdminStudentController;
-use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
-use App\Http\Controllers\Admin\OsisElectionController as AdminOsisElectionController;
-use App\Http\Controllers\Frontend\OsisVotingController;
-use App\Http\Controllers\Frontend\AlumniController;
+use App\Http\Controllers\Admin\PpdbPanelSettingController;
+use App\Http\Controllers\Admin\PpdbPanelContentController;
+use App\Http\Controllers\Admin\OsisPanelMemberController;
+use App\Http\Controllers\Admin\ExtracurricularPanelProgramController;
+use App\Http\Controllers\Admin\ExtracurricularPanelMemberController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+/*
+|--------------------------------------------------------------------------
+| Frontend
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
+Route::get('/', [HomeController::class, 'index'])
+    ->name('home');
 
-Route::get('/akademik', [AcademicController::class, 'index'])->name('academic');
+Route::get('/profil', [ProfileController::class, 'index'])
+    ->name('profile');
 
-Route::get('/kesiswaan', [KesiswaanController::class, 'index'])->name('kesiswaan');
+Route::get('/akademik', [AcademicController::class, 'index'])
+    ->name('academic');
+
+Route::get('/kesiswaan', [KesiswaanController::class, 'index'])
+    ->name('kesiswaan');
+
+Route::get('/kesiswaan/pengumuman', [StudentProgramRegistrationController::class, 'announcement'])
+    ->name('kesiswaan.announcement');
+
+Route::post('/kesiswaan/pengumuman/cek', [StudentProgramRegistrationController::class, 'checkAnnouncement'])
+    ->name('kesiswaan.announcement.check');
+
+Route::get('/kesiswaan/pengumuman/cetak/{registration}', [StudentProgramRegistrationController::class, 'printAnnouncement'])
+    ->name('kesiswaan.announcement.print');
 
 Route::get('/kesiswaan/{slug}', [KesiswaanController::class, 'show'])
     ->whereIn('slug', ['osis', 'ekstrakurikuler', 'bimbingan-konseling'])
@@ -56,7 +84,8 @@ Route::get('/informasi', [FrontendPostController::class, 'index'])
 Route::get('/informasi/{slug}', [FrontendPostController::class, 'show'])
     ->name('informasi.show');
 
-Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
+Route::get('/galeri', [GalleryController::class, 'index'])
+    ->name('gallery');
 
 Route::get('/alumni', [AlumniController::class, 'index'])
     ->name('alumni');
@@ -67,7 +96,8 @@ Route::get('/alumni', [AlumniController::class, 'index'])
 |--------------------------------------------------------------------------
 */
 
-Route::get('/ppdb', [PPDBController::class, 'index'])->name('ppdb');
+Route::get('/ppdb', [PPDBController::class, 'index'])
+    ->name('ppdb');
 
 Route::get('/ppdb/pengumuman', [PPDBController::class, 'announcement'])
     ->name('ppdb.announcement');
@@ -84,13 +114,12 @@ Route::get('/ppdb/daftar', [PPDBController::class, 'register'])
 Route::post('/ppdb/daftar', [PPDBController::class, 'store'])
     ->name('ppdb.store');
 
-
-
 /*
 |--------------------------------------------------------------------------
-| Front End Pemilihan Ketua Osis
+| Frontend Pemilihan Ketua OSIS
 |--------------------------------------------------------------------------
 */
+
 Route::get('/pemilihan-osis', [OsisVotingController::class, 'index'])
     ->name('osis-voting.index');
 
@@ -105,9 +134,6 @@ Route::post('/pemilihan-osis/vote', [OsisVotingController::class, 'submitVote'])
 
 Route::post('/pemilihan-osis/logout', [OsisVotingController::class, 'logout'])
     ->name('osis-voting.logout');
-
-/*
-
 
 /*
 |--------------------------------------------------------------------------
@@ -143,8 +169,164 @@ Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth'])
     ->group(function () {
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard Super Admin
+        |--------------------------------------------------------------------------
+        */
+
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Panel Khusus PPDB
+        |--------------------------------------------------------------------------
+        */
+
+        Route::prefix('ppdb')
+            ->name('ppdb-panel.')
+            ->middleware('admin.panel:ppdb_admin')
+            ->group(function () {
+                Route::get('/dashboard', [PanelDashboardController::class, 'ppdb'])
+                    ->name('dashboard');
+
+                Route::get('/registrations', [PpdbPanelRegistrationController::class, 'index'])
+                    ->name('registrations.index');
+
+                Route::get('/registrations/{registration}', [PpdbPanelRegistrationController::class, 'show'])
+                    ->name('registrations.show');
+
+                Route::put('/registrations/{registration}', [PpdbPanelRegistrationController::class, 'update'])
+                    ->name('registrations.update');
+
+                Route::delete('/registrations/{registration}', [PpdbPanelRegistrationController::class, 'destroy'])
+                    ->name('registrations.destroy');
+
+                Route::get('/settings', [PpdbPanelSettingController::class, 'edit'])
+                    ->name('settings.edit');
+
+                Route::post('/settings', [PpdbPanelSettingController::class, 'update'])
+                    ->name('settings.update');
+
+                Route::get('/content', [PpdbPanelContentController::class, 'edit'])
+                    ->name('content.edit');
+
+                Route::post('/content', [PpdbPanelContentController::class, 'update'])
+                    ->name('content.update');
+            });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Panel Khusus OSIS
+        |--------------------------------------------------------------------------
+        */
+
+Route::prefix('osis')
+    ->name('osis-panel.')
+    ->middleware('admin.panel:osis_admin')
+    ->group(function () {
+        Route::get('/dashboard', [PanelDashboardController::class, 'osis'])
+            ->name('dashboard');
+
+        Route::get('/registrations', [OsisPanelRegistrationController::class, 'index'])
+            ->name('registrations.index');
+
+        Route::get('/registrations/{registration}', [OsisPanelRegistrationController::class, 'show'])
+            ->name('registrations.show');
+
+        Route::put('/registrations/{registration}', [OsisPanelRegistrationController::class, 'update'])
+            ->name('registrations.update');
+
+        Route::delete('/registrations/{registration}', [OsisPanelRegistrationController::class, 'destroy'])
+            ->name('registrations.destroy');
+
+        Route::get('/members', [OsisPanelMemberController::class, 'index'])
+            ->name('members.index');
+
+        Route::get('/members/create', [OsisPanelMemberController::class, 'create'])
+            ->name('members.create');
+
+        Route::post('/members', [OsisPanelMemberController::class, 'store'])
+            ->name('members.store');
+
+        Route::get('/members/{osisMember}/edit', [OsisPanelMemberController::class, 'edit'])
+            ->name('members.edit');
+
+        Route::put('/members/{osisMember}', [OsisPanelMemberController::class, 'update'])
+            ->name('members.update');
+
+        Route::delete('/members/{osisMember}', [OsisPanelMemberController::class, 'destroy'])
+            ->name('members.destroy');
+    });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Panel Khusus Ekstrakurikuler
+        |--------------------------------------------------------------------------
+        */
+
+Route::prefix('ekstrakurikuler')
+    ->name('extracurricular-panel.')
+    ->middleware('admin.panel:extracurricular_admin')
+    ->group(function () {
+        Route::get('/dashboard', [PanelDashboardController::class, 'extracurricular'])
+            ->name('dashboard');
+
+        Route::get('/registrations', [ExtracurricularPanelRegistrationController::class, 'index'])
+            ->name('registrations.index');
+
+        Route::get('/registrations/{registration}', [ExtracurricularPanelRegistrationController::class, 'show'])
+            ->name('registrations.show');
+
+        Route::put('/registrations/{registration}', [ExtracurricularPanelRegistrationController::class, 'update'])
+            ->name('registrations.update');
+
+        Route::delete('/registrations/{registration}', [ExtracurricularPanelRegistrationController::class, 'destroy'])
+            ->name('registrations.destroy');
+
+        Route::get('/members', [ExtracurricularPanelMemberController::class, 'index'])
+            ->name('members.index');
+
+        Route::get('/members/create', [ExtracurricularPanelMemberController::class, 'create'])
+            ->name('members.create');
+
+        Route::post('/members', [ExtracurricularPanelMemberController::class, 'store'])
+            ->name('members.store');
+
+        Route::get('/members/{member}/edit', [ExtracurricularPanelMemberController::class, 'edit'])
+            ->name('members.edit');
+
+        Route::put('/members/{member}', [ExtracurricularPanelMemberController::class, 'update'])
+            ->name('members.update');
+
+        Route::delete('/members/{member}', [ExtracurricularPanelMemberController::class, 'destroy'])
+            ->name('members.destroy');
+
+        Route::get('/programs', [ExtracurricularPanelProgramController::class, 'index'])
+            ->name('programs.index');
+
+        Route::get('/programs/create', [ExtracurricularPanelProgramController::class, 'create'])
+            ->name('programs.create');
+
+        Route::post('/programs', [ExtracurricularPanelProgramController::class, 'store'])
+            ->name('programs.store');
+
+        Route::get('/programs/{extracurricular}/edit', [ExtracurricularPanelProgramController::class, 'edit'])
+            ->name('programs.edit');
+
+        Route::put('/programs/{extracurricular}', [ExtracurricularPanelProgramController::class, 'update'])
+            ->name('programs.update');
+
+        Route::delete('/programs/{extracurricular}', [ExtracurricularPanelProgramController::class, 'destroy'])
+            ->name('programs.destroy');
+    });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Setting Website
+        |--------------------------------------------------------------------------
+        */
 
         Route::get('/settings', [SchoolSettingController::class, 'edit'])
             ->name('settings.edit');
@@ -176,6 +358,12 @@ Route::prefix('admin')
         Route::post('/home', [HomeSectionController::class, 'update'])
             ->name('home.update');
 
+        /*
+        |--------------------------------------------------------------------------
+        | Profil Sekolah
+        |--------------------------------------------------------------------------
+        */
+
         Route::get('/profiles', [AdminProfileController::class, 'edit'])
             ->name('profiles.edit');
 
@@ -187,6 +375,12 @@ Route::prefix('admin')
 
         Route::post('/profiles/structure', [ProfileStructureController::class, 'update'])
             ->name('profiles.structure.update');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Akademik
+        |--------------------------------------------------------------------------
+        */
 
         Route::get('/academics', [AdminAcademicController::class, 'edit'])
             ->name('academics.edit');
@@ -266,6 +460,12 @@ Route::prefix('admin')
         Route::delete('/academics/achievements/{achievement}', [AcademicAchievementController::class, 'destroy'])
             ->name('academics.achievements.destroy');
 
+        /*
+        |--------------------------------------------------------------------------
+        | Kesiswaan Super Admin
+        |--------------------------------------------------------------------------
+        */
+
         Route::get('/student-programs', [StudentProgramController::class, 'index'])
             ->name('student-programs.index');
 
@@ -295,6 +495,12 @@ Route::prefix('admin')
 
         Route::delete('/student-registrations/{registration}', [AdminStudentProgramRegistrationController::class, 'destroy'])
             ->name('student-registrations.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Informasi & Galeri
+        |--------------------------------------------------------------------------
+        */
 
         Route::get('/posts', [PostController::class, 'index'])
             ->name('posts.index');
@@ -332,6 +538,12 @@ Route::prefix('admin')
         Route::delete('/galleries/{gallery}', [AdminGalleryController::class, 'destroy'])
             ->name('galleries.destroy');
 
+        /*
+        |--------------------------------------------------------------------------
+        | PPDB Super Admin
+        |--------------------------------------------------------------------------
+        */
+
         Route::get('/ppdb-periods', [PpdbSettingController::class, 'edit'])
             ->name('ppdb-periods.edit');
 
@@ -365,11 +577,11 @@ Route::prefix('admin')
         Route::get('/ppdb-registrations/{registration}/print', [AdminPpdbRegistrationController::class, 'print'])
             ->name('ppdb-registrations.print');
 
-        Route::get('/students', [AdminStudentController::class, 'index'])
-            ->name('students.index');
-
-        Route::post('/students', [AdminStudentController::class, 'store'])
-            ->name('students.store');
+        /*
+        |--------------------------------------------------------------------------
+        | Data Siswa
+        |--------------------------------------------------------------------------
+        */
 
         Route::get('/students', [AdminStudentController::class, 'index'])
             ->name('students.index');
@@ -395,6 +607,12 @@ Route::prefix('admin')
         Route::delete('/students/{student}', [AdminStudentController::class, 'destroy'])
             ->name('students.destroy');
 
+        /*
+        |--------------------------------------------------------------------------
+        | Alumni
+        |--------------------------------------------------------------------------
+        */
+
         Route::get('/alumni', [AdminAlumniController::class, 'index'])
             ->name('alumni.index');
 
@@ -415,6 +633,12 @@ Route::prefix('admin')
 
         Route::delete('/alumni/{alumni}', [AdminAlumniController::class, 'destroy'])
             ->name('alumni.destroy');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pemilihan Ketua OSIS
+        |--------------------------------------------------------------------------
+        */
 
         Route::get('/osis-election', [AdminOsisElectionController::class, 'index'])
             ->name('osis-election.index');
@@ -448,7 +672,7 @@ Route::prefix('admin')
 
         Route::get('/osis-election/periods/{period}/print-results', [AdminOsisElectionController::class, 'printResults'])
             ->name('osis-election.results.print');
+
         Route::get('/osis-election/periods/{period}/print-tokens', [AdminOsisElectionController::class, 'printTokens'])
             ->name('osis-election.voters.print-tokens');
-
     });

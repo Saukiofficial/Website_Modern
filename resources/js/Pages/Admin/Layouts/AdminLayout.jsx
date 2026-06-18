@@ -1,7 +1,7 @@
 import { Link, usePage } from "@inertiajs/react";
 import { useMemo, useState } from "react";
 
-const sidebarGroups = [
+const superAdminSidebarGroups = [
     {
         title: "Utama",
         icon: "📌",
@@ -11,6 +11,28 @@ const sidebarGroups = [
                 label: "Dashboard",
                 href: "/admin/dashboard",
                 icon: "📊",
+            },
+        ],
+    },
+    {
+        title: "Panel Khusus",
+        icon: "🧩",
+        defaultOpen: true,
+        menus: [
+            {
+                label: "Panel PPDB",
+                href: "/admin/ppdb/dashboard",
+                icon: "📝",
+            },
+            {
+                label: "Panel OSIS",
+                href: "/admin/osis/dashboard",
+                icon: "👥",
+            },
+            {
+                label: "Panel Ekstrakurikuler",
+                href: "/admin/ekstrakurikuler/dashboard",
+                icon: "🏆",
             },
         ],
     },
@@ -129,11 +151,11 @@ const sidebarGroups = [
                 href: "/admin/student-registrations",
                 icon: "📝",
             },
-                    {
-            label: "Pemilihan Ketua OSIS",
-            href: "/admin/osis-election",
-            icon: "🗳️",
-            badge: "Soon",
+            {
+                label: "Pemilihan Ketua OSIS",
+                href: "/admin/osis-election",
+                icon: "🗳️",
+                badge: "Soon",
             },
         ],
     },
@@ -161,6 +183,129 @@ const sidebarGroups = [
     },
 ];
 
+const ppdbSidebarGroups = [
+    {
+        title: "Panel PPDB",
+        icon: "📝",
+        defaultOpen: true,
+        menus: [
+            {
+                label: "Dashboard PPDB",
+                href: "/admin/ppdb/dashboard",
+                icon: "📊",
+            },
+            {
+                label: "Pendaftar PPDB",
+                href: "/admin/ppdb/registrations",
+                icon: "📂",
+            },
+            {
+                label: "Setting PPDB",
+                href: "/admin/ppdb/settings",
+                icon: "⚙️",
+            },
+            {
+                label: "Konten PPDB",
+                href: "/admin/ppdb/content",
+                icon: "🧩",
+            },
+        ],
+    },
+];
+
+const osisSidebarGroups = [
+    {
+        title: "Panel OSIS",
+        icon: "👥",
+        defaultOpen: true,
+        menus: [
+            {
+                label: "Dashboard OSIS",
+                href: "/admin/osis/dashboard",
+                icon: "📊",
+            },
+            {
+                label: "Pendaftar OSIS",
+                href: "/admin/osis/registrations",
+                icon: "📝",
+            },
+            {
+                label: "Pengurus OSIS",
+                href: "/admin/osis/members",
+                icon: "👥",
+            },
+        ],
+    },
+];
+
+const extracurricularSidebarGroups = [
+    {
+        title: "Panel Ekstrakurikuler",
+        icon: "🏆",
+        defaultOpen: true,
+        menus: [
+            {
+                label: "Dashboard Ekskul",
+                href: "/admin/ekstrakurikuler/dashboard",
+                icon: "📊",
+            },
+            {
+                label: "Pendaftar Ekskul",
+                href: "/admin/ekstrakurikuler/registrations",
+                icon: "📝",
+            },
+            {
+                label: "Program Ekskul",
+                href: "/admin/ekstrakurikuler/programs",
+                icon: "🏆",
+            },
+        ],
+    },
+];
+
+function getSidebarGroupsByRole(role) {
+    if (role === "ppdb_admin") {
+        return ppdbSidebarGroups;
+    }
+
+    if (role === "osis_admin") {
+        return osisSidebarGroups;
+    }
+
+    if (role === "extracurricular_admin") {
+        return extracurricularSidebarGroups;
+    }
+
+    return superAdminSidebarGroups;
+}
+
+function getRoleLabel(role) {
+    return (
+        {
+            super_admin: "Super Admin",
+            ppdb_admin: "Admin PPDB",
+            osis_admin: "Admin OSIS",
+            extracurricular_admin: "Admin Ekstrakurikuler",
+        }[role] || "Administrator"
+    );
+}
+
+function getPanelDescription(role) {
+    return (
+        {
+            super_admin:
+                "Akses penuh untuk mengelola website, PPDB, OSIS, ekstrakurikuler, siswa, dan seluruh fitur sekolah.",
+            ppdb_admin:
+                "Panel khusus untuk mengelola pendaftaran PPDB, pengaturan PPDB, konten PPDB, dan data pendaftar.",
+            osis_admin:
+                "Panel khusus untuk mengelola pendaftaran OSIS, seleksi siswa, dan data pengurus OSIS.",
+            extracurricular_admin:
+                "Panel khusus untuk mengelola pendaftaran ekstrakurikuler dan data program ekstrakurikuler.",
+        }[role] ||
+        "Kelola konten, master data, PPDB, dan fitur website sekolah berdasarkan kategori."
+    );
+}
+
 function isActiveMenu(currentPath, href) {
     if (href === "/admin/dashboard") {
         return currentPath === "/admin/dashboard";
@@ -173,12 +318,11 @@ function isActiveGroup(currentPath, menus) {
     return menus.some((menu) => isActiveMenu(currentPath, menu.href));
 }
 
-function getInitialOpenGroups(currentPath) {
+function getInitialOpenGroups(currentPath, sidebarGroups) {
     const initial = {};
 
     sidebarGroups.forEach((group) => {
         const activeGroup = isActiveGroup(currentPath, group.menus);
-
         initial[group.title] = Boolean(group.defaultOpen || activeGroup);
     });
 
@@ -294,9 +438,12 @@ function SidebarGroup({ group, currentPath, onClose, isOpen, onToggle }) {
     );
 }
 
-function SidebarContent({ currentPath, onClose }) {
+function SidebarContent({ currentPath, onClose, user }) {
+    const role = user?.role || "super_admin";
+    const sidebarGroups = useMemo(() => getSidebarGroupsByRole(role), [role]);
+
     const [openGroups, setOpenGroups] = useState(() =>
-        getInitialOpenGroups(currentPath)
+        getInitialOpenGroups(currentPath, sidebarGroups)
     );
 
     const toggleGroup = (title) => {
@@ -310,7 +457,13 @@ function SidebarContent({ currentPath, onClose }) {
         <div className="flex h-full flex-col bg-[#061b46] text-white">
             <div className="flex min-h-[88px] items-center gap-4 border-b border-white/10 px-5">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] bg-[#d59a25] text-[20px] font-semibold text-white shadow-lg shadow-black/20">
-                    A
+                    {role === "ppdb_admin"
+                        ? "P"
+                        : role === "osis_admin"
+                        ? "O"
+                        : role === "extracurricular_admin"
+                        ? "E"
+                        : "A"}
                 </div>
 
                 <div className="min-w-0">
@@ -319,7 +472,7 @@ function SidebarContent({ currentPath, onClose }) {
                     </h1>
 
                     <p className="mt-1 truncate text-[12px] font-medium text-blue-100">
-                        Custom React Panel
+                        {getRoleLabel(role)}
                     </p>
                 </div>
             </div>
@@ -327,12 +480,11 @@ function SidebarContent({ currentPath, onClose }) {
             <div className="flex-1 overflow-y-auto px-4 py-5">
                 <div className="mb-5 rounded-[18px] border border-white/10 bg-white/5 px-4 py-4">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#f7c46a]">
-                        Menu Admin
+                        {getRoleLabel(role)}
                     </p>
 
                     <p className="mt-2 text-[12px] font-medium leading-5 text-blue-100">
-                        Kelola konten, master data, PPDB, dan fitur website
-                        sekolah berdasarkan kategori.
+                        {getPanelDescription(role)}
                     </p>
                 </div>
 
@@ -356,6 +508,7 @@ function SidebarContent({ currentPath, onClose }) {
 function Topbar({ title, onOpenSidebar }) {
     const { props } = usePage();
     const user = props.auth?.user;
+    const role = user?.role || "super_admin";
 
     return (
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
@@ -371,7 +524,7 @@ function Topbar({ title, onOpenSidebar }) {
 
                     <div className="min-w-0">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d59a25]">
-                            Admin Panel
+                            {getRoleLabel(role)}
                         </p>
 
                         <h2 className="mt-1 truncate text-[21px] font-semibold tracking-[-0.03em] text-[#061b46] sm:text-[25px]">
@@ -471,6 +624,7 @@ function FlashMessage({ flash }) {
 export default function AdminLayout({ title = "Dashboard", children }) {
     const { url, props } = usePage();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const user = props.auth?.user;
 
     const currentPath = useMemo(() => {
         return url?.split("?")[0] || "/admin/dashboard";
@@ -481,7 +635,7 @@ export default function AdminLayout({ title = "Dashboard", children }) {
             <FlashMessage flash={props.flash || {}} />
 
             <aside className="fixed inset-y-0 left-0 z-40 hidden w-[286px] lg:block">
-                <SidebarContent currentPath={currentPath} />
+                <SidebarContent currentPath={currentPath} user={user} />
             </aside>
 
             {sidebarOpen ? (
@@ -496,6 +650,7 @@ export default function AdminLayout({ title = "Dashboard", children }) {
                     <div className="relative h-full w-[286px] max-w-[82vw] shadow-2xl">
                         <SidebarContent
                             currentPath={currentPath}
+                            user={user}
                             onClose={() => setSidebarOpen(false)}
                         />
                     </div>

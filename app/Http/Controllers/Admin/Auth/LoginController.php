@@ -35,7 +35,7 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         return redirect()
-            ->intended(route('admin.dashboard'))
+            ->intended(auth()->user()->adminHomePath())
             ->with('success', 'Berhasil masuk ke admin panel.');
     }
 

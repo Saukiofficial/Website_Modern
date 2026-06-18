@@ -184,10 +184,16 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
         file: null,
     });
 
+    const classOptions = [
+        "10 A", "10 B", "10 C", "10 D", "10 E", "10 F",
+        "11 A", "11 B", "11 C", "11 D", "11 E", "11 F",
+        "12 A", "12 B", "12 C", "12 D", "12 E", "12 F",
+    ];
+
     const exportUrl = `/admin/students/export?search=${encodeURIComponent(
         filters.search || ""
-    )}&class_level=${encodeURIComponent(
-        filters.class_level || "all"
+    )}&class_name=${encodeURIComponent(
+        filters.class_name || "all"
     )}&status=${encodeURIComponent(filters.status || "all")}`;
 
     const photoPreview = useMemo(() => {
@@ -377,21 +383,21 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                 />
 
                 <SummaryCard
-                    label="Kelas 7"
-                    value={summary.class_7 || 0}
-                    icon="7️⃣"
+                    label="Kelas 10"
+                    value={summary.class_10 || 0}
+                    icon="🔟"
                 />
 
                 <SummaryCard
-                    label="Kelas 8"
-                    value={summary.class_8 || 0}
-                    icon="8️⃣"
+                    label="Kelas 11"
+                    value={summary.class_11 || 0}
+                    icon="1️⃣1️⃣"
                 />
 
                 <SummaryCard
-                    label="Kelas 9"
-                    value={summary.class_9 || 0}
-                    icon="9️⃣"
+                    label="Kelas 12"
+                    value={summary.class_12 || 0}
+                    icon="1️⃣2️⃣"
                 />
             </div>
 
@@ -410,24 +416,26 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                                         );
                                     }
                                 }}
-                                placeholder="Cari nama, NISN, nomor induk, kelas, kontak..."
+                                placeholder="Cari nama, NISN, nomor induk, kelas 10 A / 10B, kontak..."
                                 className="h-[52px] rounded-[16px] border border-slate-200 px-4 text-[14px] font-medium outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
                             />
 
                             <select
-                                value={filters.class_level || "all"}
+                                value={filters.class_name || "all"}
                                 onChange={(event) =>
                                     updateFilter(
-                                        "class_level",
+                                        "class_name",
                                         event.target.value
                                     )
                                 }
                                 className="h-[52px] rounded-[16px] border border-slate-200 px-4 text-[14px] font-medium outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
                             >
                                 <option value="all">Semua Kelas</option>
-                                <option value="7">Kelas 7</option>
-                                <option value="8">Kelas 8</option>
-                                <option value="9">Kelas 9</option>
+                                {classOptions.map((classOption) => (
+                                    <option key={classOption} value={classOption}>
+                                        {classOption}
+                                    </option>
+                                ))}
                             </select>
 
                             <select
@@ -451,10 +459,10 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
 
                                 <p className="mt-1 text-[12px] font-medium text-slate-500">
                                     Kelas:{" "}
-                                    {filters.class_level === "all" ||
-                                    !filters.class_level
+                                    {filters.class_name === "all" ||
+                                    !filters.class_name
                                         ? "Semua Kelas"
-                                        : `Kelas ${filters.class_level}`}{" "}
+                                        : filters.class_name}{" "}
                                     • Status:{" "}
                                     {filters.status === "all" || !filters.status
                                         ? "Semua Status"

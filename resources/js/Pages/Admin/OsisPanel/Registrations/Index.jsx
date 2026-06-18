@@ -1,6 +1,6 @@
 import { Head, Link, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import AdminLayout from "../Layouts/AdminLayout";
+import OsisAdminLayout from "../../Layouts/OsisAdminLayout";
 
 function StatusBadge({ status }) {
     const styles = {
@@ -67,13 +67,13 @@ export default function Index({
     summary = {},
 }) {
     const [search, setSearch] = useState(filters.search || "");
-    const [type, setType] = useState(filters.type || "all");
+    const [type, setType] = useState(filters.type || "osis");
     const [status, setStatus] = useState(filters.status || "all");
 
     useEffect(() => {
         const timeout = setTimeout(() => {
             router.get(
-                "/admin/student-registrations",
+                "/admin/osis/registrations",
                 {
                     search,
                     type,
@@ -93,8 +93,8 @@ export default function Index({
     const rows = registrations?.data || [];
 
     return (
-        <AdminLayout title="Pendaftaran Kesiswaan">
-            <Head title="Pendaftaran Kesiswaan" />
+        <OsisAdminLayout title="Pendaftaran OSIS">
+            <Head title="Pendaftaran OSIS" />
 
             <div className="mb-6 rounded-[28px] bg-gradient-to-br from-[#061b46] to-[#0b3b85] p-6 text-white shadow-2xl shadow-blue-200 sm:p-8">
                 <p className="text-[12px] font-extrabold uppercase tracking-[0.22em] text-[#f7c46a]">
@@ -102,7 +102,7 @@ export default function Index({
                 </p>
 
                 <h1 className="mt-3 text-[34px] font-black leading-tight tracking-[-0.05em] sm:text-[42px]">
-                    Pendaftaran Kesiswaan
+                    Pendaftaran OSIS
                 </h1>
 
                 <p className="mt-4 max-w-3xl text-[14px] font-medium leading-7 text-blue-100">
@@ -128,8 +128,8 @@ export default function Index({
                     icon="🔵"
                 />
                 <SummaryCard
-                    label="Diterima"
-                    value={summary.diterima || 0}
+                    label="Selesai"
+                    value={summary.selesai || 0}
                     icon="✅"
                 />
             </div>
@@ -178,14 +178,7 @@ export default function Index({
                             onChange={(event) => setType(event.target.value)}
                             className="h-[52px] w-full rounded-[14px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                         >
-                            <option value="all">Semua</option>
                             <option value="osis">OSIS</option>
-                            <option value="extracurricular">
-                                Ekstrakurikuler
-                            </option>
-                            <option value="counseling">
-                                Bimbingan Konseling
-                            </option>
                         </select>
                     </div>
 
@@ -272,14 +265,14 @@ export default function Index({
                                         <td className="rounded-r-[20px] px-4 py-4">
                                             <div className="flex justify-end gap-2">
                                                 <Link
-                                                    href={`/admin/student-registrations/${item.id}`}
+                                                    href={`/admin/osis/registrations/${item.id}`}
                                                     className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-50 px-4 text-[12px] font-extrabold text-blue-700 transition hover:bg-blue-100"
                                                 >
                                                     Detail
                                                 </Link>
 
                                                 <Link
-                                                    href={`/admin/student-registrations/${item.id}`}
+                                                    href={`/admin/osis/registrations/${item.id}`}
                                                     method="delete"
                                                     as="button"
                                                     preserveScroll
@@ -340,6 +333,6 @@ export default function Index({
                     </div>
                 )}
             </div>
-        </AdminLayout>
+        </OsisAdminLayout>
     );
 }

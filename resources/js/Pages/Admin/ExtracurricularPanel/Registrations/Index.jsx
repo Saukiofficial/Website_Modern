@@ -1,6 +1,6 @@
 import { Head, Link, router } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import AdminLayout from "../Layouts/AdminLayout";
+import ExtracurricularAdminLayout from "../../Layouts/ExtracurricularAdminLayout";
 
 function StatusBadge({ status }) {
     const styles = {
@@ -23,7 +23,7 @@ function StatusBadge({ status }) {
 
 function TypeBadge({ type, label }) {
     const styles = {
-        osis: "bg-purple-50 text-purple-700 ring-purple-100",
+        ekstrakurikuler: "bg-purple-50 text-purple-700 ring-purple-100",
         extracurricular: "bg-blue-50 text-blue-700 ring-blue-100",
         counseling: "bg-emerald-50 text-emerald-700 ring-emerald-100",
     };
@@ -67,13 +67,13 @@ export default function Index({
     summary = {},
 }) {
     const [search, setSearch] = useState(filters.search || "");
-    const [type, setType] = useState(filters.type || "all");
+    const [type, setType] = useState(filters.type || "ekstrakurikuler");
     const [status, setStatus] = useState(filters.status || "all");
 
     useEffect(() => {
         const timeout = setTimeout(() => {
             router.get(
-                "/admin/student-registrations",
+                "/admin/ekstrakurikuler/registrations",
                 {
                     search,
                     type,
@@ -93,8 +93,8 @@ export default function Index({
     const rows = registrations?.data || [];
 
     return (
-        <AdminLayout title="Pendaftaran Kesiswaan">
-            <Head title="Pendaftaran Kesiswaan" />
+        <ExtracurricularAdminLayout title="Pendaftaran Ekstrakurikuler">
+            <Head title="Pendaftaran Ekstrakurikuler" />
 
             <div className="mb-6 rounded-[28px] bg-gradient-to-br from-[#061b46] to-[#0b3b85] p-6 text-white shadow-2xl shadow-blue-200 sm:p-8">
                 <p className="text-[12px] font-extrabold uppercase tracking-[0.22em] text-[#f7c46a]">
@@ -102,11 +102,11 @@ export default function Index({
                 </p>
 
                 <h1 className="mt-3 text-[34px] font-black leading-tight tracking-[-0.05em] sm:text-[42px]">
-                    Pendaftaran Kesiswaan
+                    Pendaftaran Ekstrakurikuler
                 </h1>
 
                 <p className="mt-4 max-w-3xl text-[14px] font-medium leading-7 text-blue-100">
-                    Kelola data pendaftaran OSIS, ekstrakurikuler, dan layanan
+                    Kelola data pendaftaran Ekstrakurikuler, ekstrakurikuler, dan layanan
                     bimbingan konseling yang dikirim dari frontend.
                 </p>
             </div>
@@ -128,16 +128,16 @@ export default function Index({
                     icon="🔵"
                 />
                 <SummaryCard
-                    label="Diterima"
-                    value={summary.diterima || 0}
+                    label="Selesai"
+                    value={summary.selesai || 0}
                     icon="✅"
                 />
             </div>
 
             <div className="mb-6 grid gap-4 sm:grid-cols-3">
                 <SummaryCard
-                    label="OSIS"
-                    value={summary.osis || 0}
+                    label="Ekstrakurikuler"
+                    value={summary.ekstrakurikuler || 0}
                     icon="👥"
                 />
                 <SummaryCard
@@ -178,14 +178,7 @@ export default function Index({
                             onChange={(event) => setType(event.target.value)}
                             className="h-[52px] w-full rounded-[14px] border border-slate-200 bg-white px-4 text-[14px] font-semibold text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                         >
-                            <option value="all">Semua</option>
-                            <option value="osis">OSIS</option>
-                            <option value="extracurricular">
-                                Ekstrakurikuler
-                            </option>
-                            <option value="counseling">
-                                Bimbingan Konseling
-                            </option>
+                            <option value="ekstrakurikuler">Ekstrakurikuler</option>
                         </select>
                     </div>
 
@@ -272,14 +265,14 @@ export default function Index({
                                         <td className="rounded-r-[20px] px-4 py-4">
                                             <div className="flex justify-end gap-2">
                                                 <Link
-                                                    href={`/admin/student-registrations/${item.id}`}
+                                                    href={`/admin/ekstrakurikuler/registrations/${item.id}`}
                                                     className="inline-flex h-10 items-center justify-center rounded-xl bg-blue-50 px-4 text-[12px] font-extrabold text-blue-700 transition hover:bg-blue-100"
                                                 >
                                                     Detail
                                                 </Link>
 
                                                 <Link
-                                                    href={`/admin/student-registrations/${item.id}`}
+                                                    href={`/admin/ekstrakurikuler/registrations/${item.id}`}
                                                     method="delete"
                                                     as="button"
                                                     preserveScroll
@@ -340,6 +333,6 @@ export default function Index({
                     </div>
                 )}
             </div>
-        </AdminLayout>
+        </ExtracurricularAdminLayout>
     );
 }

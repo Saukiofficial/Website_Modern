@@ -41,6 +41,9 @@ use App\Http\Controllers\Admin\PpdbPanelContentController;
 use App\Http\Controllers\Admin\OsisPanelMemberController;
 use App\Http\Controllers\Admin\ExtracurricularPanelProgramController;
 use App\Http\Controllers\Admin\ExtracurricularPanelMemberController;
+use App\Http\Controllers\Admin\StudentPromotionController;
+use App\Http\Controllers\Admin\AccountManagementController;
+use App\Http\Controllers\Admin\StudentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -177,6 +180,23 @@ Route::prefix('admin')
 
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])
             ->name('dashboard');
+        Route::get('/accounts', [AccountManagementController::class, 'index'])
+            ->name('accounts.index');
+
+        Route::get('/accounts/create', [AccountManagementController::class, 'create'])
+            ->name('accounts.create');
+
+        Route::post('/accounts', [AccountManagementController::class, 'store'])
+            ->name('accounts.store');
+
+        Route::get('/accounts/{account}/edit', [AccountManagementController::class, 'edit'])
+            ->name('accounts.edit');
+
+        Route::put('/accounts/{account}', [AccountManagementController::class, 'update'])
+            ->name('accounts.update');
+
+        Route::delete('/accounts/{account}', [AccountManagementController::class, 'destroy'])
+            ->name('accounts.destroy');
 
         /*
         |--------------------------------------------------------------------------
@@ -592,6 +612,9 @@ Route::prefix('ekstrakurikuler')
         Route::get('/students/export', [AdminStudentController::class, 'export'])
             ->name('students.export');
 
+        Route::get('/students/export-pdf', [StudentController::class, 'exportPdf'])
+            ->name('students.export-pdf');
+
         Route::get('/students/import-template', [AdminStudentController::class, 'downloadImportTemplate'])
             ->name('students.import-template');
 
@@ -607,6 +630,14 @@ Route::prefix('ekstrakurikuler')
         Route::delete('/students/{student}', [AdminStudentController::class, 'destroy'])
             ->name('students.destroy');
 
+        Route::get('/students/promotion', [StudentPromotionController::class, 'index'])
+            ->name('students.promotion.index');
+
+        Route::post('/students/promotion/process', [StudentPromotionController::class, 'process'])
+            ->name('students.promotion.process');
+
+
+
         /*
         |--------------------------------------------------------------------------
         | Alumni
@@ -621,6 +652,8 @@ Route::prefix('ekstrakurikuler')
 
         Route::get('/alumni/export', [AdminAlumniController::class, 'export'])
             ->name('alumni.export');
+        Route::get('/students/export-pdf', [StudentController::class, 'exportPdf'])
+            ->name('students.export-pdf');
 
         Route::get('/alumni/import-template', [AdminAlumniController::class, 'downloadImportTemplate'])
             ->name('alumni.import-template');

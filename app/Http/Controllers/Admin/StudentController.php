@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -228,6 +229,30 @@ class StudentController extends Controller
         }, $fileName, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+
+
+    public function exportPdf(Request $request)
+    {
+        $search = trim((string) $request->query('search', ''));
+        $className = trim((string) $request->query('class_name', 'all'));
+        $status = $request->query('status', 'all');
+
+        $students = $this->filteredStudentQuery($search, $className, $status)
+            ->get();
+
+        $pdf = Pdf::loadView('admin.students.pdf', [
+            'students' => $students,
+            'search' => $search,
+            'className' => $className,
+            'status' => $status,
+            'classLabel' => $className === 'all' ? 'Semua Kelas' : $this->normalizeClassLabel($className),
+            'statusLabel' => $status === 'all' ? 'Semua Status' : ($status === 'active' ? 'Aktif' : 'Nonaktif'),
+            'exportedAt' => now()->format('d/m/Y H:i'),
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download('data-siswa-' . now()->format('Y-m-d-His') . '.pdf');
     }
 
     public function downloadImportTemplate()

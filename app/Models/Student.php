@@ -17,6 +17,9 @@ class Student extends Model
         'gender',
         'class_level',
         'class_name',
+        'academic_year',
+        'student_status',
+        'graduation_year',
         'birth_place',
         'birth_date',
         'religion',
@@ -32,6 +35,7 @@ class Student extends Model
 
     protected $casts = [
         'birth_date' => 'date',
+        'graduation_year' => 'integer',
         'is_active' => 'boolean',
     ];
 

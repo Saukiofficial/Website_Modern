@@ -144,6 +144,27 @@ function Textarea({ label, value, onChange, error, placeholder }) {
 
 export default function Index({ students = {}, filters = {}, summary = {} }) {
     const rows = students?.data || [];
+
+    const classOptions = [
+        "10 A",
+        "10 B",
+        "10 C",
+        "10 D",
+        "10 E",
+        "10 F",
+        "11 A",
+        "11 B",
+        "11 C",
+        "11 D",
+        "11 E",
+        "11 F",
+        "12 A",
+        "12 B",
+        "12 C",
+        "12 D",
+        "12 E",
+        "12 F",
+    ];
     const [editing, setEditing] = useState(null);
 
     const {
@@ -184,13 +205,13 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
         file: null,
     });
 
-    const classOptions = [
-        "10 A", "10 B", "10 C", "10 D", "10 E", "10 F",
-        "11 A", "11 B", "11 C", "11 D", "11 E", "11 F",
-        "12 A", "12 B", "12 C", "12 D", "12 E", "12 F",
-    ];
-
     const exportUrl = `/admin/students/export?search=${encodeURIComponent(
+        filters.search || ""
+    )}&class_name=${encodeURIComponent(
+        filters.class_name || "all"
+    )}&status=${encodeURIComponent(filters.status || "all")}`;
+
+    const exportPdfUrl = `/admin/students/export-pdf?search=${encodeURIComponent(
         filters.search || ""
     )}&class_name=${encodeURIComponent(
         filters.class_name || "all"
@@ -332,9 +353,9 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                     </h1>
 
                     <p className="mt-4 max-w-2xl text-[14px] font-medium leading-7 text-blue-100">
-                        Kelola data siswa kelas 7, 8, dan 9. Data ini nanti
-                        dipakai untuk pemilih dan kandidat pada fitur pemilihan
-                        Ketua OSIS.
+                        Kelola data siswa berdasarkan nama kelas seperti 10 A,
+                        10 B, 10 C, dan seterusnya. Data ini nanti dipakai untuk
+                        pemilih dan kandidat pada fitur pemilihan Ketua OSIS.
                     </p>
                 </div>
 
@@ -347,11 +368,26 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                     </a>
 
                     <a
+                        href={exportPdfUrl}
+                        target="_blank"
+                        className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-white/15 bg-white/10 px-6 text-[13px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-white/20"
+                    >
+                        Export PDF
+                    </a>
+
+                    <a
                         href="/admin/students/import-template"
                         className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] border border-white/15 bg-white/10 px-6 text-[13px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-white/20"
                     >
                         Template CSV
                     </a>
+
+                    <Link
+                        href="/admin/students/promotion"
+                        className="inline-flex min-h-[50px] items-center justify-center rounded-[16px] bg-white px-6 text-[13px] font-semibold uppercase tracking-[0.08em] text-[#061b46] transition hover:bg-blue-50"
+                    >
+                        Kenaikan Kelas
+                    </Link>
 
                     <button
                         type="button"
@@ -384,19 +420,19 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
 
                 <SummaryCard
                     label="Kelas 10"
-                    value={summary.class_10 || 0}
+                    value={summary.class_10 || summary.class_7 || 0}
                     icon="🔟"
                 />
 
                 <SummaryCard
                     label="Kelas 11"
-                    value={summary.class_11 || 0}
+                    value={summary.class_11 || summary.class_8 || 0}
                     icon="1️⃣1️⃣"
                 />
 
                 <SummaryCard
                     label="Kelas 12"
-                    value={summary.class_12 || 0}
+                    value={summary.class_12 || summary.class_9 || 0}
                     icon="1️⃣2️⃣"
                 />
             </div>
@@ -404,7 +440,7 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
             <div className="grid gap-6 xl:grid-cols-[1fr_430px] xl:items-start">
                 <div className="space-y-6">
                     <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/70">
-                        <div className="grid gap-4 lg:grid-cols-[1fr_180px_180px]">
+                        <div className="grid gap-4 lg:grid-cols-[1fr_220px_180px]">
                             <input
                                 type="text"
                                 defaultValue={filters.search || ""}
@@ -416,7 +452,7 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                                         );
                                     }
                                 }}
-                                placeholder="Cari nama, NISN, nomor induk, kelas 10 A / 10B, kontak..."
+                                placeholder="Cari nama, NISN, nomor induk, kelas 10 A / 10 B, kontak..."
                                 className="h-[52px] rounded-[16px] border border-slate-200 px-4 text-[14px] font-medium outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
                             />
 
@@ -431,9 +467,9 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                                 className="h-[52px] rounded-[16px] border border-slate-200 px-4 text-[14px] font-medium outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
                             >
                                 <option value="all">Semua Kelas</option>
-                                {classOptions.map((classOption) => (
-                                    <option key={classOption} value={classOption}>
-                                        {classOption}
+                                {classOptions.map((className) => (
+                                    <option key={className} value={className}>
+                                        Kelas {className}
                                     </option>
                                 ))}
                             </select>
@@ -462,7 +498,7 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                                     {filters.class_name === "all" ||
                                     !filters.class_name
                                         ? "Semua Kelas"
-                                        : filters.class_name}{" "}
+                                        : `Kelas ${filters.class_name}`}{" "}
                                     • Status:{" "}
                                     {filters.status === "all" || !filters.status
                                         ? "Semua Status"
@@ -473,12 +509,22 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                                 </p>
                             </div>
 
-                            <a
-                                href={exportUrl}
-                                className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] bg-white px-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#061b46] ring-1 ring-slate-200 transition hover:bg-blue-50"
-                            >
-                                Export Data
-                            </a>
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                                <a
+                                    href={exportUrl}
+                                    className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] bg-white px-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#061b46] ring-1 ring-slate-200 transition hover:bg-blue-50"
+                                >
+                                    Export CSV
+                                </a>
+
+                                <a
+                                    href={exportPdfUrl}
+                                    target="_blank"
+                                    className="inline-flex min-h-[42px] items-center justify-center rounded-[14px] bg-[#061b46] px-5 text-[12px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#0b3b85]"
+                                >
+                                    Export PDF
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -903,7 +949,7 @@ export default function Index({ students = {}, filters = {}, summary = {} }) {
                                         )
                                     }
                                     error={errors.class_name}
-                                    placeholder="Contoh: A / 7A"
+                                    placeholder="Contoh: A / B / C"
                                 />
                             </div>
 

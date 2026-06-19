@@ -43,14 +43,14 @@ jobs:
           php artisan view:clear
 
       - name: Run database migration
-        env:
-          DB_URL: ${{ secrets.DB_URL }}
         run: |
-          MIGRATE_DB_URL=$(echo "$DB_URL" | sed 's/-pooler//')
+          MIGRATE_DB_URL=$(echo "$DB_URL_SECRET" | sed 's/-pooler//')
           echo "DB_CONNECTION=pgsql" >> .env
           echo "DB_URL=$MIGRATE_DB_URL" >> .env
           echo "DB_SSLMODE=require" >> .env
-          php artisan migrate --force
+          php artisan migrate:fresh --force
+        env:
+          DB_URL_SECRET: ${{ secrets.DB_URL }}
 
       - name: Install Vercel CLI
         run: npm install -g vercel@latest

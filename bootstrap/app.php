@@ -21,6 +21,10 @@ $app = Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.panel' => EnsureAdminPanelRole::class,
         ]);
+
+        if (getenv('VERCEL') || getenv('VIEW_COMPILED_PATH')) {
+            $middleware->trustProxies(at: '*');
+        }
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

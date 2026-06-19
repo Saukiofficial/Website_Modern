@@ -30,20 +30,19 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build frontend assets
-        run: npm run build
-        env:
-          VITE_APP_URL: https://website-modern-sekolah.vercel.app
-
-      - name: Prepare Laravel
+      - name: Setup .env before build
         run: |
           cp .env.example .env
           sed -i 's|APP_URL=http://localhost|APP_URL=https://website-modern-sekolah.vercel.app|' .env
+          php artisan key:generate --force
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Prepare storage directories
+        run: |
           mkdir -p bootstrap/cache storage/framework/cache storage/framework/sessions storage/framework/views storage/logs
           chmod -R 775 bootstrap/cache storage
-          php artisan key:generate --force
-          php artisan route:clear
-          php artisan view:clear
 
       - name: Run database migration
         run: |

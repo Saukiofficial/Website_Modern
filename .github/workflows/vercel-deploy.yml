@@ -35,6 +35,7 @@ jobs:
 
       - name: Prepare Laravel
         run: |
+          cp .env.example .env
           php artisan key:generate --force
           php artisan config:clear
           php artisan route:clear
